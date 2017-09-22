@@ -1,0 +1,140 @@
+.mn-hglght {
+    width: 100%;
+    text-align: justify;
+    padding: 2px 12px !important;
+}
+
+.mn-hglght:hover {
+    background-color: #222;
+    font-weight: bolder;
+    text-decoration: none;
+    opacity: 0.3
+}
+
+.bcg-img-ctn {
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.site-signup {
+    width: 20%;
+    height: 100%;
+    margin-left: 40%;
+    display: table
+}
+
+.site-signup-cont {
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle
+}
+.gnrl-frm {
+    height: 100%;
+    overflow: hidden;
+    display: table;
+}
+
+.stdt-rgst, .stdt-psnl, .prnt-det, .edcn-det {
+    width: 75%;
+    margin-left: 12.5%;
+}
+
+.usr-lgn {
+    width: 30%;
+    margin-left: 35%;
+}
+
+.gnrl-frm-cont {
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.gnrl-frm-hdr {
+    width: 100%;
+    height: 7.5%;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    padding-top: 10px;
+    padding-bottom: 5px
+}
+
+.gnrl-frm-ftr {
+    width: 100%;
+    height: 7.5%;
+    text-align: center;
+    vertical-align: middle;
+    overflow: hidden;
+    padding-top: 5px
+}
+
+.gnrl-frm-bdy {
+    width: 100%;
+    height: auto;
+    border: 5px solid #ddd;
+    border-radius: 6px;
+    overflow-x: hidden;
+    padding: 10px
+}
+
+.gnrl-frm-divider {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-bottom: 3px solid #ddd
+}
+
+.gnrl-frm-pdg-top-0 {
+    padding-top: 0
+}
+
+.gnrl-frm-pdg-rgt-0 {
+    padding-right: 0
+}
+
+.gnrl-frm-pdg-btm-0 {
+    padding-bottom: 0
+}
+
+.gnrl-frm-pdg-lft-0 {
+    padding-left: 0
+}
+
+.prnt-nav-btn, .edcn-nav-btn {
+    width: 100%;
+    font-weight: bold;
+    margin: 3px 0
+}
+
+.prt-tab-pn, .edcn-tab-pn {
+    width: 17.5%;
+    height: 100%;
+    padding: 5px 10px 5px 0
+}
+
+.prt-frm-pn, .edcn-frm-pn {
+    width: 82.5%;
+    height: 100%;
+    border-left: 3px solid #ddd;
+    padding: 0 10px 0 5px;
+    overflow-x: hidden
+}
+
+table {
+    width: 100%
+}
+
+.td-pdg-lft {
+    padding-left: 10px
+}
+
+.td-pdg-bth {
+    padding-left: 5px;
+    padding-right: 5px
+}
