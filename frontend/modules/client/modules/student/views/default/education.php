@@ -39,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= Html::button($background[1], ['class' => "edcn-bcg bcg-$id btn btn-sm btn-primary edcn-nav-btn", 'name' => 'edcn-det-btn-btn', 'edctn' => $id, 'lvl' => in_array($background[0], [$study_level_primary, $study_level_secondary]) ? $background[0] : '']) ?>
                 <?php endforeach; ?>
                 
-                <?= Html::button('New Education', ['class' => "edcn-bcg bcg-new btn btn-sm btn-primary edcn-nav-btn", 'name' => 'edcn-det-btn-btn', 'edctn' => '', 'lvl' => '']) ?>
+                <?= Html::button('New Education', ['class' => 'edcn-bcg bcg-new btn btn-sm btn-primary edcn-nav-btn', 'name' => 'edcn-det-btn-btn', 'edctn' => '', 'lvl' => '']) ?>
                 
                 <?php ActiveForm::end(); ?>
             </div>
@@ -96,6 +96,18 @@ $this->registerJs(
                             ) : '';
                     }
                 );
+                
+                $.post('educ-since-till', {'applicant': $('#educationbackground-applicant').val(), 'study_level': $('#educationbackground-study_level').val(), 'since': true, 'value': $('#educationbackground-since').val()},
+                    function (yrs) {
+                        $('#educationbackground-since').html(yrs)
+                    }
+                );
+                
+                $.post('educ-since-till', {'applicant': $('#educationbackground-applicant').val(), 'study_level': $('#educationbackground-study_level').val(), 'value': $('#educationbackground-till').val()},
+                    function (yrs) {
+                        $('#educationbackground-till').html(yrs)
+                    }
+                );
             }
             
             function hideNewEducationButton() {
@@ -121,33 +133,45 @@ $this->registerJs(
 <?php
 $this->registerJs(
         "
-            hideNewEducationButton();
-            
-            highlightSelectedTab($('#educationbackground-id').val(), $('#educationbackground-study_level').val());
-            
-            $('.edcn-bcg').click(
-                function () {
-                    loadEducation($(this).attr('edctn'), $(this).attr('lvl'));
-                }
-            );
-            
-            $('#educationbackground-study_level').change(
-                function () {
-                    studyLevelChanged();
-                }
-            );
-            
-            $('#educationbackground-score, #educationbackground-out_of').change(
-                function () {
-                    grade();
-                }
-            );
-            
-            $('#edcn-btn').click(
-                function () {
-                    $('#edcn-btn-inner').click();
-                }
-            );
+            /* hide or show the new education button conditionally */
+                hideNewEducationButton();
+            /* hide or show the new education button conditionally */
+
+            /* highlighted the active tab */
+                highlightSelectedTab($('#educationbackground-id').val(), $('#educationbackground-study_level').val());
+            /* highlighted the active tab */
+
+            /* buttons used to load education background */
+                $('.edcn-bcg').click(
+                    function () {
+                        loadEducation($(this).attr('edctn'), $(this).attr('lvl'));
+                    }
+                );
+            /* buttons used to load education background */
+
+            /* there are a few dynamic about change of study level */
+                $('#educationbackground-study_level').change(
+                    function () {
+                        studyLevelChanged();
+                    }
+                );
+            /* there are a few dynamic about change of study level */
+
+            /* dynamically recalculate the grade */
+                $('#educationbackground-score, #educationbackground-out_of').change(
+                    function () {
+                        grade();
+                    }
+                );
+            /* dynamically recalculate the grade */
+
+            /* the submit button is actually hidden */
+                $('#edcn-btn').click(
+                    function () {
+                        $('#edcn-btn-inner').click();
+                    }
+                );
+            /* the submit button is actually hidden */
         "
         , yii\web\View::POS_READY
 )

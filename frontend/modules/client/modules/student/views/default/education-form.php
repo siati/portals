@@ -25,7 +25,7 @@ use frontend\modules\client\modules\student\models\EducationBackground;
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'study_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(EducationBackground::studyLevelsToDisplay($model->study_level), ['disabled' => $isPriOrSec]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'study_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(EducationBackground::studyLevelsToDisplay($model->applicant, $model->study_level), ['disabled' => $isPriOrSec]) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(EducationBackground::institutionTypesToDisplay($model->study_level), ['disabled' => $isPriOrSec]) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'school_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(EducationBackground::schoolTypes()) ?></td>
     </tr>
@@ -43,12 +43,10 @@ use frontend\modules\client\modules\student\models\EducationBackground;
     </tr>
 </table>
 
-
-
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'since', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList($snc = StaticMethods::ranges($educationYears[1] + 10, $educationYears[0] - 1, 1, true)) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'till', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(StaticMethods::ranges(max($snc) + 4, $educationYears[0] - 1 + 2, 1, true)) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'since', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList($snc = StaticMethods::ranges($educationYears[1] + 10, $educationYears[0], 1, true)) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'till', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(StaticMethods::ranges(max($snc) + 4, $educationYears[0] + 2, 1, true)) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'exam_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->textInput(['maxlength' => true]) ?></td>
     </tr>
 </table>

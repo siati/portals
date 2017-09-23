@@ -68,7 +68,8 @@ class EducationBackground extends \yii\db\ActiveRecord {
             [['institution_name', 'course_name'], 'notNumerical'],
             [['course_name'], 'string', 'min' => 15, 'max' => 60],
             [['exam_no'], $this->isPrimaryOrSecondary() ? 'integer' : 'notNumerical'],
-            [['exam_no'], 'string', 'min' => static::examNoLength($this->study_level, $this->till, true), 'max' => static::examNoLength($this->study_level, $this->till, false)],
+            [['exam_no'], 'string', 'min' => 7, 'max' => 15],
+            [['exam_no'], 'examNoLengthCheck'],
             [['created_by', 'modified_by'], 'string', 'max' => 15],
             [['since', 'till'], 'sinceTill'],
             [['study_level', 'since', 'till'], 'educationTimeline'],
@@ -94,9 +95,22 @@ class EducationBackground extends \yii\db\ActiveRecord {
                 "
             ],
             [['grade'], 'string', 'max' => 2],
-            [['institution_name', 'course_name', 'exam_no', 'score', 'out_of'], 'sanitizeString'],
+            [['exam_no'], is_numeric($this->exam_no) ? 'positiveValue' : 'sanitizeString'],
+            [['score', 'out_of'], 'positiveValue'],
+            [['institution_name', 'course_name', 'score', 'out_of'], 'sanitizeString'],
             [['created_at', 'modified_at'], 'safe'],
         ];
+    }
+
+    /**
+     * check exam no. length
+     */
+    public function examNoLengthCheck() {
+        $min = static::examNoLength($this->study_level, $this->till, true);
+
+        $max = static::examNoLength($this->study_level, $this->till, false);
+
+        ($len = strlen($this->exam_no)) < $min || $len > $max ? $this->addError('exam_no', "Exam No. must be of length between $min and $max") : '';
     }
 
     /**
@@ -128,6 +142,8 @@ class EducationBackground extends \yii\db\ActiveRecord {
      */
     public function sinceTill($attribute) {
         !empty($this->since) && !empty($this->till) && $this->since >= $this->till ? $this->addError($attribute, 'Admission Year cannot be later or same as Exam Year') : '';
+
+        $this->$attribute > date('Y') ? $this->addError($attribute, $this->getAttributeLabel($attribute) . ' cannot be later than this year') : '';
     }
 
     /**
@@ -249,7 +265,7 @@ class EducationBackground extends \yii\db\ActiveRecord {
             else
             if (count(static::searchEducations($applicant, self::study_level_secondary)) < 1)
                 $study_level = self::study_level_secondary;
-            
+
         is_numeric($study_level) ? '' : $study_level = self::study_level_certificate;
 
         return is_object($model = self::returnEducation($id)) || (in_array($study_level, [self::study_level_primary, self::study_level_secondary]) && count($models = static::searchEducations($applicant, $study_level)) > 0 && is_object($model = $models[0])) ? $model : static::newEducation($applicant, $study_level);
@@ -326,9 +342,29 @@ class EducationBackground extends \yii\db\ActiveRecord {
      */
     public static function examNoLength($study_level, $year, $min) {
         if (in_array($study_level, [self::study_level_primary, self::study_level_secondary]))
-            return empty($year) || $year > 2011 ? 11 : 9;
+            return empty($year) || $year < 2012 ? 9 : 11;
 
         return $min ? 7 : 15;
+    }
+
+    /**
+     * 
+     * @param integer $study_level study level
+     * @return integer study duration
+     */
+    public static function studyLevelDurations($study_level) {
+        switch ($study_level) {
+            case self::study_level_primary: return 10;
+            case self::study_level_secondary: return 7;
+            case self::study_level_certificate: return 5;
+            case self::study_level_diploma: return 6;
+            case self::study_level_degree: return 7;
+            case self::study_level_masters: return 20;
+            case self::study_level_phd: return 29;
+
+            default:
+                break;
+        }
     }
 
     /**
@@ -342,28 +378,30 @@ class EducationBackground extends \yii\db\ActiveRecord {
 
         $yob = substr($applicantModel->dob, 0, 4);
 
+        $duration = static::studyLevelDurations($study_level);
+
         if ($study_level == self::study_level_primary)
-            return [$yob + 5, $yob + 12];
+            return [$since = $yob + 5, $since + $duration];
 
         count($primaryEducation = static::searchEducations($applicant, self::study_level_primary)) > 0 && ($primaryEducation = $primaryEducation[0]);
 
         if ($study_level == self::study_level_secondary)
-            return empty($primaryEducation->till) ? [$yob + 12, $yob + 15] : [$primaryEducation->till + 1, $primaryEducation->till + 4];
+            return empty($primaryEducation->till) ? [$since = $yob + 13, $since + $duration] : [$since = $primaryEducation->till + 1, $since + $duration];
 
         count($secondaryEducation = static::searchEducations($applicant, self::study_level_secondary)) > 0 && ($secondaryEducation = $secondaryEducation[0]);
 
         if (in_array($study_level, [self::study_level_certificate, self::study_level_diploma, self::study_level_degree]))
-            return empty($secondaryEducation->till) ? (empty($primaryEducation->till) ? [$yob + 15, $yob + 17] : [$primaryEducation->till + 5, $primaryEducation->till + 7]) : ([$secondaryEducation->till + 1, $secondaryEducation->till + 3]);
+            return empty($secondaryEducation->till) ? (empty($primaryEducation->till) ? [$since = $yob + 17, $since + $duration] : [$since = $primaryEducation->till + 5, $since + $duration]) : ([$since = $secondaryEducation->till + 1, $since + $duration]);
 
         count($degreeEducation = static::searchEducations($applicant, self::study_level_degree)) > 0 && ($degreeEducation = $degreeEducation[0]);
 
         if ($study_level == self::study_level_masters)
-            return empty($degreeEducation->till) ? (empty($secondaryEducation->till) ? (empty($primaryEducation->till) ? [$yob + 19, $yob + 21] : [$primaryEducation->till + 7, $primaryEducation->till + 9]) : ([$secondaryEducation->till + 3, $secondaryEducation->till + 5])) : ([$degreeEducation->till, $degreeEducation->till + 2]);
+            return empty($degreeEducation->till) ? (empty($secondaryEducation->till) ? (empty($primaryEducation->till) ? [$since = $yob + 20, $since + $duration] : [$since = $primaryEducation->till + 8, $since + $duration]) : ([$since = $secondaryEducation->till + 4, $since + $duration])) : ([$since = $degreeEducation->till, $since + $duration]);
 
         count($mastersEducation = static::searchEducations($applicant, self::study_level_masters)) > 0 && ($mastersEducation = $mastersEducation[0]);
 
         if ($study_level == self::study_level_phd)
-            return empty($mastersEducation->till) ? (empty($degreeEducation->till) ? (empty($secondaryEducation->till) ? (empty($primaryEducation->till) ? [$yob + 21, $yob + 23] : [$primaryEducation->till + 9, $primaryEducation->till + 11]) : ([$secondaryEducation->till + 5, $secondaryEducation->till + 7])) : ([$degreeEducation->till + 2, $degreeEducation->till + 4])) : ([$mastersEducation->till, $mastersEducation->till + 2]);
+            return empty($mastersEducation->till) ? (empty($degreeEducation->till) ? (empty($secondaryEducation->till) ? (empty($primaryEducation->till) ? [$since = $yob + 21, $since + $duration] : [$since = $primaryEducation->till + 9, $since + $duration]) : ([$since = $secondaryEducation->till + 5, $since + $duration])) : ([$since = $degreeEducation->till + 1, $since + $duration])) : ([$since = $mastersEducation->till, $since + $duration]);
     }
 
     /**
@@ -472,10 +510,11 @@ class EducationBackground extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $applicant applicant id
      * @param integer $study_level study level
      * @return array study levels
      */
-    public static function studyLevelsToDisplay($study_level) {
+    public static function studyLevelsToDisplay($applicant, $study_level) {
         $studyLevels = static::studyLevels();
 
         if (in_array($study_level, [$pri = self::study_level_primary, $sec = self::study_level_secondary])) {
@@ -485,6 +524,18 @@ class EducationBackground extends \yii\db\ActiveRecord {
         } else {
             unset($studyLevels[$pri]);
             unset($studyLevels[$sec]);
+
+            if (count(static::searchEducations($applicant, $mst = self::study_level_masters)) < 1)
+                unset($studyLevels[self::study_level_phd]);
+
+            if (count(static::searchEducations($applicant, $dgr = self::study_level_degree)) < 1)
+                unset($studyLevels[$mst]);
+
+            if (count(static::searchEducations($applicant, $sec = self::study_level_secondary)) < 1) {
+                unset($studyLevels[self::study_level_certificate]);
+                unset($studyLevels[self::study_level_diploma]);
+                unset($studyLevels[$dgr]);
+            }
         }
 
         return $studyLevels;

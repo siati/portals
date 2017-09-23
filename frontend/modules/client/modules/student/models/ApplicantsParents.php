@@ -38,9 +38,9 @@ use common\models\StaticMethods;
  * @property integer $employed
  * @property string $staff_no
  * @property string $employer_name
- * @property string $employer_phone
+ * @property integer $employer_phone
  * @property string $employer_email
- * @property string $employer_postal_no
+ * @property integer $employer_postal_no
  * @property integer $employer_postal_code
  * @property integer $gross_monthly_salary
  * @property integer $farming_annual
@@ -140,6 +140,17 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                     }
                 "
             ],
+            [['phone', 'email'], 'required',
+                'when' => function () {
+                    return empty($this->phone) && empty($this->email);
+                },
+                'whenClient' => "
+                    function (attribute, value) {
+                        return ($('#applicantsparents-phone').val() === null || $('#applicantsparents-phone').val() === '') && ($('#applicantsparents-email').val() === null || $('#applicantsparents-email').val() === '');
+                    }
+                ",
+                'message' => 'Parent\'s Phone No. or Email must be provided'
+            ],
             [['occupation', 'total_annual_income'], 'required',
                 'when' => function () {
                     return $this->isPayingFees();
@@ -159,6 +170,17 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                         return $('#applicantsparents-pays_fees').val() === '" . self::pays_fees_yes . "' && $('#applicantsparents-employed').val() === '" . self::employed_yes . "';
                     } 
                 "
+            ],
+            [['employer_phone', 'employer_email'], 'required',
+                'when' => function () {
+                    return $this->isPayingFees() && $this->isFormallyEmployed() && empty($this->employer_phone) && empty($this->employer_email);
+                },
+                'whenClient' => "
+                    function (attribute, value) {
+                        return $('#applicantsparents-pays_fees').val() === '" . self::pays_fees_yes . "' && $('#applicantsparents-employed').val() === '" . self::employed_yes . "' && ($('#applicantsparents-employer_phone').val() === null || $('#applicantsparents-employer_phone').val() === '') && ($('#applicantsparents-employer_email').val() === null || $('#applicantsparents-employer_email').val() === '');
+                    }
+                ",
+                'message' => 'Employer\'s Phone No. or Email must be provided'
             ],
             [['birth_cert_no', 'id_no', 'kra_pin'], 'notOwnParent'],
             [['birth_cert_no', 'id_no', 'kra_pin'], 'distinctDetails'],
@@ -183,6 +205,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
             [['location', 'sub_location', 'village', 'occupation'], 'string', 'min' => 2, 'max' => 30],
             [['staff_no'], 'string', 'min' => 3, 'max' => 10],
             [['employer_name'], 'string', 'min' => 4, 'max' => 45],
+            [['fname', 'mname', 'lname', 'birth_cert_no', 'phone', 'email', 'location', 'sub_location', 'village', 'occupation', 'staff_no', 'employer_name', 'employer_phone', 'employer_email'], 'sanitizeString'],
             [['created_at', 'modified_at'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 15]
         ];
@@ -216,7 +239,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
 
     /**
      * 
-     * @return boolean true - father's death certificate no is required
+     * @return boolean true - parent's middle or last name is required
      */
     public function middleOrLastNameRequired() {
         return empty($this->mname) && empty($this->lname);
@@ -249,7 +272,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     }
 
     /**
-     * applicant should pose a parent himself
+     * applicant should not pose a parent himself
      * 
      * @param string $attribute attribute of parent
      */

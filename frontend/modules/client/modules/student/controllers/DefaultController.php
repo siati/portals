@@ -8,6 +8,7 @@ use yii\filters\AccessControl;
 use frontend\modules\client\modules\student\models\Applicants;
 use frontend\modules\client\modules\student\models\ApplicantsParents;
 use frontend\modules\client\modules\student\models\EducationBackground;
+use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 use common\models\User;
 use common\models\StaticMethods;
 
@@ -24,11 +25,11 @@ class DefaultController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'index', 'register', 'parents', 'check-parent-status', 'education', 'grade', 'merits', 'inst-types', 'out-ofs'
+                    'index', 'register', 'parents', 'check-parent-status', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors'
                 ],
                 'rules' => [
                     [
-                        'actions' => ['index', 'parents', 'check-parent-status', 'education', 'grade', 'merits', 'inst-types', 'out-ofs'],
+                        'actions' => ['index', 'parents', 'check-parent-status', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors'],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
                         'verbs' => ['post']
@@ -136,11 +137,15 @@ class DefaultController extends Controller {
         return [$applicant->validate(['parents', 'father_death_cert_no', 'mother_death_cert_no']), $father->isMinor(), $mother->isMinor()];
     }
 
+    /**
+     * 
+     * @return string view to update applicant education background
+     */
     public function actionEducation() {
         $model = EducationBackground::educationToLoad(empty($_POST['EducationBackground']['id']) ? '' : $_POST['EducationBackground']['id'], $applicant = $_POST['EducationBackground']['applicant'], empty($_POST['EducationBackground']['study_level']) ? '' : $_POST['EducationBackground']['study_level']);
 
         if (isset($_POST['EducationBackground']['institution_name']) && $model->load(Yii::$app->request->post())) {
-            
+
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
 
@@ -149,30 +154,66 @@ class DefaultController extends Controller {
 
         return $this->render('education', ['backgrounds' => EducationBackground::levelsToLoad($applicant), 'applicant' => $model->applicant, 'form_content' => $this->renderPartial('education-form', ['model' => $model])]);
     }
-    
+
+    /**
+     * 
+     * @return string view to update guarantor's details
+     */
+    public function actionGuarantors() {
+        $applicant = Applicants::applicantToLoad($applicant_id = $_POST['ApplicantsGuarantors']['applicant']);
+        
+        $model = ApplicantsGuarantors::guarantorToLoad(empty($_POST['ApplicantsGuarantors']['id']) ? '' : $_POST['ApplicantsGuarantors']['id'], empty($applicant->id) ? '' : $applicant->id, $dob = empty($applicant->dob) ? Applicants::min_age : substr($applicant->dob, 0, 4));
+
+        if (isset($_POST['ApplicantsGuarantors']['fname']) && $model->load(Yii::$app->request->post())) {
+
+            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                return is_array($ajax) ? $ajax : [];
+
+            $model->modelSave();
+        }
+
+        return $this->render('guarantors', ['guarantors' => ApplicantsGuarantors::guarantorsToLoad($applicant_id), 'form_content' => $this->renderPartial('guarantor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant]);
+    }
+
     /**
      * load computed grade to the view
      */
     public function actionGrade() {
         echo EducationBackground::theGrade($_POST['score'], $_POST['out_of']);
     }
-    
+
     /**
      * load grades to the view
      */
     public function actionMerits() {
         StaticMethods::populateDropDown(EducationBackground::merits($level = $_POST['study_level']), 'Grades', null);
     }
-    
+
     /**
      * load institution types to the view
      */
     public function actionInstTypes() {
         StaticMethods::populateDropDown(EducationBackground::institutionTypesToDisplay($level = $_POST['study_level']), null, null);
     }
-    
+
+    /**
+     * load out of value onto view
+     */
     public function actionOutOfs() {
         echo EducationBackground::outOfs($_POST['study_level'], $_POST['year']);
+    }
+
+    /**
+     * load education years onto view
+     */
+    public function actionEducSinceTill() {
+        $educationYears = EducationBackground::admissionAndExaminationYears($_POST['applicant'], $_POST['study_level']);
+
+        $since = StaticMethods::ranges($educationYears[1] + 10, $educationYears[0], 1, true);
+
+        $till = empty($since) ? [] : StaticMethods::ranges(max($since) + 4, $educationYears[0] + 2, 1, true);
+
+        StaticMethods::populateDropDown(isset($_POST['since']) ? $since : $till, null, $_POST['value']);
     }
 
 }
