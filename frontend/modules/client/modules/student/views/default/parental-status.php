@@ -12,10 +12,10 @@ use frontend\modules\client\modules\student\models\Applicants;
 
 <?= Html::activeHiddenInput($applicant, 'id') ?>
 
-<?= $form->field($applicant, 'parents', ['addon' => ['prepend' => ['content' => '<i class="fa fa-male"></i>']]])->dropDownList(Applicants::parentalStatuses(), ['style' => 'width: 45%']) ?>
+<?= $form->field($applicant, 'parents', ['addon' => ['prepend' => ['content' => '<i class="fa fa-group"></i>']]])->dropDownList(Applicants::parentalStatuses(), ['style' => 'width: 45%']) ?>
 
-<?= $form->field($applicant, 'father_death_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true, 'style' => 'width: 45%']) ?>
+<?= $form->field($applicant, 'father_death_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-file-text"></i>']]])->textInput(['maxlength' => true, 'style' => 'width: 45%']) ?>
 
-<?= $form->field($applicant, 'mother_death_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true, 'style' => 'width: 45%']) ?>
+<?= $form->field($applicant, 'mother_death_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-file-text"></i>']]])->textInput(['maxlength' => true, 'style' => 'width: 45%']) ?>
 
 <?php ActiveForm::end(); ?>

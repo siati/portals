@@ -25,21 +25,21 @@ use frontend\modules\client\modules\student\models\EducationBackground;
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'study_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(EducationBackground::studyLevelsToDisplay($model->applicant, $model->study_level), ['disabled' => $isPriOrSec]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(EducationBackground::institutionTypesToDisplay($model->study_level), ['disabled' => $isPriOrSec]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'school_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(EducationBackground::schoolTypes()) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'study_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-certificate"></i>']]])->dropDownList(EducationBackground::studyLevelsToDisplay($model->applicant, $model->study_level), ['disabled' => $isPriOrSec]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(EducationBackground::institutionTypesToDisplay($model->study_level), ['disabled' => $isPriOrSec]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'school_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(EducationBackground::schoolTypes()) ?></td>
     </tr>
 </table>
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'institution_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'institution_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->textInput(['maxlength' => true]) ?></td>
     </tr>
 </table>
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'course_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $isPriOrSec]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'course_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-book"></i>']]])->textInput(['maxlength' => true, 'disabled' => $isPriOrSec]) ?></td>
     </tr>
 </table>
 
@@ -47,15 +47,15 @@ use frontend\modules\client\modules\student\models\EducationBackground;
     <tr>
         <td class="td-pdg-lft"><?= $form->field($model, 'since', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList($snc = StaticMethods::ranges($educationYears[1] + 10, $educationYears[0], 1, true)) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'till', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(StaticMethods::ranges(max($snc) + 4, $educationYears[0] + 2, 1, true)) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'exam_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->textInput(['maxlength' => true]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'exam_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-align-justify"></i>']]])->textInput(['maxlength' => true]) ?></td>
     </tr>
 </table>
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'score', ['addon' => ['prepend' => ['content' => '<i class="fa fa-child"></i>']]])->textInput(['maxlength' => true, 'disabled' => !$isPriOrSec]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'out_of', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card"></i>']]])->textInput(['maxlength' => true, 'disabled' => !$isPriOrSec]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'grade', ['addon' => ['prepend' => ['content' => '<i class="fa fa-certificate"></i>']]])->dropDownList(EducationBackground::merits($model->study_level), ['prompt' => '-- Grades --', 'disabled' => $isPriOrSec || in_array($model->study_level, [$mst, $phd])]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'score', ['addon' => ['prepend' => ['content' => '<i class="fa fa-percent"></i>']]])->textInput(['maxlength' => true, 'disabled' => !$isPriOrSec]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'out_of', ['addon' => ['prepend' => ['content' => '<i class="fa fa-list-ol"></i>']]])->textInput(['maxlength' => true, 'disabled' => !$isPriOrSec]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'grade', ['addon' => ['prepend' => ['content' => '<i class="fa fa-graduation-cap"></i>']]])->dropDownList(EducationBackground::merits($model->study_level), ['prompt' => '-- Grades --', 'disabled' => $isPriOrSec || in_array($model->study_level, [$mst, $phd])]) ?></td>
     </tr>
 </table>
 

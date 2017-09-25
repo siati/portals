@@ -9,6 +9,7 @@ use frontend\modules\client\modules\student\models\Applicants;
 use frontend\modules\client\modules\student\models\ApplicantsParents;
 use frontend\modules\client\modules\student\models\EducationBackground;
 use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
+use frontend\modules\client\modules\student\models\ApplicantsInstitution;
 use common\models\User;
 use common\models\StaticMethods;
 
@@ -25,11 +26,11 @@ class DefaultController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'index', 'register', 'parents', 'check-parent-status', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors'
+                    'index', 'register', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents', 'institution'
                 ],
                 'rules' => [
                     [
-                        'actions' => ['index', 'parents', 'check-parent-status', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors'],
+                        'actions' => ['index', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents', 'institution'],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
                         'verbs' => ['post']
@@ -136,6 +137,13 @@ class DefaultController extends Controller {
 
         return [$applicant->validate(['parents', 'father_death_cert_no', 'mother_death_cert_no']), $father->isMinor(), $mother->isMinor()];
     }
+    
+    /**
+     * check whether parent is guarantor
+     */
+    public function actionParentIsGuarantor() {
+        echo is_object(ApplicantsParents::parentIsGuarantor($_POST['ApplicantsParents']['applicant'], $_POST['ApplicantsParents']['id_no']));
+    }
 
     /**
      * 
@@ -161,10 +169,10 @@ class DefaultController extends Controller {
      */
     public function actionGuarantors() {
         $applicant = Applicants::applicantToLoad($applicant_id = $_POST['ApplicantsGuarantors']['applicant']);
-        
-        $model = ApplicantsGuarantors::guarantorToLoad(empty($_POST['ApplicantsGuarantors']['id']) ? '' : $_POST['ApplicantsGuarantors']['id'], empty($applicant->id) ? '' : $applicant->id, $dob = empty($applicant->dob) ? Applicants::min_age : substr($applicant->dob, 0, 4));
 
-        if (isset($_POST['ApplicantsGuarantors']['fname']) && $model->load(Yii::$app->request->post())) {
+        $model = ApplicantsGuarantors::guarantorToLoad(empty($_POST['ApplicantsGuarantors']['id']) ? '' : $_POST['ApplicantsGuarantors']['id'], empty($applicant->id) ? '' : $applicant->id, empty($_POST['ApplicantsGuarantors']['id_no']) ? '' : $_POST['ApplicantsGuarantors']['id_no'], $dob = empty($applicant->dob) ? Applicants::min_age : substr($applicant->dob, 0, 4));
+
+        if (isset($_POST['ApplicantsGuarantors']['id_no']) && ($model->IDNoIsParents() || $model->load(Yii::$app->request->post()))) {
 
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
@@ -173,6 +181,42 @@ class DefaultController extends Controller {
         }
 
         return $this->render('guarantors', ['guarantors' => ApplicantsGuarantors::guarantorsToLoad($applicant_id), 'form_content' => $this->renderPartial('guarantor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant]);
+    }
+
+    /**
+     * 
+     * client validation for guarantor's id no
+     */
+    public function actionIdNoIsParents() {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $model = ApplicantsGuarantors::guarantorToLoad($_POST['ApplicantsGuarantors']['id'], $_POST['ApplicantsGuarantors']['applicant'], $_POST['ApplicantsGuarantors']['id_no'], Applicants::min_age);
+
+        $attributes = ['0' => $model->IDNoIsParents()];
+
+        foreach ($model->attributeLabels() as $attribute => $label)
+            if (!in_array($attribute, ['id', 'applicant', 'id_no', 'created_by', 'created_at', 'modified_by', 'modified_at']))
+                $attributes['1']["applicantsguarantors-$attribute"] = $model->$attribute;
+
+        return $attributes;
+    }
+    
+    /**
+     * 
+     * @return string view to update applicant institution details
+     */
+    public function actionInstitution() {
+        $model = ApplicantsInstitution::institutionToLoad(empty($_POST['ApplicantsInstitution']['id']) ? '' : $_POST['ApplicantsInstitution']['id'], empty($_POST['ApplicantsInstitution']['applicant']) ? '' : $_POST['ApplicantsInstitution']['applicant']);
+
+        if (isset($_POST['ApplicantsInstitution']['institution_code']) && $model->load(Yii::$app->request->post())) {
+
+            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                return is_array($ajax) ? $ajax : [];
+
+            $model->modelSave();
+        }
+
+        return $this->render('institution', ['model' => $model]);
     }
 
     /**

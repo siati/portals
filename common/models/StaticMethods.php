@@ -11,22 +11,12 @@ use yii\helpers\ArrayHelper;
  */
 class StaticMethods {
 
-    const gender_male = 'm';
-    const gender_female = 'f';
     const short = 'short';
     const long = 'long';
     const longer = 'longer';
     const longest = 'longest';
     const name = 'name';
     const points = 'points';
-
-    /**
-     * 
-     * @return array|[] genders
-     */
-    public static function genders() {
-        return [self::gender_male => 'Male', self::gender_female => 'Female'];
-    }
 
     /**
      * 
@@ -103,7 +93,7 @@ class StaticMethods {
      * @param array $models models
      * @param string $key attribute of each of the [[$models]]
      * @param string $value value of
-     * @param boolean $sort sort array
+     * @param boolean $sort true - sort array
      * @return array extracted associative array
      */
     public static function modelsToArray($models, $key, $value, $sort) {

@@ -27,15 +27,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php ActiveForm::begin(['id' => 'form-grntr-det-btn']); ?>
 
                 <input name='ApplicantsGuarantors[id]' type='hidden' id='id'>
-                
+
                 <input name='ApplicantsGuarantors[applicant]' type='hidden' value='<?= $applicant ?>'>
 
                 <?php $i = 0 ?>
-                
+
                 <?php foreach ($guarantors as $guarantor): ?>
                     <?= Html::button('Guarantor ' . ++$i, ['class' => "grntr grntr-$guarantor->id btn btn-sm btn-primary grntr-nav-btn", 'name' => 'grntr-det-btn-btn', 'of-id' => $guarantor->id]) ?>
                 <?php endforeach; ?>
-                
+
                 <?= Html::button('New Guarantor', ['class' => 'grntr grntr-new btn btn-sm btn-primary grntr-nav-btn', 'name' => 'grntr-det-btn-btn', 'of-id' => '']) ?>
 
                 <?php ActiveForm::end(); ?>
@@ -69,6 +69,24 @@ $this->registerJs(
                 $('#id').val(id);
                 $('#form-grntr-det-btn').submit();
             }
+            
+            function checkTheIDNo() {
+                $.post('id-no-is-parents', {'ApplicantsGuarantors[id]': $('#applicantsguarantors-id').val(), 'ApplicantsGuarantors[applicant]': $('#applicantsguarantors-applicant').val(), 'ApplicantsGuarantors[id_no]': $('#applicantsguarantors-id_no').val()},
+                    function (values) {
+                        $.each(values[1],
+                            function(attr, val) {
+                                $('#' + attr).val(val).blur().attr('disabled', values[0] ? true : false);
+                            }
+                        );
+                        
+                        $('#applicantsguarantors-employed').change();
+                        
+                        countyChanged(values[1]['applicantsguarantors-county'], values[1]['applicantsguarantors-sub_county'], $('#applicantsguarantors-sub_county'), '../../../site/dynamic-subcounties', values[1]['applicantsguarantors-constituency'], $('#applicantsguarantors-constituency'), '../../../site/dynamic-constituencies');
+                        
+                        dynamicWards(values[1]['applicantsguarantors-constituency'], values[1]['applicantsguarantors-ward'], $('#applicantsguarantors-ward'), '../../../site/dynamic-wards');
+                    }
+                );
+            }
 
         "
         , \yii\web\VIEW::POS_HEAD
@@ -85,6 +103,7 @@ $this->registerJs(
             /* show and hide employment details appropriately */
                 $('#applicantsguarantors-employed').change(
                     function() {
+                        $('#applicantsguarantors-kra_pin, #applicantsguarantors-staff_no, #applicantsguarantors-employer_name').blur();
                         $(this).val() === '$employed' ? $('#oth-grntr-det').show() : $('#oth-grntr-det').hide();
                     }
                 );
@@ -101,6 +120,14 @@ $this->registerJs(
                     }
                 );
             /* load guarantor details on the view */
+            
+            /* check if id no is corresponding to applicant's parent */
+                $('#applicantsguarantors-id_no').change(
+                    function () {
+                        checkTheIDNo();
+                    }
+                );
+            /* check if id no is corresponding to applicant's parent */
 
             /* the real submit button is hidden */
                 $('#grntrs-btn').click(

@@ -325,7 +325,7 @@ class Applicants extends \yii\db\ActiveRecord {
             self::parents_both_alive => 'Both Parents Alive',
             self::parents_father_alive => 'Only Father Alive',
             self::parents_mother_alive => 'Only Mother Alive',
-            self::parents_neither_alive => 'Both Parents Not Alive',
+            self::parents_neither_alive => 'Both Parents Deceased',
             self::parents_divorced => 'Divorced',
             self::parents_separated => 'Separated',
             self::parents_single => 'Single Unmarried Parent',

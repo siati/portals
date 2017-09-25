@@ -8,6 +8,7 @@ use yii\helpers\Html;
 use kartik\form\ActiveForm;
 use kartik\date\DatePicker;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 
 $this->title = 'Student Registration';
 $this->params['breadcrumbs'][] = $this->title;
@@ -49,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         );
                         ?>
                     </td>
-                    <td class="td-pdg-lft"><?= $form->field($applicant, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(StaticMethods::genders(), ['prompt' => '-- Gender --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::genders(), ['prompt' => '-- Gender --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($user, 'birth_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-child"></i>']]])->textInput(['maxlength' => true]) ?></td>
                 </tr>
                 

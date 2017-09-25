@@ -5,6 +5,7 @@ namespace frontend\modules\client\modules\student\models;
 use Yii;
 use common\models\User;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 
 /**
  * This is the model class for table "{{%applicants_parents}}".
@@ -63,12 +64,6 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     const relationship_guardian = 3;
     const relationship_guardian_to_father = 4;
     const relationship_guardian_to_mother = 5;
-    const education_level_none = 0;
-    const education_level_certificate = 1;
-    const education_level_diploma = 2;
-    const education_level_degree = 3;
-    const education_level_masters = 4;
-    const education_level_phd = 5;
     const pays_fees_yes = 1;
     const pays_fees_no = 0;
     const is_minor_no = 0;
@@ -97,7 +92,6 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
         return [
             [['applicant', 'relationship', 'fname', 'yob', 'gender', 'county', 'sub_county', 'constituency', 'ward'], 'required'],
             [['relationship', 'applicant', 'yob', 'birth_cert_no', 'id_no', 'phone', 'postal_no', 'postal_code', 'county', 'sub_county', 'constituency', 'ward', 'education_level', 'pays_fees', 'is_minor', 'employed', 'employer_postal_no', 'employer_postal_code', 'gross_monthly_salary', 'farming_annual', 'monthly_pension', 'business_annual', 'govt_support_annual', 'relief_annual', 'other_annual'], 'integer'],
-            [['gender'], 'string'],
             [['mname', 'lname'], 'required',
                 'when' => function () {
                     return $this->middleOrLastNameRequired();
@@ -160,6 +154,12 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                         return $('#applicantsparents-pays_fees').val() === '" . self::pays_fees_yes . "';
                     } 
                 "
+            ],
+            ['occupation', 'required',
+                'when' => function () {
+                    return is_object($this->isGuarantor());
+                },
+                'message' => 'Occupation is required, this parent being your guarantor too'
             ],
             [['kra_pin', 'staff_no', 'employer_name', 'gross_monthly_salary'], 'required',
                 'when' => function () {
@@ -421,6 +421,24 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     /**
      * 
      * @param integer $applicant applicant id
+     * @param integer $id_no parent id
+     * @return ApplicantsGuarantors model
+     */
+    public static function parentIsGuarantor($applicant, $id_no) {
+        return !empty($id_no) && count($guarantor = ApplicantsGuarantors::searchGuarantors($applicant, null, $id_no, null, null, null)) > 0 ? $guarantor[0] : false;
+    }
+
+    /**
+     * 
+     * @return ApplicantsGuarantors model
+     */
+    public function isGuarantor() {
+        return static::parentIsGuarantor($this->applicant, $this->id_no);
+    }
+
+    /**
+     * 
+     * @param integer $applicant applicant id
      * @param integer $relationship relationship
      * @param integer $applicant_yob applicant year of birth
      * @return ApplicantsParents model
@@ -432,11 +450,11 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
 
         $model->relationship = $relationship;
 
-        $relationship == self::relationship_father ? ($model->gender = StaticMethods::gender_male) : ($relationship == self::relationship_mother ? $model->gender = StaticMethods::gender_female : '');
+        $relationship == self::relationship_father ? ($model->gender = LmBaseEnums::gender(LmBaseEnums::gender_male)->VALUE) : ($relationship == self::relationship_mother ? $model->gender = LmBaseEnums::gender(LmBaseEnums::gender_female)->VALUE : '');
 
         $model->yob = $applicant_yob - self::min_age_difference;
 
-        $model->education_level = self::education_level_none;
+        $model->education_level = LmBaseEnums::studyLevel(LmBaseEnums::study_level_none)->VALUE;
 
         $model->pays_fees = $model->canPayFees() ? self::pays_fees_yes : self::pays_fees_no;
 
@@ -490,7 +508,18 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
             $this->modified_at = StaticMethods::now();
         }
 
-        return $this->save();
+        Yii::$app->db->transaction === null ? $transaction = Yii::$app->db->beginTransaction() : '';
+
+        try {
+            if ($this->save() && (!is_object($guarantor = $this->isGuarantor()) || (($guarantor->attributes = $this->attributes) && $guarantor->save(false)))) {
+                empty($transaction) ? '' : $transaction->commit();
+                return true;
+            }
+        } catch (Exception $ex) {
+            
+        }
+
+        empty($transaction) ? '' : $transaction->rollBack();
     }
 
     /**
@@ -541,21 +570,6 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
             default:
                 return $relationship;
         }
-    }
-
-    /**
-     * 
-     * @return array education levels
-     */
-    public static function educationLevels() {
-        return [
-            self::education_level_none => 'Not Educated',
-            self::education_level_certificate => 'Certificate',
-            self::education_level_diploma => 'Diploma',
-            self::education_level_degree => 'Degree',
-            self::education_level_masters => 'Masters',
-            self::education_level_phd => 'PHD'
-        ];
     }
 
     /**

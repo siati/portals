@@ -119,7 +119,7 @@ $this->registerJs(
             }
 
             function checkParentStatus() {
-                post = $('#form-prntl-stts').length ? $('#form-prntl-stts').serialize() : {'Applicants[id]': $('#applicant').val()};
+                post = $('#form-prntl-stts').length ? $('#form-prntl-stts').serialize() : {'Applicants[id]': '$applicant'};
 
                 $.post('check-parent-status', post,
                     function (statuses) {
@@ -135,6 +135,15 @@ $this->registerJs(
                         $('#applicants-parents').length ? parentalStatusFields($('#applicants-parents').val()) : '';
                     }
                 );
+            }
+            
+            function parentIsGuarantor(opn) {
+                opn ? $('#oth-prt-det').show() :
+                    $.post('parent-is-guarantor', {'ApplicantsParents[applicant]': $('#applicantsparents-applicant').val(), 'ApplicantsParents[id_no]': $('#applicantsparents-id_no').val()},
+                        function(opn) {
+                            opn ? $('#oth-prt-det').show() : $('#oth-prt-det').hide();
+                        }
+                    );
             }
             
             function highlightActiveParentTab() {
@@ -169,9 +178,9 @@ $this->registerJs(
             /* perform relevant checks when parental status changes */
             
             /* show and hide employment and income details appropriately */
-                $('#applicantsparents-pays_fees').change(
+                $('#applicantsparents-id_no, #applicantsparents-pays_fees').change(
                     function() {
-                        $(this).val() === '$paysFees' ? $('#oth-prt-det').show() : $('#oth-prt-det').hide();
+                        parentIsGuarantor($('#applicantsparents-pays_fees').val() === '$paysFees');
                     }
                 );
             /* show and hide employment and income details appropriately */

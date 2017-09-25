@@ -12,8 +12,11 @@ use common\models\Constituencies;
 use common\models\Wards;
 use common\models\PostalCodes;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 ?>
+
+<?php $disabled = $model->isNewRecord || is_object($model->isParent()) ?>
 
 <?php $form = ActiveForm::begin(['id' => 'form-grntr-det', 'enableAjaxValidation' => true]); ?>
 
@@ -25,51 +28,51 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'fname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'mname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'lname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'fname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'mname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'lname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
 </table>
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'yob', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(StaticMethods::ranges(ApplicantsGuarantors::oldest(), ApplicantsGuarantors::youngest(), 1, true)) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(StaticMethods::genders(), ['prompt' => '-- Gender --']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'id_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card"></i>']]])->textInput(['maxlength' => true]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'phone', ['addon' => ['prepend' => ['content' => '<i class="glyphicon glyphicon-phone"></i>']]])->textInput(['maxlength' => true]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'yob', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(StaticMethods::ranges(ApplicantsGuarantors::oldest(), ApplicantsGuarantors::youngest(), 1, true), ['disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::genders(), ['prompt' => '-- Gender --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'phone', ['addon' => ['prepend' => ['content' => '<i class="glyphicon glyphicon-phone"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
 </table>
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '<i class="fa fa-at"></i>']]])->textInput(['maxlength' => true]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'occupation', ['addon' => ['prepend' => ['content' => '<i class="fa fa-hand-grab-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'kra_pin', ['addon' => ['prepend' => ['content' => '<i class="fa fa-certificate"></i>']]])->textInput(['maxlength' => true]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '<i class="fa fa-at"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'occupation', ['addon' => ['prepend' => ['content' => '<i class="fa fa-hand-grab-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'kra_pin', ['addon' => ['prepend' => ['content' => '<i class="fa fa-certificate"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
 </table>
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicantsguarantors-sub_county').val(), $('#applicantsguarantors-sub_county'), '../../../site/dynamic-subcounties', $('#applicantsguarantors-constituency').val(), $('#applicantsguarantors-constituency'), '../../../site/dynamic-constituencies')"]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'sub_county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(SubCounties::subcountiesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Subcounty --']) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicantsguarantors-ward').val(), $('#applicantsguarantors-ward'), '../../../site/dynamic-wards')"]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'ward', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Wards::wardsForConstituency($model->constituency), 'id', 'name', false), ['prompt' => '-- Select Ward --']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicantsguarantors-sub_county').val(), $('#applicantsguarantors-sub_county'), '../../../site/dynamic-subcounties', $('#applicantsguarantors-constituency').val(), $('#applicantsguarantors-constituency'), '../../../site/dynamic-constituencies')", 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'sub_county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(SubCounties::subcountiesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Subcounty --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicantsguarantors-ward').val(), $('#applicantsguarantors-ward'), '../../../site/dynamic-wards')", 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'ward', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Wards::wardsForConstituency($model->constituency), 'id', 'name', false), ['prompt' => '-- Select Ward --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
 </table>
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'location', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'sub_location', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'village', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'location', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'sub_location', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'village', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
 </table>
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'postal_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'postal_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-building-o"></i>']]])->dropDownList($postalCodes = StaticMethods::modelsToArray(PostalCodes::allCodes(), 'id', 'town', false), ['prompt' => '-- Select Town --']) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'employed', ['addon' => ['prepend' => ['content' => '<i class="fa fa-bank"></i>']]])->dropDownList(ApplicantsGuarantors::employeds()) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'postal_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'postal_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-building-o"></i>']]])->dropDownList($postalCodes = StaticMethods::modelsToArray(PostalCodes::allCodes(), 'id', 'town', false), ['prompt' => '-- Select Town --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'employed', ['addon' => ['prepend' => ['content' => '<i class="fa fa-bank"></i>']]])->dropDownList(ApplicantsGuarantors::employeds(), ['disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
 </table>
 
@@ -79,17 +82,17 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 
     <table>
         <tr>
-            <td class="td-pdg-lft"><?= $form->field($model, 'employer_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-bank"></i>']]])->textInput(['maxlength' => true]) ?></td>
-            <td class="td-pdg-lft"><?= $form->field($model, 'staff_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-badge"></i>']]])->textInput(['maxlength' => true]) ?></td>
-            <td class="td-pdg-lft"><?= $form->field($model, 'employer_phone', ['addon' => ['prepend' => ['content' => '<i class="fa fa-phone"></i>']]])->textInput(['maxlength' => true]) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'employer_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-bank"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'staff_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-badge"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'employer_phone', ['addon' => ['prepend' => ['content' => '<i class="fa fa-phone"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
         </tr>
     </table>
 
     <table>
         <tr>
-            <td class="td-pdg-lft"><?= $form->field($model, 'employer_email', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope"></i>']]])->textInput(['maxlength' => true]) ?></td>
-            <td class="td-pdg-lft"><?= $form->field($model, 'employer_postal_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-            <td class="td-pdg-lft"><?= $form->field($model, 'employer_postal_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-building-o"></i>']]])->dropDownList($postalCodes, ['prompt' => '-- Select Town --']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'employer_email', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'employer_postal_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'employer_postal_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-building-o"></i>']]])->dropDownList($postalCodes, ['prompt' => '-- Select Town --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
         </tr>
     </table>
 

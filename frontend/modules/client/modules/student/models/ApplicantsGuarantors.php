@@ -1,9 +1,9 @@
 <?php
 
 namespace frontend\modules\client\modules\student\models;
+
 use common\models\User;
 use common\models\StaticMethods;
-
 use Yii;
 
 /**
@@ -59,9 +59,10 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['applicant', 'fname', 'yob', 'gender', 'id_no', 'county', 'sub_county', 'constituency', 'ward', 'occupation'], 'required'],
+            [['applicant', 'fname', 'yob', 'gender', 'id_no', 'county', 'sub_county', 'constituency', 'ward'], 'required'],
+            ['occupation', 'required', 'message' => $this->isParent() ? 'Please update this parent\'s occupation first' : 'Occupation is required'],
             [['applicant', 'yob', 'id_no', 'phone', 'postal_no', 'postal_code', 'county', 'sub_county', 'constituency', 'ward', 'employed', 'employer_postal_no', 'employer_postal_code'], 'integer'],
-            [['gender'], 'string'],
+            ['id_no', 'IDNoIsParents'],
             [['mname', 'lname'], 'required',
                 'when' => function () {
                     return $this->middleOrLastNameRequired();
@@ -128,6 +129,17 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
             [['created_at', 'modified_at'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 15],
         ];
+    }
+
+    /**
+     * if guarantor is parent then adopt parent's attributes
+     * 
+     * @return boolean true - parent's attributes have been adopted to guarantor
+     */
+    public function IDNoIsParents() {
+        is_object($parent = $this->isParent()) ? $this->attributes = $parent->attributes : $is_not_parent = true;
+        
+        return empty($is_not_parent);
     }
 
     /**
@@ -247,13 +259,34 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
     /**
      * 
      * @param integer $applicant applicant id
+     * @param integer $id_no guarantor id
+     * @return ApplicantsParents model
+     */
+    public static function guarantorIsParent($applicant, $id_no) {
+        return !empty($id_no) && count($parent = ApplicantsParents::searchParents($applicant, null, null, null, $id_no, null, null, null, null)) > 0 ? $parent[0] : false;
+    }
+
+    /**
+     * 
+     * @return ApplicantsParents model
+     */
+    public function isParent() {
+        return static::guarantorIsParent($this->applicant, $this->id_no);
+    }
+
+    /**
+     * 
+     * @param integer $applicant applicant id
+     * @param integer $id_no guarantor id
      * @param integer $applicant_yob applicant year of birth
      * @return ApplicantsGuarantors model
      */
-    public static function newGuarantor($applicant, $applicant_yob) {
+    public static function newGuarantor($applicant, $id_no, $applicant_yob) {
         $model = new ApplicantsGuarantors;
 
         $model->applicant = $applicant;
+
+        empty($id_no) ? '' : $model->id_no = $id_no;
 
         $model->yob = $applicant_yob - ApplicantsParents::min_age_difference;
 
@@ -268,11 +301,12 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
      * 
      * @param integer $id guarantor id
      * @param integer $applicant applicant id
+     * @param integer $id_no guarantor id
      * @param integer $applicant_yob applicant year of birth
      * @return ApplicantsGuarantors model
      */
-    public static function guarantorToLoad($id, $applicant, $applicant_yob) {
-        return is_object($model = static::returnGuarantor($id)) ? $model : static::newGuarantor($applicant, $applicant_yob);
+    public static function guarantorToLoad($id, $applicant, $id_no, $applicant_yob) {
+        return is_object($model = static::returnGuarantor($id)) ? $model : static::newGuarantor($applicant, $id_no, $applicant_yob);
     }
 
     /**

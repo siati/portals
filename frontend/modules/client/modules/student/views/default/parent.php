@@ -12,6 +12,7 @@ use common\models\Constituencies;
 use common\models\Wards;
 use common\models\PostalCodes;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 use frontend\modules\client\modules\student\models\ApplicantsParents;
 ?>
 
@@ -37,7 +38,7 @@ use frontend\modules\client\modules\student\models\ApplicantsParents;
 <table>
     <tr>
         <?php if (!in_array($parent->relationship, [ApplicantsParents::relationship_father, ApplicantsParents::relationship_mother])): ?>
-            <td class="td-pdg-lft"><?= $form->field($parent, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(StaticMethods::genders(), ['prompt' => '-- Gender --']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($parent, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::genders(), ['prompt' => '-- Gender --']) ?></td>
         <?php endif ?>
         <td class="td-pdg-lft"><?= $form->field($parent, 'birth_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-child"></i>']]])->textInput(['maxlength' => true]) ?></td>
         <td class="td-pdg-lft"><?= $form->field($parent, 'id_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card"></i>']]])->textInput(['maxlength' => true]) ?></td>
@@ -74,14 +75,14 @@ use frontend\modules\client\modules\student\models\ApplicantsParents;
     </tr>
 </table>
 
-<?php if ($parent->canPayFees()): ?>
+<?php if ($parent->isNewRecord || $parent->canPayFees() || is_object($parent->isGuarantor())): ?>
     <div id="oth-prt-det">
 
         <div class="gnrl-frm-divider"><?= $relationship ?>'s Employment Details</div>
 
         <table>
             <tr>
-                <td class="td-pdg-lft"><?= $form->field($parent, 'education_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-graduation-cap"></i>']]])->dropDownList(ApplicantsParents::educationLevels()) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($parent, 'education_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-graduation-cap"></i>']]])->dropDownList(LmBaseEnums::studyLevels()) ?></td>
                 <td class="td-pdg-lft"><?= $form->field($parent, 'occupation', ['addon' => ['prepend' => ['content' => '<i class="fa fa-hand-grab-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
                 <td class="td-pdg-lft"><?= $form->field($parent, 'employed', ['addon' => ['prepend' => ['content' => '<i class="fa fa-bank"></i>']]])->dropDownList(ApplicantsParents::employeds()) ?></td>
                 <td class="td-pdg-lft"><?= $form->field($parent, 'staff_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-badge"></i>']]])->textInput(['maxlength' => true]) ?></td>

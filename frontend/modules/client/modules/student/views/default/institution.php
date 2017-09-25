@@ -1,26 +1,19 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $form \kartik\form\ActiveForm */
-/* @var $applicant \frontend\modules\client\modules\student\models\Applicants */
-/* @var $user \frontend\models\User */
+/* @var $mode \frontend\modules\client\modules\student\models\ApplicantsInstitution */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
-use kartik\date\DatePicker;
-use common\models\Counties;
-use common\models\SubCounties;
-use common\models\Constituencies;
-use common\models\Wards;
-use common\models\PostalCodes;
 use common\models\StaticMethods;
 use common\models\LmBaseEnums;
-use frontend\modules\client\modules\student\models\Applicants;
+use frontend\modules\client\modules\student\models\ApplicantsInstitution;
 
-$this->title = 'Personal Details';
+$this->title = 'Institution Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="gnrl-frm stdt-psnl">
+<div class="gnrl-frm stdt-psnl stdt-inst">
 
     <div class="gnrl-frm-cont">
 
