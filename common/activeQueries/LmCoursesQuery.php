@@ -44,14 +44,13 @@ class LmCoursesQuery extends \yii\db\ActiveQuery {
      */
     public function searchCourses($institution_code, $institution_branch_code, $level_of_study, $faculty, $course_type, $course_category, $active) {
         return $this->where(
-                        'RECID > 0' .
-                        (empty($institution_code) ? '' : " && INSTITUTIONCODE = '$institution_code'") .
+                        "INSTITUTIONCODE = '$institution_code'" .
                         (empty($institution_branch_code) ? '' : " && INSTITUTIONBRANCHCODE = '$institution_branch_code'") .
                         (empty($level_of_study) ? '' : " && LEVELOFSTUDY = '$level_of_study'") .
                         (empty($faculty) ? '' : " && FACULTY = '$faculty'") .
                         (empty($course_type) ? '' : " && COURSETYPE = '$course_type'") .
                         (empty($course_category) ? '' : " && COURSECATEGORY = '$course_category'") .
-                        (is_number($active) ? " && ACTIVE = '$active'" : '')
+                        (is_numeric($active) ? " && ACTIVE = '$active'" : '')
                 )->orderBy('COURSEDESCRIPTION asc')->all();
     }
 

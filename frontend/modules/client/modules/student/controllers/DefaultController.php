@@ -12,6 +12,8 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 use frontend\modules\client\modules\student\models\ApplicantsInstitution;
 use common\models\User;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
+use common\models\LmInstitution;
 
 /**
  * Default controller for the `student` module
@@ -26,11 +28,15 @@ class DefaultController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'index', 'register', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents', 'institution'
+                    'index', 'register', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
+                    'institution', 'dynamic-institutions'
                 ],
                 'rules' => [
                     [
-                        'actions' => ['index', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents', 'institution'],
+                        'actions' => [
+                            'index', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
+                            'institution', 'dynamic-institutions'
+                        ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
                         'verbs' => ['post']
@@ -137,7 +143,7 @@ class DefaultController extends Controller {
 
         return [$applicant->validate(['parents', 'father_death_cert_no', 'mother_death_cert_no']), $father->isMinor(), $mother->isMinor()];
     }
-    
+
     /**
      * check whether parent is guarantor
      */
@@ -200,7 +206,7 @@ class DefaultController extends Controller {
 
         return $attributes;
     }
-    
+
     /**
      * 
      * @return string view to update applicant institution details
@@ -217,6 +223,13 @@ class DefaultController extends Controller {
         }
 
         return $this->render('institution', ['model' => $model]);
+    }
+    
+    /**
+     * load institutions dynamically
+     */
+    public function actionDynamicInstitutions() {
+        StaticMethods::populateDropDown(LmInstitution::institutions($_POST['country'], $_POST['institution_type'], LmBaseEnums::schoolTypeFromAdmissionCategory($_POST['admission_category'])->VALUE, LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE), 'Institution', $_POST['institution_code']);
     }
 
     /**

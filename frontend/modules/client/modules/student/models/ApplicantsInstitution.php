@@ -4,12 +4,14 @@ namespace frontend\modules\client\modules\student\models;
 
 use Yii;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 
 /**
  * This is the model class for table "{{%applicants_institution}}".
  *
  * @property integer $id
  * @property integer $applicant
+ * @property string $country
  * @property integer $level_of_study
  * @property integer $institution_type
  * @property integer $admission_category
@@ -18,6 +20,7 @@ use common\models\StaticMethods;
  * @property string $faculty
  * @property string $department
  * @property string $registration_no
+ * @property integer $course_category
  * @property integer $course_type
  * @property string $course_code
  * @property integer $year_of_admission
@@ -52,9 +55,9 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'institution_code', 'institution_branch_code', 'registration_no', 'course_type', 'course_code', 'year_of_admission', 'duration', 'year_of_completion', 'year_of_study', 'annual_fees', 'amount_can_raise', 'amount_applied'], 'required'],
-            [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'course_type', 'year_of_admission', 'duration', 'year_of_completion', 'annual_fees', 'amount_can_raise', 'amount_applied', 'need_bursary'], 'integer'],
-            [['admission_month', 'year_of_study', 'narration'], 'string'],
+            [['applicant', 'country', 'level_of_study', 'institution_type', 'admission_category', 'institution_code', 'institution_branch_code', 'registration_no', 'course_category', 'course_type', 'course_code', 'year_of_admission', 'duration', 'year_of_completion', 'year_of_study', 'annual_fees', 'amount_can_raise', 'amount_applied'], 'required'],
+            [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'course_category', 'course_type', 'year_of_admission', 'duration', 'year_of_completion', 'annual_fees', 'amount_can_raise', 'amount_applied', 'need_bursary'], 'integer'],
+            [['country', 'admission_month', 'year_of_study', 'narration'], 'string'],
             [['institution_code', 'institution_branch_code', 'course_code'], 'string', 'max' => 20],
             [['faculty', 'department'], 'string', 'max' => 60],
             [['registration_no'], 'string', 'min' => 7, 'max' => 15],
@@ -70,16 +73,18 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
         return [
             'id' => Yii::t('app', 'ID'),
             'applicant' => Yii::t('app', 'Applicant'),
+            'country' => Yii::t('app', 'Country'),
             'level_of_study' => Yii::t('app', 'Level Of Study'),
             'institution_type' => Yii::t('app', 'Institution Type'),
             'admission_category' => Yii::t('app', 'Admission Category'),
-            'institution_code' => Yii::t('app', 'Institution Code'),
-            'institution_branch_code' => Yii::t('app', 'Institution Branch'),
+            'institution_code' => Yii::t('app', 'Institution Name'),
+            'institution_branch_code' => Yii::t('app', 'Campus Name'),
             'faculty' => Yii::t('app', 'Faculty'),
             'department' => Yii::t('app', 'Department'),
             'registration_no' => Yii::t('app', 'Registration No'),
+            'course_category' => Yii::t('app', 'Course Category'),
             'course_type' => Yii::t('app', 'Course Type'),
-            'course_code' => Yii::t('app', 'Course Code'),
+            'course_code' => Yii::t('app', 'Course Name'),
             'year_of_admission' => Yii::t('app', 'Year Of Admission'),
             'admission_month' => Yii::t('app', 'Admission Month'),
             'duration' => Yii::t('app', 'Duration'),
@@ -132,6 +137,10 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
         $model = new ApplicantsInstitution;
 
         $model->applicant = $applicant;
+        
+        $model->country = 'KEN';
+
+        $model->admission_category = LmBaseEnums::admission_category_public_govt_sponsored;
         
         $model->need_bursary = self::need_bursary_no;
 

@@ -6,7 +6,9 @@ use yii\helpers\Html;
 use yii\bootstrap\Modal;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
+use kartik\sidenav\SideNav;
 use frontend\assets\AppAsset;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -38,40 +40,26 @@ AppAsset::register($this);
 
         <?php Modal::end() ?>
 
-        <?php $homeUrl = Yii::$app->homeUrl ?>
-
         <div class="wrap">
             <?php
             NavBar::begin([
                 'brandLabel' => Yii::jrCompanyName(),
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top bcg-img-ctn',
-                    'style' => "margin-bottom: 0; background-image: url($homeUrl../../common/assets/logos/kakamega.gif)"
+                    'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
 
             $user_id = Yii::$app->user->isGuest ? '' : Yii::$app->user->identity->id;
 
-            $vals = empty($user_id) ? '' : "<input name='Applicants[id]' type='hidden' value='$user_id'><input name='User[id]' type='hidden' value='$user_id'>";
-
             $menuItems[] = [
                 'label' => Yii::$app->user->isGuest ? 'You\'re Guest' : 'Welcome ' . Yii::$app->user->identity->username . ',',
                 'items' => Yii::$app->user->isGuest ? [
-            NavBar::linkHelper('ste-hm', '/site/index', 'post', '', 'Home', 'mn-hglght'),
-            '<li class="divider"></li>',
             NavBar::linkHelper('sgn-in', '/site/login', 'post', '', 'Sign In', 'mn-hglght'),
             NavBar::linkHelper('sgn-up', '/client/student/default/register', 'post', '', 'Register', 'mn-hglght'),
             '<li class="divider"></li>',
             NavBar::linkHelper('psw-rd', '/site/request-password-reset', 'post', '', 'Password Reset', 'mn-hglght'),
                 ] : [
-            NavBar::linkHelper('ste-hm', '/site/index', 'post', '', 'Home', 'mn-hglght'),
-            '<li class="divider"></li>',
-            NavBar::linkHelper('sgn-up', '/client/student/default/register', 'post', $vals, 'Personal Details', 'mn-hglght'),
-            NavBar::linkHelper('edn-dt', '/client/student/default/education', 'post', "<input name='EducationBackground[applicant]' type='hidden' value='$user_id'>", 'Education Background', 'mn-hglght'),
-            NavBar::linkHelper('prt-dt', '/client/student/default/parents', 'post', "<input name='Applicants[id]' type='hidden' value='$user_id'>", 'Parent\'s Details', 'mn-hglght'),
-            NavBar::linkHelper('grt-dt', '/client/student/default/guarantors', 'post', "<input name='ApplicantsGuarantors[applicant]' type='hidden' value='$user_id'>", 'Guarantor\'s Details', 'mn-hglght'),
-            '<li class="divider"></li>',
             NavBar::linkHelper('psw-rd', '/site/request-password-reset', 'post', '', 'Password Reset', 'mn-hglght'),
             '<li class="divider"></li>',
             NavBar::linkHelper('sgn-ot', '/site/logout', 'post', '', 'Sign Out', 'mn-hglght'),
@@ -84,10 +72,53 @@ AppAsset::register($this);
             ]);
             NavBar::end();
             ?>
-            
+
             <div class="container">
                 <div class="page-content full-dim-vtcl-scrl">
-                    <?= $content ?>
+                    <div class="page-content-lft bcg-img-cvr pull-left" style="background-image: url(<?= Yii::$app->homeUrl ?>../../common/assets/logos/background.jpg)">
+
+                        <div class="logo-div bcg-img-ctn" style="background-image: url(<?= Yii::$app->homeUrl ?>../../common/assets/logos/kakamega.gif)">
+
+                        </div>
+
+                        <div class="menu-div">
+
+                            <?php $requested_route = Yii::$app->requestedRoute ?>
+
+                            <?=
+                            SideNav::widget(
+                                    [
+                                        'type' => SideNav::TYPE_DEFAULT,
+                                        'encodeLabels' => false,
+                                        'heading' => Yii::jrCompanyName(),
+                                        'items' => [
+                                            ['label' => SideNav::linkHelper($route = '/site/index', 'post', [], 'Home'), 'icon' => 'home', 'url' => '#', 'active' => ($requested_route == substr($route, 1))],
+                                            ['label' => '<span class="pull-right badge">3</span> Profile', 'icon' => 'user', 'items' => [
+                                                    ['label' => SideNav::linkHelper($route = '/client/student/default/register', 'post', ['Applicants[id]' => $user_id, 'User[id]' => $user_id], 'Personal Details'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))],
+                                                    ['label' => SideNav::linkHelper($route = '/client/student/default/education', 'post', ['EducationBackground[applicant]' => $user_id], 'Education Background'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))],
+                                                    ['label' => SideNav::linkHelper($route = '/client/student/default/parents', 'post', ['Applicants[id]' => $user_id], 'Parents\' Details'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))],
+                                                    ['label' => SideNav::linkHelper($route = '/client/student/default/guarantors', 'post', ['ApplicantsGuarantors[applicant]' => $user_id], 'Guarantors\' Details'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))],
+                                                    ['label' => SideNav::linkHelper($route = '/client/student/default/institution', 'post', ['ApplicantsInstitution[applicant]' => $user_id], 'Institution Details'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))],
+                                                    ['label' => 'Historical', 'url' => Url::to([$route = '/site/historical']), 'active' => ($requested_route == substr($route, 1))],
+                                                    ['label' => '<span class="pull-right badge">2</span> Announcements', 'icon' => 'bullhorn', 'items' => [
+                                                            ['label' => 'Event 1', 'url' => Url::to(['$route = /site/event-1']), 'active' => ($requested_route == substr($route, 1))],
+                                                            ['label' => 'Event 2', 'url' => Url::to(['$route = /site/event-2']), 'active' => ($requested_route == substr($route, 1))]
+                                                        ]
+                                                    ],
+                                                ]
+                                            ],
+                                            ['label' => 'Profile', 'icon' => 'user', 'url' => Url::to(['/site/profile']), 'active' => ($requested_route == substr($route, 1))],
+                                        ],
+                                    ]
+                            )
+                            ?>
+                        </div>
+
+                    </div>
+
+                    <div class="page-content-rgt pull-right">
+                        <?= $content ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -102,9 +133,42 @@ AppAsset::register($this);
 
         <?php $this->endBody() ?>
 
+        <?php $this->registerJs("function clickTheButton(btn) {btn.click()}", \yii\web\VIEW::POS_HEAD) ?>
+
+        <?php
+        $this->registerJs(
+                "
+                    $('.nav-pills > li > a').click(
+                        function(event) {
+                            if (!$(this).hasClass('kn-toggle')) {
+                                event.preventDefault();
+                                
+                                event.stopPropagation();
+                                
+                                $(this).parent().hasClass('active') ? '' : clickTheButton($(this).find('button'));
+                                
+                                return false;
+                            }
+                        }
+                    );
+                    
+                    $('.nav-pills > li > a button').click(
+                        function(event) {
+                            event.stopPropagation();
+                            
+                            return true;
+                        }
+                    );
+                "
+                , \yii\web\VIEW::POS_READY
+        )
+        ?>
+
         <?php $this->registerJs("$('.wrap > .container').css('height', (hgt = $(window).height() - $('body .footer').height() - $('body > .wrap > .navbar').height() + 35) + 'px').css('padding-top', $('body > .wrap > .navbar').height() + 'px')", \yii\web\VIEW::POS_READY) ?>
 
-        <?php $this->registerJs("$('.fit-in-pn').css('max-height', $('.page-content').height() * 0.85 + 'px')", \yii\web\VIEW::POS_READY) ?>
+        <?php $this->registerJs("$('.fit-in-pn').css('max-height', $('.page-content-rgt').height() * 0.84 + 'px')", \yii\web\VIEW::POS_READY) ?>
+
+        <?php $this->registerJs("$('.logo-div').css('width', $('.logo-div').height() + 'px').css('margin-left', ($('.logo-div').parent().width() - $('.logo-div').width()) / 2 + 'px')", \yii\web\VIEW::POS_READY) ?>
 
     </body>
 </html>

@@ -36,7 +36,7 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'id_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card"></i>']]])->textInput(['maxlength' => true]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'id_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card"></i>']]])->textInput(['maxlength' => true, 'autofocus' => 'autofocus']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'yob', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(StaticMethods::ranges(ApplicantsGuarantors::oldest(), ApplicantsGuarantors::youngest(), 1, true), ['disabled' => $disabled, 'prt' => 'prt']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::genders(), ['prompt' => '-- Gender --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'phone', ['addon' => ['prepend' => ['content' => '<i class="glyphicon glyphicon-phone"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>

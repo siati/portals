@@ -23,6 +23,8 @@ use frontend\modules\client\modules\student\models\EducationBackground;
 
 <?= Html::activeHiddenInput($model, 'applicant') ?>
 
+<div class="gnrl-frm-divider">Education Background Details</div>
+
 <table>
     <tr>
         <td class="td-pdg-lft"><?= $form->field($model, 'study_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-certificate"></i>']]])->dropDownList(EducationBackground::studyLevelsToDisplay($model->applicant, $model->study_level), ['disabled' => $isPriOrSec]) ?></td>

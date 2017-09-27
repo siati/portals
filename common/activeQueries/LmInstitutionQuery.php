@@ -45,7 +45,7 @@ class LmInstitutionQuery extends \yii\db\ActiveQuery {
                         (empty($country) ? '' : " && COUNTRY = '$country'") .
                         (empty($institution_type) ? '' : " && INSTITUTIONTYPE = '$institution_type'") .
                         (empty($school_type) ? '' : " && SCHOOLTYPE = '$school_type'") .
-                        (is_number($active) ? " && ACTIVE = '$active'" : '')
+                        (is_numeric($active) ? " && ACTIVE = '$active'" : '')
                 )->orderBy('INSTITUTIONNAME asc')->all();
     }
 

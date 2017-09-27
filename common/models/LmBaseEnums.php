@@ -15,6 +15,9 @@ use Yii;
  */
 class LmBaseEnums extends \yii\db\ActiveRecord {
 
+    const yes_no = 'NoYesCombo';
+    const yes = 'Yes';
+    const no = 'No';
     const gender = 'Gender';
     const gender_male = 'Male';
     const gender_female = 'Female';
@@ -53,7 +56,16 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     const admission_category_public_self_sponsored = 'PublicUniversitySelfSponsored';
     const admission_category_private_govt_sponsored = 'PrivateUniversityGovtSponsored';
     const admission_category_private_self_sponsored = 'PrivateUniversitySelfSponsored';
-
+    const institution_type = 'LMInstitutionType';
+    const institution_type_none = 'None';
+    const institution_type_primary = 'Primary';
+    const institution_type_secondary = 'Secondary';
+    const institution_type_polytechnic = 'Polytechnic';
+    const institution_type_technical = 'Technical';
+    const institution_type_technology = 'Technology';
+    const institution_type_kmtc = 'Kmtc';
+    const institution_type_university = 'University';
+    const institution_type_tertiary = 'Tertiary';
 
     /**
      * @inheritdoc
@@ -94,7 +106,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function find() {
         return new \common\activeQueries\LmBaseEnumsQuery(get_called_class());
     }
-    
+
     /**
      * 
      * @param string $names comma separated item names
@@ -104,7 +116,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function mainItems($names, $distinct) {
         return static::find()->mainItems($names, $distinct);
     }
-    
+
     /**
      * 
      * @param string $name item name
@@ -114,7 +126,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function itemElements($name, $element) {
         return static::find()->itemElements($name, $element);
     }
-    
+
     /**
      * 
      * @param string $name item name
@@ -124,7 +136,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function byNameAndElement($name, $element) {
         return static::find()->byNameAndElement($name, $element);
     }
-    
+
     /**
      * 
      * @param string $name item name
@@ -134,7 +146,24 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function byNameAndValue($name, $value) {
         return static::find()->byNameAndValue($name, $value);
     }
-    
+
+    /**
+     * 
+     * @return array yes, no
+     */
+    public static function yesNo() {
+        return StaticMethods::modelsToArray(static::itemElements(self::yes_no, null), 'VALUE', 'LABEL', false);
+    }
+
+    /**
+     * 
+     * @param string $yesNo yesNo element
+     * @return LmBaseEnums model
+     */
+    public static function yesOrNo($yesNo) {
+        return static::byNameAndElement(self::yes_no, $yesNo);
+    }
+
     /**
      * 
      * @return array genders
@@ -142,7 +171,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function genders() {
         return StaticMethods::modelsToArray(static::itemElements(self::gender, null), 'VALUE', 'LABEL', false);
     }
-    
+
     /**
      * 
      * @param string $gender gender element
@@ -151,7 +180,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function gender($gender) {
         return static::byNameAndElement(self::gender, $gender);
     }
-    
+
     /**
      * 
      * @return array study levels
@@ -159,7 +188,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function studyLevels() {
         return StaticMethods::modelsToArray(static::itemElements(self::study_level, null), 'VALUE', 'LABEL', false);
     }
-    
+
     /**
      * 
      * @param string $study_level study level element
@@ -168,7 +197,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function studyLevel($study_level) {
         return static::byNameAndElement(self::study_level, $study_level);
     }
-    
+
     /**
      * 
      * @return array course categories
@@ -176,7 +205,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function courseCategories() {
         return StaticMethods::modelsToArray(static::itemElements(self::course_category, null), 'VALUE', 'LABEL', false);
     }
-    
+
     /**
      * 
      * @param string $course_category course category
@@ -185,7 +214,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function courseCategory($course_category) {
         return static::byNameAndElement(self::course_category, $course_category);
     }
-    
+
     /**
      * 
      * @return array course types
@@ -193,7 +222,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function courseTypes() {
         return StaticMethods::modelsToArray(static::itemElements(self::course_type, null), 'VALUE', 'LABEL', false);
     }
-    
+
     /**
      * 
      * @param string $course_type course type
@@ -202,7 +231,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function courseType($course_type) {
         return static::byNameAndElement(self::course_type, $course_type);
     }
-    
+
     /**
      * 
      * @return array school types
@@ -210,7 +239,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function schoolTypes() {
         return StaticMethods::modelsToArray(static::itemElements(self::school_type, null), 'VALUE', 'LABEL', false);
     }
-    
+
     /**
      * 
      * @param string $school_type school type
@@ -219,7 +248,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function schoolType($school_type) {
         return static::byNameAndElement(self::school_type, $school_type);
     }
-    
+
     /**
      * 
      * @return array admission categories
@@ -227,7 +256,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function admissionCategories() {
         return StaticMethods::modelsToArray(static::itemElements(self::admission_category, null), 'VALUE', 'LABEL', false);
     }
-    
+
     /**
      * 
      * @param string $admission_category admission category
@@ -235,6 +264,93 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      */
     public static function admissionCategory($admission_category) {
         return static::byNameAndElement(self::admission_category, $admission_category);
+    }
+
+    /**
+     * 
+     * @param string $admission_category admission category
+     * @return LmBaseEnums model
+     */
+    public static function admissionCategory2($admission_category) {
+        return static::byNameAndValue(self::admission_category, $admission_category);
+    }
+
+    /**
+     * 
+     * @return array institution types
+     */
+    public static function institutionTypes() {
+        return StaticMethods::modelsToArray(static::itemElements(self::institution_type, null), 'VALUE', 'LABEL', false);
+    }
+
+    /**
+     * 
+     * @param string $institution_type institution type
+     * @return LmBaseEnums model
+     */
+    public static function institutionType($institution_type) {
+        return static::byNameAndElement(self::institution_type, $institution_type);
+    }
+
+    /**
+     * 
+     * @param string $admission_category admission category
+     * @return LmBaseEnums model
+     */
+    public static function schoolTypeFromAdmissionCategory($admission_category) {
+        return static::
+                schoolType(
+                        in_array(static::admissionCategory2($admission_category)->ELEMENT, [self::admission_category_public_govt_sponsored, self::admission_category_public_self_sponsored]) ? self::school_type_public : self::school_type_private
+        );
+    }
+
+    /**
+     * 
+     * @param boolean $fractional true - include fractional values
+     * @return array course durations
+     */
+    public static function courseDurations($fractional) {
+        return [
+            '1' => 'One Year',
+            '1.5' => $fractional ? 'One and A Half Years' : null,
+            '2' => 'Two Years',
+            '2.5' => $fractional ? 'Two and A Half Years' : null,
+            '3' => 'Three Years',
+            '3.5' => $fractional ? 'Three and A Half Years' : null,
+            '4' => 'Four Years',
+            '5' => 'Five Years',
+            '6' => 'Six Years',
+            '7' => 'Seven Years'
+        ];
+    }
+
+    /**
+     * 
+     * @return array study years
+     */
+    public static function studyYears() {
+        return [
+            1 => 'First Year',
+            2 => 'Second Year',
+            3 => 'Third Year',
+            4 => 'Fourth Year',
+            5 => 'Fifth Year',
+            6 => 'Sixth Year',
+            7 => 'Seventh Year'
+        ];
+    }
+
+    /**
+     * 
+     * @return array countries
+     */
+    public static function countries() {
+        return [
+            'KEN' => 'Kenya',
+            'UG' => 'Uganda',
+            'TZ' => 'Tanzania',
+            'RWD' => 'Rwanda'
+        ];
     }
 
 }

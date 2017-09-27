@@ -17,6 +17,12 @@
     background-size: contain;
 }
 
+.bcg-img-cvr {
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 .site-signup {
     width: 20%;
     height: 100%;
@@ -36,8 +42,8 @@
 }
 
 .stdt-rgst, .stdt-psnl, .prnt-det, .edcn-det, .grntr-det,  .stdt-inst {
-    width: 75%;
-    margin-left: 12.5%;
+    width: 93.73%;
+    margin-left: 3.125%
 }
 
 .usr-lgn {

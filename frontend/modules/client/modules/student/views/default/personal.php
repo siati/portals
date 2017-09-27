@@ -34,6 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?= Html::activeHiddenInput($user, 'id') ?>
 
+            <div class="gnrl-frm-divider">Personal Details</div>
+
             <table>
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'fname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>

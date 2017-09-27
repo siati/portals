@@ -3,28 +3,36 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/xampp/htdocs/portals/common/activeQueries/LmCoursesQuery.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantsGuarantors.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/education.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/views/layouts/main.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/web/css/site.css</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/guarantor.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/institution.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/personal.php</file>
+            <file>file:/D:/xampp/htdocs/portals/common/activeQueries/LmInstitutionBranchesQuery.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/register.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/parent.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantsParents.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/EducationBackground.php</file>
+            <file>file:/D:/xampp/htdocs/portals/common/activeQueries/LmInstitutionQuery.php</file>
             <file>file:/D:/xampp/htdocs/portals/common/activeQueries/UserQuery.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/activeQueries/EducationBackgroundQuery.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/education-form.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/activeQueries/ApplicantsGuarantorsQuery.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantsInstitution.php</file>
             <file>file:/D:/xampp/htdocs/portals/common/models/User.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/guarantor.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/web/css/custom.css</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/controllers/SiteController.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/personal.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/controllers/DefaultController.php</file>
             <file>file:/D:/xampp/htdocs/portals/common/models/StaticMethods.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/register.php</file>
+            <file>file:/D:/xampp/htdocs/portals/common/activeQueries/LmBaseEnumsQuery.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/guarantors.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/parent.php</file>
+            <file>file:/D:/xampp/htdocs/portals/common/models/LmBaseEnums.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/parents.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/parental-status.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/activeQueries/ApplicantsParentsQuery.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantsParents.php</file>
         </group>
     </open-files>
 </project-private>

@@ -38,9 +38,8 @@ class LmInstitutionBranchesQuery extends \yii\db\ActiveQuery {
      */
     public function searchInstitutions($institution_code, $active) {
         return $this->where(
-                        'RECID > 0' .
-                        (empty($institution_code) ? '' : " && INSTITUTIONCODE = '$institution_code'") .
-                        (is_number($active) ? " && ACTIVE = '$active'" : '')
+                        "INSTITUTIONCODE = '$institution_code'" .
+                        (is_numeric($active) ? " && ACTIVE = '$active'" : '')
                 )->orderBy('INSTITUTIONBRANCHNAME asc')->all();
     }
 
