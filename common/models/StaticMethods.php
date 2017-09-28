@@ -208,6 +208,36 @@ class StaticMethods {
 
         return date_format($since, 'Y-m-d H:i:s');
     }
+    
+    /**
+     * 
+     * @param integer $start_year start year
+     * @param integer $start_month start month
+     * @param integer $add_years add years
+     * @param integer $add_months add months
+     * @return array end year and month
+     */
+    public static function monthArithmentics($start_year, $start_month, $add_years, $add_months) {
+        is_numeric($start_year) ? '' : $start_year = date('Y') - 1;
+        
+        is_numeric($start_month) ? '' : $start_month = date('m');
+        
+        is_numeric($add_years) ? '' : $add_years = 0;
+        
+        is_numeric($add_months) ? '' : $add_months = 0;
+        
+        $total_add_months = $add_years * 12 + $add_months;
+        
+        $end_year = $start_year + floor($total_add_months / 12);
+        
+        $end_month = $start_month + ($total_add_months % 12);
+        
+        $extra_years = floor($end_month / 12);
+        
+        $extra_months = $end_month % 12;
+        
+        return [$end_year + $extra_years, $extra_months];
+    }
 
     /*
      * remove non-numeric characters from a string.

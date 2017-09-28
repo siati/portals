@@ -67,9 +67,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'year_of_admission', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(StaticMethods::ranges($yr = date('Y'), $yr - 6, 1, true), ['prompt' => '-- Year --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'admission_month', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(StaticMethods::months(), ['prompt' => '-- Month --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'duration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::courseDurations(false), ['prompt' => '-- Duration --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'duration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::courseDurations(true), ['prompt' => '-- Duration --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'year_of_study', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::studyYears(), ['prompt' => '-- Study Year --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'year_of_completion', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'year_of_completion', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?></td>
                 </tr>
             </table>
 
@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'annual_fees', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'amount_can_raise', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'amount_applied', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'amount_applied', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'need_bursary', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::yesNo(), ['prompt' => '-- Bursary --']) ?></td>
                 </tr>
             </table>
@@ -108,6 +108,34 @@ $this->registerJs(
                 );
             }
 
+            function dynamicInstitutionBranches() {
+                $.post('dynamic-institution-branches', {'institution_code': $('#applicantsinstitution-institution_code').val(), 'institution_branch_code': $('#applicantsinstitution-institution_branch_code').val()},
+                    function (institution_branches) {
+                        $('#applicantsinstitution-institution_branch_code').html(institution_branches).change().blur();
+                    }
+                );
+            }
+
+            function dynamicCourses() {
+                $.post('dynamic-courses', {'institution_code': $('#applicantsinstitution-institution_code').val(), 'institution_branch_code': '', 'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'faculty': '', 'course_type': $('#applicantsinstitution-course_type').val(), 'course_category': $('#applicantsinstitution-course_category').val(), 'course_code': $('#applicantsinstitution-course_code').val()},
+                    function (courses) {
+                        $('#applicantsinstitution-course_code').html(courses).blur();
+                    }
+                );
+            }
+            
+            function completionYear() {
+                $.post('completion-year', {'year_of_admission': $('#applicantsinstitution-year_of_admission').val(), 'admission_month': $('#applicantsinstitution-admission_month').val(), 'duration': $('#applicantsinstitution-duration').val()},
+                    function (year_of_completion) {
+                        $('#applicantsinstitution-year_of_completion').val(year_of_completion).blur();
+                    }
+                );
+            }
+
+            function amountApplied() {
+                $('#applicantsinstitution-amount_applied').val($('#applicantsinstitution-annual_fees').val() * 1 - $('#applicantsinstitution-amount_can_raise').val() * 1).blur();
+            }
+
         "
         , \yii\web\VIEW::POS_HEAD
 )
@@ -122,6 +150,29 @@ $this->registerJs(
                 }
             );
 
+            $('#applicantsinstitution-institution_code').change(
+                function () {
+                    dynamicInstitutionBranches();
+                }
+            );
+            
+            $('#applicantsinstitution-institution_code, #applicantsinstitution-institution_branch_code, #applicantsinstitution-level_of_study, #applicantsinstitution-faculty, #applicantsinstitution-course_type, #applicantsinstitution-course_category').change(
+                function () {
+                    dynamicCourses();
+                }
+            );
+
+            $('#applicantsinstitution-year_of_admission, #applicantsinstitution-admission_month, #applicantsinstitution-duration').change(
+                function () {
+                    completionYear();
+                }
+            );
+            
+            $('#applicantsinstitution-annual_fees, #applicantsinstitution-amount_can_raise').change(
+                function () {
+                    amountApplied();
+                }
+            );
         "
         , \yii\web\VIEW::POS_READY
 )

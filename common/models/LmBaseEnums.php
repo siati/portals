@@ -303,6 +303,26 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
                         in_array(static::admissionCategory2($admission_category)->ELEMENT, [self::admission_category_public_govt_sponsored, self::admission_category_public_self_sponsored]) ? self::school_type_public : self::school_type_private
         );
     }
+    
+    /**
+     * 
+     * @param string $level_of_study level of study
+     * @return int study duration
+     */
+    public static function studyDuration($level_of_study) {
+        $study_level_element = static::admissionCategory2($level_of_study)->ELEMENT;
+        
+        if (in_array($study_level_element, [self::study_level_diploma, self::study_level_masters, self::study_level_phd]))
+            return 2;
+        
+        if (in_array($study_level_element, [self::study_level_degree]))
+            return 4;
+        
+        if (in_array($study_level_element, [self::study_level_certificate]))
+            return 1.5;
+        
+        return 1;
+    }
 
     /**
      * 
@@ -310,13 +330,22 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      * @return array course durations
      */
     public static function courseDurations($fractional) {
-        return [
+        return
+                $fractional ? [
             '1' => 'One Year',
-            '1.5' => $fractional ? 'One and A Half Years' : null,
+            '1.5' => 'One and A Half Years',
             '2' => 'Two Years',
-            '2.5' => $fractional ? 'Two and A Half Years' : null,
+            '2.5' => 'Two and A Half Years',
             '3' => 'Three Years',
-            '3.5' => $fractional ? 'Three and A Half Years' : null,
+            '3.5' => 'Three and A Half Years',
+            '4' => 'Four Years',
+            '5' => 'Five Years',
+            '6' => 'Six Years',
+            '7' => 'Seven Years'
+                ] : [
+            '1' => 'One Year',
+            '2' => 'Two Years',
+            '3' => 'Three Years',
             '4' => 'Four Years',
             '5' => 'Five Years',
             '6' => 'Six Years',

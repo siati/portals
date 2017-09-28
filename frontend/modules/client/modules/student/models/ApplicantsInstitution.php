@@ -24,9 +24,10 @@ use common\models\LmBaseEnums;
  * @property integer $course_type
  * @property string $course_code
  * @property integer $year_of_admission
- * @property string $admission_month
- * @property integer $duration
+ * @property integer $admission_month
+ * @property double $duration
  * @property integer $year_of_completion
+ * @property integer $completion_month
  * @property string $year_of_study
  * @property integer $annual_fees
  * @property integer $amount_can_raise
@@ -56,14 +57,25 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['applicant', 'country', 'level_of_study', 'institution_type', 'admission_category', 'institution_code', 'institution_branch_code', 'registration_no', 'course_category', 'course_type', 'course_code', 'year_of_admission', 'duration', 'year_of_completion', 'year_of_study', 'annual_fees', 'amount_can_raise', 'amount_applied'], 'required'],
-            [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'course_category', 'course_type', 'year_of_admission', 'duration', 'year_of_completion', 'annual_fees', 'amount_can_raise', 'amount_applied', 'need_bursary'], 'integer'],
-            [['country', 'admission_month', 'year_of_study', 'narration'], 'string'],
+            [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'course_category', 'course_type', 'year_of_admission', 'admission_month', 'year_of_completion', 'completion_month', 'annual_fees', 'amount_can_raise', 'amount_applied', 'need_bursary'], 'integer'],
+            [['country', 'duration', 'year_of_study', 'narration'], 'string'],
             [['institution_code', 'institution_branch_code', 'course_code'], 'string', 'max' => 20],
             [['faculty', 'department'], 'string', 'max' => 60],
             [['registration_no'], 'string', 'min' => 7, 'max' => 15],
             [['created_at', 'modified_at'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 15]
         ];
+    }
+    
+    /**
+     * compute completion year and month
+     */
+    public function completionYearAndMonth() {
+        $completion = StaticMethods::monthArithmentics($this->year_of_admission, $this->admission_month, $this->duration, null);
+        
+        $this->year_of_completion = $completion[0];
+        
+        $this->completion_month = $completion[1];
     }
 
     /**
@@ -89,6 +101,7 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
             'admission_month' => Yii::t('app', 'Admission Month'),
             'duration' => Yii::t('app', 'Duration'),
             'year_of_completion' => Yii::t('app', 'Year Of Completion'),
+            'completion_month' => Yii::t('app', 'Completion Month'),
             'year_of_study' => Yii::t('app', 'Year Of Study'),
             'annual_fees' => Yii::t('app', 'Annual Fees'),
             'amount_can_raise' => Yii::t('app', 'Amount Can Raise'),
@@ -139,6 +152,18 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
         $model->applicant = $applicant;
         
         $model->country = 'KEN';
+        
+        $model->year_of_admission = date('Y') - 1;
+        
+        $model->admission_month = date('m') * 1;
+        
+        $model->year_of_study = 1;
+        
+        $model->level_of_study = LmBaseEnums::studyLevel(LmBaseEnums::study_level_degree)->VALUE;
+        
+        $model->duration = LmBaseEnums::studyDuration($model->level_of_study);
+        
+        $model->completionYearAndMonth();
 
         $model->admission_category = LmBaseEnums::admission_category_public_govt_sponsored;
         
