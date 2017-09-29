@@ -46,12 +46,15 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     const course_category_radiography = 'Radiography';
     const course_category_physiotherapy = 'Physiotherapy';
     const course_type = 'LMCourseTypes';
+    const course_type_none = 'None';
     const course_type_technical = 'Technical';
     const course_type_non_technical = 'NonTechnical';
     const school_type = 'LMSchoolType';
+    const school_type_none = 'none';
     const school_type_public = 'Public';
     const school_type_private = 'Private';
     const admission_category = 'LMAdmissionCategory';
+    const admission_category_none = 'none';
     const admission_category_public_govt_sponsored = 'PublicUniversityGovtSponsored';
     const admission_category_public_self_sponsored = 'PublicUniversitySelfSponsored';
     const admission_category_private_govt_sponsored = 'PrivateUniversityGovtSponsored';
@@ -186,7 +189,11 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      * @return array study levels
      */
     public static function studyLevels() {
-        return StaticMethods::modelsToArray(static::itemElements(self::study_level, null), 'VALUE', 'LABEL', false);
+        foreach ($studyLevels = static::itemElements(self::study_level, null) as $i => $studyLevel)
+            if (strtolower($studyLevel->ELEMENT) == strtolower(self::study_level_none))
+                unset($studyLevels[$i]);
+
+        return StaticMethods::modelsToArray($studyLevels, 'VALUE', 'LABEL', false);
     }
 
     /**
@@ -203,7 +210,11 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      * @return array course categories
      */
     public static function courseCategories() {
-        return StaticMethods::modelsToArray(static::itemElements(self::course_category, null), 'VALUE', 'LABEL', false);
+        foreach ($courseCategories = static::itemElements(self::course_category, null) as $i => $courseCategory)
+            if (strtolower($courseCategory->ELEMENT) == strtolower(self::course_category_none))
+                unset($courseCategories[$i]);
+
+        return StaticMethods::modelsToArray($courseCategories, 'VALUE', 'LABEL', false);
     }
 
     /**
@@ -220,7 +231,11 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      * @return array course types
      */
     public static function courseTypes() {
-        return StaticMethods::modelsToArray(static::itemElements(self::course_type, null), 'VALUE', 'LABEL', false);
+        foreach ($courseTypes = static::itemElements(self::course_type, null) as $i => $courseType)
+            if (strtolower($courseType->ELEMENT) == strtolower(self::course_type_none))
+                unset($courseTypes[$i]);
+
+        return StaticMethods::modelsToArray($courseTypes, 'VALUE', 'LABEL', false);
     }
 
     /**
@@ -237,7 +252,11 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      * @return array school types
      */
     public static function schoolTypes() {
-        return StaticMethods::modelsToArray(static::itemElements(self::school_type, null), 'VALUE', 'LABEL', false);
+        foreach ($schoolTypes = static::itemElements(self::school_type, null) as $i => $schoolType)
+            if (strtolower($schoolType->ELEMENT) == strtolower(self::school_type_none))
+                unset($schoolTypes[$i]);
+
+        return StaticMethods::modelsToArray($schoolTypes, 'VALUE', 'LABEL', false);
     }
 
     /**
@@ -251,10 +270,30 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param string $level_of_study level of study element
      * @return array admission categories
      */
-    public static function admissionCategories() {
-        return StaticMethods::modelsToArray(static::itemElements(self::admission_category, null), 'VALUE', 'LABEL', false);
+    public static function admissionCategories($level_of_study) {
+        foreach ($admissionCategories = static::itemElements(self::admission_category, null) as $i => $admissionCategory)
+            if (strtolower($admissionCategory->ELEMENT) == strtolower(self::admission_category_none))
+                unset($admissionCategories[$i]);
+
+        return StaticMethods::modelsToArray(static::admissionCategoriesForLevelOfStudy($admissionCategories, $level_of_study), 'VALUE', 'LABEL', false);
+    }
+
+    /**
+     * 
+     * @param LmBaseEnums $admissionCategories models
+     * @param string $level_of_study level of study element
+     * @return LmBaseEnums models
+     */
+    public function admissionCategoriesForLevelOfStudy($admissionCategories, $level_of_study) {
+        if (!empty($level_of_study))
+            foreach ($admissionCategories as $i => $admissionCategory)
+                if ((!in_array($level_of_study, [self::study_level_degree, self::study_level_diploma]) && in_array($admissionCategory->ELEMENT, [self::admission_category_private_govt_sponsored, self::admission_category_public_govt_sponsored])))
+                    unset($admissionCategories[$i]);
+
+        return $admissionCategories;
     }
 
     /**
@@ -277,10 +316,30 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param string $level_of_study level of study element
      * @return array institution types
      */
-    public static function institutionTypes() {
-        return StaticMethods::modelsToArray(static::itemElements(self::institution_type, null), 'VALUE', 'LABEL', false);
+    public static function institutionTypes($level_of_study) {
+        foreach ($institutionTypes = static::itemElements(self::institution_type, null) as $i => $institutionType)
+            if (strtolower($institutionType->ELEMENT) == strtolower(self::institution_type_none))
+                unset($institutionTypes[$i]);
+
+        return StaticMethods::modelsToArray(static::institutionTypesForStudyLevel($institutionTypes, $level_of_study), 'VALUE', 'LABEL', false);
+    }
+
+    /**
+     * 
+     * @param LmBaseEnums $institutionTypes models
+     * @param string $level_of_study level of study element
+     * @return LmBaseEnums models
+     */
+    public static function institutionTypesForStudyLevel($institutionTypes, $level_of_study) {
+        if (!empty($level_of_study))
+            foreach ($institutionTypes as $i => $institutionType)
+                if ((in_array($level_of_study, [self::study_level_degree, self::study_level_masters, self::study_level_phd]) && $institutionType->ELEMENT != self::institution_type_university) || (in_array($institutionType->ELEMENT, [self::institution_type_primary, self::institution_type_secondary])))
+                    unset($institutionTypes[$i]);
+
+        return $institutionTypes;
     }
 
     /**
@@ -303,7 +362,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
                         in_array(static::admissionCategory2($admission_category)->ELEMENT, [self::admission_category_public_govt_sponsored, self::admission_category_public_self_sponsored]) ? self::school_type_public : self::school_type_private
         );
     }
-    
+
     /**
      * 
      * @param string $level_of_study level of study
@@ -311,27 +370,26 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      */
     public static function studyDuration($level_of_study) {
         $study_level_element = static::admissionCategory2($level_of_study)->ELEMENT;
-        
+
         if (in_array($study_level_element, [self::study_level_diploma, self::study_level_masters, self::study_level_phd]))
             return 2;
-        
+
         if (in_array($study_level_element, [self::study_level_degree]))
             return 4;
-        
+
         if (in_array($study_level_element, [self::study_level_certificate]))
             return 1.5;
-        
+
         return 1;
     }
 
     /**
      * 
-     * @param boolean $fractional true - include fractional values
+     * @param string $level_of_study level of study
      * @return array course durations
      */
-    public static function courseDurations($fractional) {
-        return
-                $fractional ? [
+    public static function courseDurations($level_of_study) {
+        $durations = static::fractionalYears($level_of_study) ? [
             '1' => 'One Year',
             '1.5' => 'One and A Half Years',
             '2' => 'Two Years',
@@ -351,14 +409,26 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
             '6' => 'Six Years',
             '7' => 'Seven Years'
         ];
+
+        return static::maxCourseDurations($durations, $level_of_study);
+    }
+    
+    /**
+     * 
+     * @param string $level_of_study level of study
+     * @return boolean true - fractional years allowed
+     */
+    public static function fractionalYears($level_of_study) {
+        return in_array(static::byNameAndValue(self::study_level, $level_of_study)->ELEMENT, [self::study_level_diploma, self::study_level_certificate]);
     }
 
     /**
      * 
+     * @param string $level_of_study level of study
      * @return array study years
      */
-    public static function studyYears() {
-        return [
+    public static function studyYears($level_of_study) {
+        $durations = [
             1 => 'First Year',
             2 => 'Second Year',
             3 => 'Third Year',
@@ -367,6 +437,37 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
             6 => 'Sixth Year',
             7 => 'Seventh Year'
         ];
+
+        return static::maxCourseDurations($durations, $level_of_study);
+    }
+
+    /**
+     * 
+     * @param string $durations course durations
+     * @param string $level_of_study level of study
+     * @return array course durations
+     */
+    public static function maxCourseDurations($durations, $level_of_study) {
+
+        switch ($study_level = static::byNameAndValue(self::study_level, $level_of_study)->ELEMENT) {
+            case in_array($study_level, [self::study_level_diploma, self::study_level_masters, self::study_level_phd]):
+                $max_duration = 3;
+                break;
+
+            case in_array($study_level, [self::study_level_degree]):
+                $max_duration = 7;
+                break;
+
+            default:
+                $max_duration = 2;
+                break;
+        }
+
+        foreach ($durations as $length => $duration)
+            if ($length > $max_duration)
+                unset($durations[$length]);
+
+        return $durations;
     }
 
     /**
@@ -376,9 +477,11 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     public static function countries() {
         return [
             'KEN' => 'Kenya',
-            'UG' => 'Uganda',
-            'TZ' => 'Tanzania',
-            'RWD' => 'Rwanda'
+            'UGA' => 'Uganda',
+            'TZA' => 'Tanzania',
+            'RWA' => 'Rwanda',
+            'BDI' => 'Burundi',
+            'INDIA' => 'India'
         ];
     }
 

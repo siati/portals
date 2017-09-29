@@ -15,7 +15,7 @@ $this->title = 'Institution Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="gnrl-frm stdt-psnl stdt-inst">
+<div class="gnrl-frm stdt-inst">
 
     <div class="gnrl-frm-cont">
 
@@ -35,8 +35,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'country', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::countries(), ['prompt' => '-- Country --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'level_of_study', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::studyLevels(), ['prompt' => '-- Study Level --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::institutionTypes(), ['prompt' => '-- Institution Type --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'admission_category', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::admissionCategories(), ['prompt' => '-- Admission Category --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::institutionTypes($level_of_study = LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $model->level_of_study)->ELEMENT), ['prompt' => '-- Institution Type --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'admission_category', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::admissionCategories($level_of_study), ['prompt' => '-- Admission Category --']) ?></td>
                 </tr>
             </table>
 
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="td-pdg-lft"><?= $form->field($model, 'institution_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmInstitution::institutions($model->country, $model->institution_type, LmBaseEnums::schoolTypeFromAdmissionCategory($model->admission_category)->VALUE, $active = LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE), ['prompt' => '-- Institution --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'institution_branch_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmInstitutionBranches::branches($model->institution_code, $active), ['prompt' => '-- Branch --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'course_category', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::courseCategories(), ['prompt' => '-- Course Category --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'course_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmCourses::courses($model->institution_code, null, $model->level_of_study, null, $model->course_type, $model->course_category, $active), ['prompt' => '-- Course --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'course_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::courseTypes(), ['prompt' => '-- Course Type --']) ?></td>
                 </tr>
             </table>
 
@@ -57,7 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'faculty', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'department', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'course_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::courseTypes(), ['prompt' => '-- Course Type --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'course_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmCourses::courses($model->institution_code, null, $model->level_of_study, null, null, $model->course_category, $active), ['prompt' => '-- Course --']) ?></td>
                 </tr>
             </table>
 
@@ -67,8 +67,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'year_of_admission', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(StaticMethods::ranges($yr = date('Y'), $yr - 6, 1, true), ['prompt' => '-- Year --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'admission_month', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(StaticMethods::months(), ['prompt' => '-- Month --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'duration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::courseDurations(true), ['prompt' => '-- Duration --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'year_of_study', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::studyYears(), ['prompt' => '-- Study Year --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'registration_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'duration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::courseDurations($model->level_of_study), ['prompt' => '-- Duration --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'year_of_completion', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?></td>
                 </tr>
             </table>
@@ -77,10 +77,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <table>
                 <tr>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'year_of_study', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::studyYears($model->level_of_study), ['prompt' => '-- Study Year --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'annual_fees', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'annual_upkeep', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'amount_can_raise', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'amount_applied', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'need_bursary', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::yesNo(), ['prompt' => '-- Bursary --']) ?></td>
+                </tr>
+            </table>
+
+            <table><tr><td>&nbsp;</td></tr></table>
+
+            <table>
+                <tr>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'narration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textarea(['rows' => 4, 'maxlength' => true, 'style' => 'resize: none']) ?></td>
                 </tr>
             </table>
 
@@ -88,7 +98,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'personal-button']) ?>
+            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'institution-button']) ?>
 
         </div>
 
@@ -117,9 +127,41 @@ $this->registerJs(
             }
 
             function dynamicCourses() {
-                $.post('dynamic-courses', {'institution_code': $('#applicantsinstitution-institution_code').val(), 'institution_branch_code': '', 'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'faculty': '', 'course_type': $('#applicantsinstitution-course_type').val(), 'course_category': $('#applicantsinstitution-course_category').val(), 'course_code': $('#applicantsinstitution-course_code').val()},
+                $.post('dynamic-courses', {'institution_code': $('#applicantsinstitution-institution_code').val(), 'institution_branch_code': '', 'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'faculty': '', 'course_type': '', 'course_category': $('#applicantsinstitution-course_category').val(), 'course_code': $('#applicantsinstitution-course_code').val()},
                     function (courses) {
                         $('#applicantsinstitution-course_code').html(courses).blur();
+                    }
+                );
+            }
+            
+            function dynamicInstTypes() {
+                $.post('dynamic-inst-types', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'institution_type': $('#applicantsinstitution-institution_type').val()},
+                    function (institution_types) {
+                        $('#applicantsinstitution-institution_type').html(institution_types).blur();
+                    }
+                );
+            }
+            
+            function dynamicAdmissionCategories() {
+                $.post('dynamic-admission-categories', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'admission_category': $('#applicantsinstitution-admission_category').val()},
+                    function (admission_categories) {
+                        $('#applicantsinstitution-admission_category').html(admission_categories).blur();
+                    }
+                );
+            }
+            
+            function courseDurations() {
+                $.post('dynamic-course-durations', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'duration': $('#applicantsinstitution-duration').val()},
+                    function (durations) {
+                        $('#applicantsinstitution-duration').html(durations).change().blur();
+                    }
+                );
+            }
+            
+            function studyYears() {
+                $.post('dynamic-study-years', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'year_of_study': $('#applicantsinstitution-year_of_study').val()},
+                    function (years_of_study) {
+                        $('#applicantsinstitution-year_of_study').html(years_of_study).blur();
                     }
                 );
             }
@@ -133,7 +175,7 @@ $this->registerJs(
             }
 
             function amountApplied() {
-                $('#applicantsinstitution-amount_applied').val($('#applicantsinstitution-annual_fees').val() * 1 - $('#applicantsinstitution-amount_can_raise').val() * 1).blur();
+                $('#applicantsinstitution-amount_applied').val((val = $('#applicantsinstitution-annual_fees').val() * 1 + ($('#applicantsinstitution-annual_upkeep').length ? $('#applicantsinstitution-annual_upkeep').val() * 1 : 0) - $('#applicantsinstitution-amount_can_raise').val() * 1) > 0 ? val : null).blur();
             }
 
         "
@@ -155,6 +197,15 @@ $this->registerJs(
                     dynamicInstitutionBranches();
                 }
             );
+
+            $('#applicantsinstitution-level_of_study').change(
+                function () {
+                    dynamicInstTypes();
+                    dynamicAdmissionCategories();
+                    courseDurations();
+                    studyYears();
+                }
+            );
             
             $('#applicantsinstitution-institution_code, #applicantsinstitution-institution_branch_code, #applicantsinstitution-level_of_study, #applicantsinstitution-faculty, #applicantsinstitution-course_type, #applicantsinstitution-course_category').change(
                 function () {
@@ -168,7 +219,7 @@ $this->registerJs(
                 }
             );
             
-            $('#applicantsinstitution-annual_fees, #applicantsinstitution-amount_can_raise').change(
+            $('#applicantsinstitution-annual_fees, #applicantsinstitution-annual_upkeep, #applicantsinstitution-amount_can_raise').change(
                 function () {
                     amountApplied();
                 }

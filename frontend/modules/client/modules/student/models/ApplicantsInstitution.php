@@ -30,6 +30,7 @@ use common\models\LmBaseEnums;
  * @property integer $completion_month
  * @property string $year_of_study
  * @property integer $annual_fees
+ * @property integer $annual_upkeep
  * @property integer $amount_can_raise
  * @property integer $amount_applied
  * @property integer $need_bursary
@@ -57,13 +58,14 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['applicant', 'country', 'level_of_study', 'institution_type', 'admission_category', 'institution_code', 'institution_branch_code', 'registration_no', 'course_category', 'course_type', 'course_code', 'year_of_admission', 'duration', 'year_of_completion', 'year_of_study', 'annual_fees', 'amount_can_raise', 'amount_applied'], 'required'],
-            [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'course_category', 'course_type', 'year_of_admission', 'admission_month', 'year_of_completion', 'completion_month', 'annual_fees', 'amount_can_raise', 'amount_applied', 'need_bursary'], 'integer'],
+            [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'course_category', 'course_type', 'year_of_admission', 'admission_month', 'year_of_completion', 'completion_month', 'annual_fees', 'annual_upkeep', 'amount_can_raise', 'amount_applied', 'need_bursary'], 'integer'],
             [['country', 'duration', 'year_of_study', 'narration'], 'string'],
             [['institution_code', 'institution_branch_code', 'course_code'], 'string', 'max' => 20],
             [['faculty', 'department'], 'string', 'max' => 60],
             [['registration_no'], 'string', 'min' => 7, 'max' => 15],
             [['created_at', 'modified_at'], 'safe'],
-            [['created_by', 'modified_by'], 'string', 'max' => 15]
+            [['created_by', 'modified_by'], 'string', 'max' => 15],
+            ['amount_applied', 'amountApplied']
         ];
     }
     
@@ -76,6 +78,16 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
         $this->year_of_completion = $completion[0];
         
         $this->completion_month = $completion[1];
+    }
+    
+    /**
+     * amount applied must be greater than zero
+     */
+    public function amountApplied() {
+        $this->amount_applied = array_sum([$this->annual_fees, $this->annual_upkeep]) - array_sum([$this->amount_can_raise]);
+        
+        if ($this->amount_applied <= 0)
+            $this->amount_applied = null;
     }
 
     /**
@@ -104,6 +116,7 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
             'completion_month' => Yii::t('app', 'Completion Month'),
             'year_of_study' => Yii::t('app', 'Year Of Study'),
             'annual_fees' => Yii::t('app', 'Annual Fees'),
+            'annual_upkeep' => Yii::t('app', 'Annual Upkeep'),
             'amount_can_raise' => Yii::t('app', 'Amount Can Raise'),
             'amount_applied' => Yii::t('app', 'Amount Applied'),
             'need_bursary' => Yii::t('app', 'Need Bursary'),
@@ -181,7 +194,7 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
      * @return ApplicantsInstitution model
      */
     public static function institutionToLoad($id, $applicant) {
-        return is_object($model = static::returnInstitution($id)) ? $model : static::newInstitution($applicant);
+        return is_object($model = static::returnInstitution($id)) || is_object($model = static::forApplicant($applicant)) ? $model : static::newInstitution($applicant);
     }
 
     /**

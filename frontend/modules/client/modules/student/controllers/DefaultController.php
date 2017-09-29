@@ -31,13 +31,13 @@ class DefaultController extends Controller {
                 'class' => AccessControl::className(),
                 'only' => [
                     'index', 'register', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
-                    'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'completion-year'
+                    'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'index', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
-                            'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'completion-year'
+                            'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -242,10 +242,38 @@ class DefaultController extends Controller {
     }
     
     /**
+     * load institution types dynamically
+     */
+    public function actionDynamicInstTypes() {
+        StaticMethods::populateDropDown(LmBaseEnums::institutionTypes(LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $_POST['level_of_study'])->ELEMENT), 'Institution Type', $_POST['institution_type']);
+    }
+    
+    /**
+     * load admission categories dynamically
+     */
+    public function actionDynamicAdmissionCategories() {
+        StaticMethods::populateDropDown(LmBaseEnums::admissionCategories(LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $_POST['level_of_study'])->ELEMENT), 'Admission Category', $_POST['admission_category']);
+    }
+    
+    /**
      * load institution courses dynamically
      */
     public function actionDynamicCourses() {
         StaticMethods::populateDropDown(LmCourses::courses($_POST['institution_code'], $_POST['institution_branch_code'], $_POST['level_of_study'], $_POST['faculty'], $_POST['course_type'], $_POST['course_category'], LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE), 'Course', $_POST['course_code']);
+    }
+    
+    /**
+     * load course duration dynamically
+     */
+    public function actionDynamicCourseDurations() {
+        StaticMethods::populateDropDown(LmBaseEnums::courseDurations($_POST['level_of_study']), 'Duration', $_POST['duration']);
+    }
+    
+    /**
+     * load dynamic years dynamically
+     */
+    public function actionDynamicStudyYears() {
+        StaticMethods::populateDropDown(LmBaseEnums::studyYears($_POST['level_of_study']), 'Study Year', $_POST['year_of_study']);
     }
     
     /**
