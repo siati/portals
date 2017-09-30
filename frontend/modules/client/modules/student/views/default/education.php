@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-hdr"><?= $this->title ?></div>
 
-        <div class="gnrl-frm-bdy gnrl-frm-pdg-top-0 gnrl-frm-pdg-rgt-0 gnrl-frm-pdg-btm-0 fit-in-pn" style="min-height: 60%">
+        <div class="gnrl-frm-bdy gnrl-frm-pdg-top-0 gnrl-frm-pdg-rgt-0 gnrl-frm-pdg-btm-0 fit-in-pn" style="height: 85%">
 
             <div class="edcn-tab-pn pull-left lvl-lst">
                 <?php ActiveForm::begin(['id' => 'form-edcn-det-btn']); ?>

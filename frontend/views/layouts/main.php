@@ -39,6 +39,8 @@ AppAsset::register($this);
         <div id="yii-modal-cnt"></div>
 
         <?php Modal::end() ?>
+        
+        <?php $user_id = Yii::$app->user->isGuest ? '' : Yii::$app->user->identity->id; ?>
 
         <div class="wrap">
             <?php
@@ -49,8 +51,6 @@ AppAsset::register($this);
                     'class' => 'navbar-inverse navbar-fixed-top',
                 ],
             ]);
-
-            $user_id = Yii::$app->user->isGuest ? '' : Yii::$app->user->identity->id;
 
             $menuItems[] = [
                 'label' => Yii::$app->user->isGuest ? 'You\'re Guest' : 'Welcome ' . Yii::$app->user->identity->username . ',',

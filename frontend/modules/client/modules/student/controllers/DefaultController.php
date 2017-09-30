@@ -10,6 +10,8 @@ use frontend\modules\client\modules\student\models\ApplicantsParents;
 use frontend\modules\client\modules\student\models\EducationBackground;
 use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 use frontend\modules\client\modules\student\models\ApplicantsInstitution;
+use frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses;
+use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
 use common\models\User;
 use common\models\StaticMethods;
 use common\models\LmBaseEnums;
@@ -31,13 +33,13 @@ class DefaultController extends Controller {
                 'class' => AccessControl::className(),
                 'only' => [
                     'index', 'register', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
-                    'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year'
+                    'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'index', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
-                            'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year'
+                            'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -226,56 +228,94 @@ class DefaultController extends Controller {
 
         return $this->render('institution', ['model' => $model]);
     }
-    
+
+    /**
+     * 
+     * @return string view to update family expenses
+     */
+    public function actionExpenses() {
+        $sibling_expenses = ApplicantsSiblingEducationExpenses::expensesToLoad($_POST['ApplicantsSiblingEducationExpenses']['applicant']);
+
+        $family_expenses = ApplicantsFamilyExpenses::expensesToLoad($_POST['ApplicantsFamilyExpenses']['applicant']);
+
+        $new_expense = true;
+
+        if (isset($_POST['sbmt']) && (ApplicantsSiblingEducationExpenses::loadMultiple($sibling_expenses) || ApplicantsFamilyExpenses::loadMultiple($family_expenses))) {
+
+            $ajaxes = [];
+
+            foreach ($sibling_expenses as $sibling_expense)
+                if (($ajax = $this->ajaxValidate($sibling_expense)) === self::IS_AJAX || count($ajax) > 0) {
+                    $ajaxes = $ajaxes + is_array($ajax) ? $ajax : [];
+                    $is_ajax = true;
+                } else
+                    $sibling_expense->modelSave() ? '' : $new_expense = false;
+
+            foreach ($family_expenses as $family_expense)
+                if (($ajax = $this->ajaxValidate($family_expense)) === self::IS_AJAX || count($ajax) > 0) {
+                    $ajaxes = $ajaxes + is_array($ajax) ? $ajax : [];
+                    $is_ajax = true;
+                } else
+                    $sibling_expense->modelSave();
+
+            if (!empty($is_ajax))
+                return $ajaxes;
+        }
+
+        $new_expense ? array_push($sibling_expenses, ApplicantsSiblingEducationExpenses::expenseToLoad(null, $_POST['ApplicantsSiblingEducationExpenses']['applicant'], null, null)) : '';
+
+        return $this->render('expenses', ['sibling_expenses' => $this->renderPartial('sibling_expenses', ['model' => $sibling_expenses]), 'family_expenses' => $this->renderPartial('family_expenses', ['model' => $family_expenses])]);
+    }
+
     /**
      * load institutions dynamically
      */
     public function actionDynamicInstitutions() {
         StaticMethods::populateDropDown(LmInstitution::institutions($_POST['country'], $_POST['institution_type'], LmBaseEnums::schoolTypeFromAdmissionCategory($_POST['admission_category'])->VALUE, LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE), 'Institution', $_POST['institution_code']);
     }
-    
+
     /**
      * load institution branches dynamically
      */
     public function actionDynamicInstitutionBranches() {
         StaticMethods::populateDropDown(LmInstitutionBranches::branches($_POST['institution_code'], LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE), 'Branch', $_POST['institution_branch_code']);
     }
-    
+
     /**
      * load institution types dynamically
      */
     public function actionDynamicInstTypes() {
         StaticMethods::populateDropDown(LmBaseEnums::institutionTypes(LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $_POST['level_of_study'])->ELEMENT), 'Institution Type', $_POST['institution_type']);
     }
-    
+
     /**
      * load admission categories dynamically
      */
     public function actionDynamicAdmissionCategories() {
         StaticMethods::populateDropDown(LmBaseEnums::admissionCategories(LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $_POST['level_of_study'])->ELEMENT), 'Admission Category', $_POST['admission_category']);
     }
-    
+
     /**
      * load institution courses dynamically
      */
     public function actionDynamicCourses() {
         StaticMethods::populateDropDown(LmCourses::courses($_POST['institution_code'], $_POST['institution_branch_code'], $_POST['level_of_study'], $_POST['faculty'], $_POST['course_type'], $_POST['course_category'], LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE), 'Course', $_POST['course_code']);
     }
-    
+
     /**
      * load course duration dynamically
      */
     public function actionDynamicCourseDurations() {
         StaticMethods::populateDropDown(LmBaseEnums::courseDurations($_POST['level_of_study']), 'Duration', $_POST['duration']);
     }
-    
+
     /**
      * load dynamic years dynamically
      */
     public function actionDynamicStudyYears() {
         StaticMethods::populateDropDown(LmBaseEnums::studyYears($_POST['level_of_study']), 'Study Year', $_POST['year_of_study']);
     }
-    
+
     /**
      * compute completion year dynamically
      */

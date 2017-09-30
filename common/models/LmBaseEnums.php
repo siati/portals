@@ -69,6 +69,14 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     const institution_type_kmtc = 'Kmtc';
     const institution_type_university = 'University';
     const institution_type_tertiary = 'Tertiary';
+    const expense_type = 'LMExpenseType';
+    const expense_type_food = 'Food';
+    const expense_type_clothing = 'Clothing';
+    const expense_type_rent = 'Rent';
+    const expense_type_medical = 'Medical';
+    const expense_type_mortgage = 'Mortgage';
+    const expense_type_other = 'Other';
+    const expense_type_travel_fuel = 'Travel_Fuel';
 
     /**
      * @inheritdoc
@@ -483,6 +491,23 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
             'BDI' => 'Burundi',
             'INDIA' => 'India'
         ];
+    }
+
+    /**
+     * 
+     * @return array expense types
+     */
+    public static function expenseTypes() {
+        return StaticMethods::modelsToArray(static::itemElements(self::expense_type, null), 'VALUE', 'LABEL', false);
+    }
+
+    /**
+     * 
+     * @param string $expense_type expense type element
+     * @return LmBaseEnums model
+     */
+    public static function expenseType($expense_type) {
+        return static::byNameAndElement(self::expense_type, $expense_type);
     }
 
 }

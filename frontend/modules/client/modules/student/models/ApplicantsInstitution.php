@@ -57,12 +57,16 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['applicant', 'country', 'level_of_study', 'institution_type', 'admission_category', 'institution_code', 'institution_branch_code', 'registration_no', 'course_category', 'course_type', 'course_code', 'year_of_admission', 'duration', 'year_of_completion', 'year_of_study', 'annual_fees', 'amount_can_raise', 'amount_applied'], 'required'],
+            [['applicant', 'country', 'level_of_study', 'institution_type', 'admission_category', 'institution_code', 'institution_branch_code', 'registration_no', 'course_category', 'course_type', 'course_code', 'year_of_admission', 'duration', 'year_of_completion', 'year_of_study'], 'required'],
             [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'course_category', 'course_type', 'year_of_admission', 'admission_month', 'year_of_completion', 'completion_month', 'annual_fees', 'annual_upkeep', 'amount_can_raise', 'amount_applied', 'need_bursary'], 'integer'],
             [['country', 'duration', 'year_of_study', 'narration'], 'string'],
             [['institution_code', 'institution_branch_code', 'course_code'], 'string', 'max' => 20],
-            [['faculty', 'department'], 'string', 'max' => 60],
+            [['faculty', 'department'], 'string', 'min' => 10, 'max' => 60],
+            [['faculty', 'department', 'registration_no', 'narration'], 'notNumerical'],
+            [['faculty', 'department', 'registration_no', 'annual_fees', 'annual_upkeep', 'amount_can_raise', 'amount_applied', 'narration'], 'sanitizeString'],
             [['registration_no'], 'string', 'min' => 7, 'max' => 15],
+            [['annual_fees', 'annual_upkeep', 'amount_can_raise', 'amount_applied'], 'string', 'min' => 4, 'max' => 6],
+            [['annual_fees', 'annual_upkeep', 'amount_can_raise', 'amount_applied'], 'positiveValue'],
             [['created_at', 'modified_at'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 15],
             ['amount_applied', 'amountApplied']
