@@ -3,6 +3,7 @@
 namespace frontend\modules\client\modules\student\models;
 
 use Yii;
+use common\models\StaticMethods;
 
 /**
  * This is the model class for table "{{%applicants_sibling_education_expenses}}".
@@ -18,7 +19,7 @@ use Yii;
  * @property integer $institution_type
  * @property string $institution_name
  * @property integer $annual_fees
- * @property string $helb_beneficiary
+ * @property integer $helb_beneficiary
  * @property string $created_by
  * @property string $created_at
  * @property string $modified_by
@@ -43,11 +44,16 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['applicant', 'birth_cert_no', 'id_no', 'fname', 'lname', 'study_level', 'institution_type', 'institution_name', 'annual_fees', 'created_by'], 'required'],
-            [['applicant', 'birth_cert_no', 'id_no', 'study_level', 'institution_type', 'annual_fees'], 'integer'],
-            [['helb_beneficiary'], 'string'],
+            [['applicant', 'birth_cert_no', 'id_no', 'study_level', 'institution_type', 'annual_fees', 'helb_beneficiary'], 'integer'],
             [['created_at', 'modified_at'], 'safe'],
-            [['fname', 'mname', 'lname', 'created_by', 'modified_by'], 'string', 'max' => 20],
-            [['institution_name'], 'string', 'max' => 40],
+            [['fname', 'mname', 'lname', 'created_by', 'modified_by'], 'string', 'min' => 3, 'max' => 20],
+            [['birth_cert_no'], 'string', 'min' => 6, 'max' => 7],
+            [['id_no'], 'string', 'min' => 7, 'max' => 8],
+            [['institution_name'], 'string', 'min' => 10, 'max' => 40],
+            [['fname', 'mname', 'lname', 'institution_name'], 'notNumerical'],
+            [['birth_cert_no', 'id_no', 'fname', 'mname', 'lname', 'institution_name', 'annual_fees'], 'sanitizeString'],
+            [['annual_fees'], 'string', 'min' => 4, 'max' => 6],
+            [['birth_cert_no', 'id_no', 'annual_fees'], 'positiveValue'],
         ];
     }
 

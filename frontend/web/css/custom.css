@@ -41,7 +41,7 @@
     display: table;
 }
 
-.stdt-rgst, .stdt-psnl, .prnt-det, .edcn-det, .grntr-det,  .stdt-inst {
+.stdt-rgst, .stdt-psnl, .prnt-det, .edcn-det, .grntr-det, .stdt-inst, .stdt-exps {
     width: 93.73%;
     margin-left: 3.125%
 }
@@ -96,6 +96,14 @@
     border-bottom: 3px solid #ddd
 }
 
+.gnrl-frm-divider-sm {
+    margin-top: 5px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 2px solid #ddd
+}
+
 .gnrl-frm-pdg-top-0 {
     padding-top: 0
 }
@@ -130,6 +138,26 @@
     border-left: 3px solid #ddd;
     padding: 0 10px 0 5px;
     overflow-x: hidden
+}
+
+.sblg-slct {
+    width: 100%;
+    text-align: left;
+    font-weight: bold;
+    margin: 3px 0
+}
+
+.sbln-exps-lft {
+    width: 25%;
+    height: 100%;
+    padding-right: 5px
+}
+
+.sbln-exps-rgt {
+    width: 75%;
+    height: 100%;
+    border-left: 1px solid #ddd;
+    padding-left: 5px
 }
 
 table {

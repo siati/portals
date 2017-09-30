@@ -234,37 +234,33 @@ class DefaultController extends Controller {
      * @return string view to update family expenses
      */
     public function actionExpenses() {
-        $sibling_expenses = ApplicantsSiblingEducationExpenses::expensesToLoad($_POST['ApplicantsSiblingEducationExpenses']['applicant']);
+        $family_expenses = ApplicantsFamilyExpenses::expensesToLoad($applicant = $_POST['applicant']);
 
-        $family_expenses = ApplicantsFamilyExpenses::expensesToLoad($_POST['ApplicantsFamilyExpenses']['applicant']);
+        $sibling_expense = ApplicantsSiblingEducationExpenses::expenseToLoad(empty($_POST['ApplicantsSiblingEducationExpenses']['id']) ? '' : $_POST['ApplicantsSiblingEducationExpenses']['id'], $applicant, empty($_POST['ApplicantsSiblingEducationExpenses']['birth_cert_no']) ? '' : $_POST['ApplicantsSiblingEducationExpenses']['birth_cert_no'], empty($_POST['ApplicantsSiblingEducationExpenses']['id_no']) ? '' : $_POST['ApplicantsSiblingEducationExpenses']['id_no']);
 
-        $new_expense = true;
+        $ajaxes = [];
 
-        if (isset($_POST['sbmt']) && (ApplicantsSiblingEducationExpenses::loadMultiple($sibling_expenses) || ApplicantsFamilyExpenses::loadMultiple($family_expenses))) {
+        $is_ajax = false;
 
-            $ajaxes = [];
+        if (isset($_POST['ApplicantsFamilyExpenses']) && ApplicantsFamilyExpenses::loadMultiple($family_expenses, Yii::$app->request->post()))
+            if (($ajax = $this->ajaxValidateMultiple($family_expenses)) === self::IS_AJAX || count($ajax) > 0) {
+                $ajaxes += (is_array($ajax) ? $ajax : []);
+                $is_ajax = true;
+            } else
+                foreach ($family_expenses as $family_expense)
+                    $family_expense->modelSave();
 
-            foreach ($sibling_expenses as $sibling_expense)
-                if (($ajax = $this->ajaxValidate($sibling_expense)) === self::IS_AJAX || count($ajax) > 0) {
-                    $ajaxes = $ajaxes + is_array($ajax) ? $ajax : [];
-                    $is_ajax = true;
-                } else
-                    $sibling_expense->modelSave() ? '' : $new_expense = false;
+        if (isset($_POST['ApplicantsSiblingEducationExpenses']['fname']) && $sibling_expense->load(Yii::$app->request->post()))
+            if (($ajax = $this->ajaxValidate($sibling_expense)) === self::IS_AJAX || count($ajax) > 0) {
+                $ajaxes += (is_array($ajax) ? $ajax : []);
+                $is_ajax = true;
+            } else
+                $sibling_expense->modelSave();
 
-            foreach ($family_expenses as $family_expense)
-                if (($ajax = $this->ajaxValidate($family_expense)) === self::IS_AJAX || count($ajax) > 0) {
-                    $ajaxes = $ajaxes + is_array($ajax) ? $ajax : [];
-                    $is_ajax = true;
-                } else
-                    $sibling_expense->modelSave();
+        if ($is_ajax)
+            return $ajaxes;
 
-            if (!empty($is_ajax))
-                return $ajaxes;
-        }
-
-        $new_expense ? array_push($sibling_expenses, ApplicantsSiblingEducationExpenses::expenseToLoad(null, $_POST['ApplicantsSiblingEducationExpenses']['applicant'], null, null)) : '';
-
-        return $this->render('expenses', ['sibling_expenses' => $this->renderPartial('sibling_expenses', ['model' => $sibling_expenses]), 'family_expenses' => $this->renderPartial('family_expenses', ['model' => $family_expenses])]);
+        return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense]);
     }
 
     /**
@@ -285,7 +281,7 @@ class DefaultController extends Controller {
      * load institution types dynamically
      */
     public function actionDynamicInstTypes() {
-        StaticMethods::populateDropDown(LmBaseEnums::institutionTypes(LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $_POST['level_of_study'])->ELEMENT), 'Institution Type', $_POST['institution_type']);
+        StaticMethods::populateDropDown(LmBaseEnums::institutionTypes(LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $_POST['level_of_study'])->ELEMENT, isset($_POST['pri_sec'])), 'Institution Type', $_POST['institution_type']);
     }
 
     /**

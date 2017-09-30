@@ -41,7 +41,7 @@ class ApplicantsSiblingEducationExpensesQuery extends \yii\db\ActiveQuery {
      */
     public function searchExpenses($applicant, $birth_cert_no, $id_no, $oneOrAll) {
         return $this->where(
-                        "aplicant  = '$applicant'" .
+                        "applicant  = '$applicant'" .
                         (empty($birth_cert_no) ? '' : " && birth_cert_no = '$birth_cert_no'") .
                         (empty($id_no) ? '' : " && id_no = '$id_no'")
                 )->$oneOrAll();

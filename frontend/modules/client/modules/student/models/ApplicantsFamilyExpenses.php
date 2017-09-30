@@ -4,6 +4,7 @@ namespace frontend\modules\client\modules\student\models;
 
 use Yii;
 use common\models\LmBaseEnums;
+use common\models\StaticMethods;
 
 /**
  * This is the model class for table "{{%applicants_family_expenses}}".
@@ -33,6 +34,9 @@ class ApplicantsFamilyExpenses extends \yii\db\ActiveRecord {
         return [
             [['applicant', 'expense_type', 'amount', 'created_by'], 'required'],
             [['applicant', 'expense_type', 'amount'], 'integer'],
+            ['amount', 'sanitizeString'],
+            ['amount', 'string', 'min' => 4, 'max' => 6],
+            ['amount', 'positiveValue'],
             [['created_at', 'modified_at'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 15],
         ];
@@ -143,7 +147,7 @@ class ApplicantsFamilyExpenses extends \yii\db\ActiveRecord {
             $this->modified_by = Yii::$app->user->identity->username;
             $this->modified_at = StaticMethods::now();
         }
-
+        
         return $this->save();
     }
 

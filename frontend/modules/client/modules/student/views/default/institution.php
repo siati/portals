@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'country', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::countries(), ['prompt' => '-- Country --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'level_of_study', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::studyLevels(), ['prompt' => '-- Study Level --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::institutionTypes($level_of_study = LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $model->level_of_study)->ELEMENT), ['prompt' => '-- Institution Type --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::institutionTypes($level_of_study = LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $model->level_of_study)->ELEMENT, false), ['prompt' => '-- Institution Type --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'admission_category', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::admissionCategories($level_of_study), ['prompt' => '-- Admission Category --']) ?></td>
                 </tr>
             </table>

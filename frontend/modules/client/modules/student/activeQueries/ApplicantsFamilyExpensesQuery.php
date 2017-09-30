@@ -37,7 +37,7 @@ class ApplicantsFamilyExpensesQuery extends \yii\db\ActiveQuery {
      * @return ApplicantsFamilyExpenses ActiveRecord[s]
      */
     public function searchExpenses($applicant, $expense_type, $oneOrAll) {
-        return $this->where("applicant = '$applicant'" . (is_number($expense_type) ? " && expense_type = '$expense_type'" : ''))->orderBy('expense_type asc')->$oneOrAll();
+        return $this->where("applicant = '$applicant'" . (is_numeric($expense_type) ? " && expense_type = '$expense_type'" : ''))->orderBy('expense_type asc')->$oneOrAll();
     }
 
 }

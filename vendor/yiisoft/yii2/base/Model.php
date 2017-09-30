@@ -990,7 +990,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @param string $attribute attribute of [[Model]]
      */
     public function positiveValue($attribute) {
-        if (!is_numeric($this->$attribute) || empty($this->$attribute) || $this->$attribute != abs($this->$attribute))
+        if (!is_numeric($this->$attribute) || empty($this->$attribute) || $this->$attribute != abs($this->$attribute) || $this->$attribute <= 0)
             $this->addError($attribute, $this->getAttributeLabel($attribute) . ' must be a positive number');
     }
 

@@ -325,26 +325,28 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     /**
      * 
      * @param string $level_of_study level of study element
+     * @param boolean $priSecToo true - include primary and secondary
      * @return array institution types
      */
-    public static function institutionTypes($level_of_study) {
+    public static function institutionTypes($level_of_study, $priSecToo) {
         foreach ($institutionTypes = static::itemElements(self::institution_type, null) as $i => $institutionType)
             if (strtolower($institutionType->ELEMENT) == strtolower(self::institution_type_none))
                 unset($institutionTypes[$i]);
 
-        return StaticMethods::modelsToArray(static::institutionTypesForStudyLevel($institutionTypes, $level_of_study), 'VALUE', 'LABEL', false);
+        return StaticMethods::modelsToArray(static::institutionTypesForStudyLevel($institutionTypes, $level_of_study, $priSecToo), 'VALUE', 'LABEL', false);
     }
 
     /**
      * 
      * @param LmBaseEnums $institutionTypes models
      * @param string $level_of_study level of study element
+     * @param boolean $priSecToo true - include primary and secondary
      * @return LmBaseEnums models
      */
-    public static function institutionTypesForStudyLevel($institutionTypes, $level_of_study) {
+    public static function institutionTypesForStudyLevel($institutionTypes, $level_of_study, $priSecToo) {
         if (!empty($level_of_study))
             foreach ($institutionTypes as $i => $institutionType)
-                if ((in_array($level_of_study, [self::study_level_degree, self::study_level_masters, self::study_level_phd]) && $institutionType->ELEMENT != self::institution_type_university) || (in_array($institutionType->ELEMENT, [self::institution_type_primary, self::institution_type_secondary])))
+                if ((in_array($level_of_study, [self::study_level_degree, self::study_level_masters, self::study_level_phd]) && $institutionType->ELEMENT != self::institution_type_university) || (in_array($institutionType->ELEMENT, [self::institution_type_primary, self::institution_type_secondary]) && $level_of_study != self::study_level_certificate) || (!$priSecToo && in_array($institutionType->ELEMENT, [self::institution_type_primary, self::institution_type_secondary])))
                     unset($institutionTypes[$i]);
 
         return $institutionTypes;
@@ -420,7 +422,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
 
         return static::maxCourseDurations($durations, $level_of_study);
     }
-    
+
     /**
      * 
      * @param string $level_of_study level of study

@@ -10,6 +10,7 @@ namespace yii\base;
 
 use Yii;
 use kartik\form\ActiveForm;
+use yii\db\ActiveRecord;
 
 /**
  * Controller is the base class for classes containing controller logic.
@@ -29,7 +30,7 @@ use kartik\form\ActiveForm;
  * @since 2.0
  */
 class Controller extends Component implements ViewContextInterface {
-    
+
     const IS_AJAX = 'isAjax';
 
     /**
@@ -195,7 +196,9 @@ class Controller extends Component implements ViewContextInterface {
             return $this->module->runAction($route, $params);
         }
         return Yii::$app->runAction(ltrim($route, '/'), $params);
-    }/**
+    }
+
+    /**
      * 
      * @param ActiveRecord $model model
      * @return array|null model errors
@@ -203,9 +206,24 @@ class Controller extends Component implements ViewContextInterface {
     public function ajaxValidate($model) {
         if (Yii::$app->request->isAjax) {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            
+
             $validate = ActiveForm::validate($model);
+
+            return count($validate) > 0 ? $validate : self::IS_AJAX;
+        }
+    }
+
+    /**
+     * 
+     * @param ActiveRecord $models model
+     * @return array|null model errors
+     */
+    public function ajaxValidateMultiple($models) {
+        if (Yii::$app->request->isAjax) {
+            Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             
+            $validate = ActiveForm::validateMultiple($models);
+
             return count($validate) > 0 ? $validate : self::IS_AJAX;
         }
     }
