@@ -77,7 +77,7 @@ AppAsset::register($this);
                 <div class="page-content full-dim-vtcl-scrl">
                     <div class="page-content-lft bcg-img-cvr pull-left" style="background-image: url(<?= Yii::$app->homeUrl ?>../../common/assets/logos/background.jpg)">
 
-                        <div class="logo-div bcg-img-ctn" style="background-image: url(<?= Yii::$app->homeUrl ?>../../common/assets/logos/kakamega.gif)">
+                        <div class="logo-div bcg-img-ctn" style="background-image: url(<?= Yii::$app->homeUrl ?>../../common/assets/logos/helb-logo.jpg)">
 
                         </div>
 
@@ -118,7 +118,7 @@ AppAsset::register($this);
 
                     </div>
 
-                    <div class="page-content-rgt pull-right">
+                    <div class="page-content-rgt bcg-img-cvr pull-right" style="background-image: url(<?= Yii::$app->homeUrl ?>../../common/assets/logos/helb-wallpaper.png)">
                         <?= $content ?>
                     </div>
                 </div>

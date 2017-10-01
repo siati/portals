@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 01, 2017 at 11:50 AM
+-- Generation Time: Oct 01, 2017 at 02:58 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -94,13 +94,13 @@ CREATE TABLE `tbl_applicants_family_expenses` (
 --
 
 INSERT INTO `tbl_applicants_family_expenses` (`id`, `applicant`, `expense_type`, `amount`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 0, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 01:23:33'),
-(2, 1, 1, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 01:23:33'),
-(3, 1, 2, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 01:23:33'),
-(4, 1, 3, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 01:23:34'),
-(5, 1, 4, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 01:23:34'),
-(6, 1, 5, 1000, 'wsiati', '2017-09-30 18:33:17', 'wsiati', '2017-10-01 01:23:34'),
-(7, 1, 6, 1000, 'wsiati', '2017-09-30 18:33:17', 'wsiati', '2017-10-01 01:23:34');
+(1, 1, 0, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:14'),
+(2, 1, 1, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:14'),
+(3, 1, 2, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:15'),
+(4, 1, 3, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:15'),
+(5, 1, 4, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:15'),
+(6, 1, 5, 1000, 'wsiati', '2017-09-30 18:33:17', 'wsiati', '2017-10-01 14:42:15'),
+(7, 1, 6, 1000, 'wsiati', '2017-09-30 18:33:17', 'wsiati', '2017-10-01 14:42:15');
 
 -- --------------------------------------------------------
 
@@ -194,7 +194,7 @@ CREATE TABLE `tbl_applicants_institution` (
 --
 
 INSERT INTO `tbl_applicants_institution` (`id`, `applicant`, `country`, `level_of_study`, `institution_type`, `admission_category`, `institution_code`, `institution_branch_code`, `faculty`, `department`, `registration_no`, `course_category`, `course_type`, `course_code`, `year_of_admission`, `admission_month`, `duration`, `year_of_completion`, `completion_month`, `year_of_study`, `annual_fees`, `annual_upkeep`, `amount_can_raise`, `amount_applied`, `need_bursary`, `narration`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 'KEN', 3, 7, 1, 'KU', 'KU1', 'Faculty Of Education', 'Education Science', 'retr-hh/hjh89', 6, 2, 'E35', 2016, '9', '1', 2017, '9', '2', NULL, NULL, NULL, NULL, '1', '', 'wsiati', '2017-09-28 22:26:09', 'wsiati', '2017-09-29 14:38:36');
+(1, 1, 'KEN', 3, 7, 1, 'KU', 'KU1', 'Faculty Of Education', 'Education Science', 'retr-hh/hjh89', 6, 2, 'E35', 2016, '9', '1', 2017, '9', '2', NULL, NULL, NULL, NULL, '1', '', 'wsiati', '2017-09-28 22:26:09', 'wsiati', '2017-10-01 14:41:16');
 
 -- --------------------------------------------------------
 
@@ -259,6 +259,37 @@ INSERT INTO `tbl_applicants_parents` (`id`, `applicant`, `relationship`, `fname`
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_applicants_residence`
+--
+
+CREATE TABLE `tbl_applicants_residence` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `applicant` int(11) NOT NULL COMMENT 'Applicant',
+  `county` int(3) NOT NULL COMMENT 'County',
+  `sub_county` int(4) DEFAULT NULL COMMENT 'Sub County',
+  `constituency` int(4) NOT NULL COMMENT 'Constituency',
+  `ward` int(4) NOT NULL COMMENT 'Ward',
+  `location` varchar(20) NOT NULL COMMENT 'Location',
+  `sub_location` varchar(20) NOT NULL COMMENT 'Sub Location',
+  `village` varchar(20) NOT NULL COMMENT 'Village / Estate',
+  `apartment` varchar(30) NOT NULL COMMENT 'House Name / Number',
+  `nearest_primary` varchar(40) NOT NULL COMMENT 'Nearest Public Primary School',
+  `created_by` varchar(20) NOT NULL COMMENT 'Created By',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
+  `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_applicants_residence`
+--
+
+INSERT INTO `tbl_applicants_residence` (`id`, `applicant`, `county`, `sub_county`, `constituency`, `ward`, `location`, `sub_location`, `village`, `apartment`, `nearest_primary`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 1, 11, 49, 49, 244, 'Kacheliba', 'Makuyu', 'Time Is Here', 'Time Is Here', 'Marurui Primary', 'wsiati', '2017-10-01 14:17:49', 'wsiati', '2017-10-01 14:21:22');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_applicants_sibling_education_expenses`
 --
 
@@ -286,7 +317,7 @@ CREATE TABLE `tbl_applicants_sibling_education_expenses` (
 --
 
 INSERT INTO `tbl_applicants_sibling_education_expenses` (`id`, `applicant`, `birth_cert_no`, `id_no`, `fname`, `mname`, `lname`, `study_level`, `institution_type`, `institution_name`, `annual_fees`, `helb_beneficiary`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 123456, 14356335, 'Shadrack', 'Wabomba', 'Wanyonyi', 1, 3, 'Meru College', 1000, '0', 'wsiati', '2017-09-30 17:53:43', 'wsiati', '2017-10-01 01:23:34');
+(1, 1, 123456, 14356335, 'Shadrack', 'Wabomba', 'Wanyonyi', 1, 3, 'Meru College', 1000, '0', 'wsiati', '2017-09-30 17:53:43', 'wsiati', '2017-10-01 14:42:15');
 
 -- --------------------------------------------------------
 
@@ -13179,6 +13210,12 @@ ALTER TABLE `tbl_applicants_parents`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_applicants_residence`
+--
+ALTER TABLE `tbl_applicants_residence`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_applicants_sibling_education_expenses`
 --
 ALTER TABLE `tbl_applicants_sibling_education_expenses`
@@ -13285,6 +13322,11 @@ ALTER TABLE `tbl_applicants_institution`
 -- AUTO_INCREMENT for table `tbl_applicants_parents`
 --
 ALTER TABLE `tbl_applicants_parents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `tbl_applicants_residence`
+--
+ALTER TABLE `tbl_applicants_residence`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_sibling_education_expenses`
