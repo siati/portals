@@ -20,7 +20,7 @@ use yii\helpers\Html;
 
             <?= Html::activeHiddenInput($model, "[$expense_type]applicant") ?>
 
-            <td class="td-pdg-lft"><?= $form->field($model, "[$expense_type]amount", ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, "[$expense_type]amount", ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true]) ?></td>
 
             <?php if (++$i % $columns == 0 || $i == count($models)): ?> </tr> <?php endif; ?>
     <?php endforeach; ?>

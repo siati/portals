@@ -195,6 +195,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
             [['phone', 'employer_phone'], 'kenyaPhoneNumber'],
             [['email', 'employer_email'], 'string', 'max' => 40],
             [['email', 'employer_email'], 'email'],
+            [['email', 'employer_email'], 'toLowerCase'],
             [['postal_no', 'employer_postal_no', 'gross_monthly_salary', 'monthly_pension'], 'string', 'max' => 6],
             [['farming_annual', 'business_annual', 'govt_support_annual', 'relief_annual', 'other_annual'], 'string', 'max' => 7],
             [['birth_cert_no', 'id_no', 'phone', 'postal_no', 'employer_postal_no', 'employer_phone', 'gross_monthly_salary', 'monthly_pension', 'farming_annual', 'business_annual', 'govt_support_annual', 'relief_annual', 'other_annual'], 'positiveValue'],

@@ -235,6 +235,10 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
         return static::expensesForApplicant($applicant);
     }
 
+    /**
+     * 
+     * @return boolean true - model saved
+     */
     public function modelSave() {
         if ($this->isNewRecord)
             $this->created_at = StaticMethods::now();

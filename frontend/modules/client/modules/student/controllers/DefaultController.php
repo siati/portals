@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use frontend\modules\client\modules\student\models\Applicants;
+use frontend\modules\client\modules\student\models\ApplicantsResidence;
 use frontend\modules\client\modules\student\models\ApplicantsParents;
 use frontend\modules\client\modules\student\models\EducationBackground;
 use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
@@ -32,13 +33,13 @@ class DefaultController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'index', 'register', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
+                    'index', 'register', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                     'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses'
                 ],
                 'rules' => [
                     [
                         'actions' => [
-                            'index', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
+                            'index', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                             'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
@@ -90,6 +91,24 @@ class DefaultController extends Controller {
         }
 
         return $this->render($user->isNewRecord ? 'register' : 'personal', ['applicant' => $applicant, 'user' => $user]);
+    }
+    
+    /**
+     * 
+     * @return string view to update residence details
+     */
+    public function actionResidence() {
+        $model = ApplicantsResidence::residenceToLoad(empty($_POST['ApplicantsResidence']['id']) ? '' : $_POST['ApplicantsResidence']['id'], empty($_POST['ApplicantsResidence']['applicant']) ? '' : $_POST['ApplicantsResidence']['applicant']);
+        
+        if (isset($_POST['ApplicantsResidence']['nearest_primary']) && $model->load(Yii::$app->request->post())) {
+
+            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                return is_array($ajax) ? $ajax : [];
+
+            $model->modelSave();
+        }
+
+        return $this->render('residence', ['model' => $model]);
     }
 
     /**

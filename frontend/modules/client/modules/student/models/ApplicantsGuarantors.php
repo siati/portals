@@ -117,6 +117,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
             [['phone', 'employer_phone'], 'kenyaPhoneNumber'],
             [['email', 'employer_email'], 'string', 'max' => 40],
             [['email', 'employer_email'], 'email'],
+            [['email', 'employer_email'], 'toLowerCase'],
             [['postal_no', 'employer_postal_no'], 'string', 'max' => 6],
             [['id_no', 'phone', 'postal_no', 'employer_postal_no', 'employer_phone'], 'positiveValue'],
             [['postal_no', 'postal_code'], 'fullPostalAddress'],

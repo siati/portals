@@ -41,7 +41,7 @@
     display: table;
 }
 
-.stdt-rgst, .stdt-psnl, .prnt-det, .edcn-det, .grntr-det, .stdt-inst, .stdt-exps {
+.stdt-rgst, .stdt-rsdc, .stdt-psnl, .prnt-det, .edcn-det, .grntr-det, .stdt-inst, .stdt-exps {
     width: 93.73%;
     margin-left: 3.125%
 }

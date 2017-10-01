@@ -45,23 +45,23 @@ use common\models\LmBaseEnums
             </tr>
 
             <tr>
-                <td class="td-pdg-lft"><?= $form->field($model, 'birth_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-                <td class="td-pdg-lft"><?= $form->field($model, 'id_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-                <td class="td-pdg-lft"><?= $form->field($model, 'helb_beneficiary', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->dropDownList(LmBaseEnums::yesNo()) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'birth_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-child"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'id_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'helb_beneficiary', ['addon' => ['prepend' => ['content' => '<i class="fa fa-question"></i>']]])->dropDownList(LmBaseEnums::yesNo()) ?></td>
             </tr>
         </table>
 
         <table>
             <tr>
-                <td class="td-pdg-lft"><?= $form->field($model, 'institution_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'institution_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->textInput(['maxlength' => true]) ?></td>
             </tr>
         </table>
 
         <table>
             <tr>
-                <td class="td-pdg-lft"><?= $form->field($model, 'study_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->dropDownList(LmBaseEnums::studyLevels()) ?></td>
-                <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->dropDownList(LmBaseEnums::institutionTypes(LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $model->study_level)->ELEMENT, true)) ?></td>
-                <td class="td-pdg-lft"><?= $form->field($model, 'annual_fees', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'study_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-graduation-cap"></i>']]])->dropDownList(LmBaseEnums::studyLevels()) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'institution_type', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(LmBaseEnums::institutionTypes(LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $model->study_level)->ELEMENT, true)) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'annual_fees', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true]) ?></td>
             </tr>
         </table>
     </div>
