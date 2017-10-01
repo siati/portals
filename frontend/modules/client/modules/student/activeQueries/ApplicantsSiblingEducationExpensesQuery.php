@@ -46,5 +46,27 @@ class ApplicantsSiblingEducationExpensesQuery extends \yii\db\ActiveQuery {
                         (empty($id_no) ? '' : " && id_no = '$id_no'")
                 )->$oneOrAll();
     }
+    
+    /**
+     * 
+     * @param string $attribute attribute of guarantor
+     * @param string $value value of [[$attribute]]
+     * @param integer $id expense id
+     * @return ApplicantsSiblingEducationExpenses ActiveRecord
+     */
+    public function distinctDetails($attribute, $value, $id) {
+        return $this->where("$attribute = '$value' && id != '$id'")->one();
+    }
+    
+    /**
+     * 
+     * @param string $attribute attribute of User model
+     * @param string $value value of [[$attribute]]
+     * @param integer $applicant applicant's id
+     * @return ApplicantsSiblingEducationExpenses ActiveRecord
+     */
+    public function notOwnSenior($attribute, $value, $applicant) {
+        return $this->where("applicant = '$applicant' && $attribute = '$value'")->one();
+    }
 
 }

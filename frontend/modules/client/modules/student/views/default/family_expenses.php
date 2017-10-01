@@ -10,7 +10,7 @@ use yii\helpers\Html;
 
 <?php $columns = 3 ?>
 
-<div class="gnrl-frm-divider">Family Expenses</div>
+<div class="gnrl-frm-divider">Family Monthly Expenses</div>
 
 <table>
     <?php foreach ($models as $expense_type => $model): ?>

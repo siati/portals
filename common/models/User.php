@@ -304,6 +304,17 @@ class User extends ActiveRecord implements IdentityInterface {
     public static function notOwnSenior($attribute, $value) {
         return static::find()->notOwnSenior($attribute, $value);
     }
+    
+    /**
+     * 
+     * @param string $attribute attribute of User model
+     * @param string $value value of [[$attribute]]
+     * @param integer $id applicant's id
+     * @return User model
+     */
+    public static function notOwnSibling($attribute, $value, $id) {
+        return static::find()->notOwnSibling($attribute, $value, $id);
+    }
 
     /**
      * 

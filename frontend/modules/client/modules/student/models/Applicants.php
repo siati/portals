@@ -311,6 +311,78 @@ class Applicants extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @return integer total annual family income
+     */
+    public function myTotalAnnualFamilyIncome() {
+        $incomes = [];
+
+        foreach (ApplicantsParents::searchParents($this->id, null, null, null, null, null, null, null, null) as $parent)
+            if ($parent->isPayingFees()) {
+                $parent->totalAnnualIncome();
+
+                $parent->hasErrors('total_annual_income') ? '' : array_push($incomes, $parent->total_annual_income);
+            }
+
+        return array_sum($incomes);
+    }
+
+    /**
+     * 
+     * @return integer total annual family expenditure
+     */
+    public function myTotalAnnualFamilyExpenditure() {
+        $annual_expenses = [];
+
+        foreach (ApplicantsSiblingEducationExpenses::expensesForApplicant($this->id) as $expense)
+            array_push($annual_expenses, $expense->annual_fees);
+
+        $monthly_expenses = [];
+
+        foreach (ApplicantsFamilyExpenses::expensesForApplicant($this->id) as $expense)
+            array_push($monthly_expenses, $expense->amount);
+        
+        return array_sum($annual_expenses) + array_sum($monthly_expenses) * 12;
+    }
+
+    /**
+     * 
+     * @return integer 
+     */
+    public function myTotalAnnualFamilySaving() {
+        return $this->myTotalAnnualFamilyIncome() - $this->myTotalAnnualFamilyExpenditure();
+    }
+
+    /**
+     * 
+     * @param ApplicantsFamilyExpenses $family_expenses models
+     * @param ApplicantsSiblingEducationExpenses $sibling_expenses models
+     * @param ApplicantsSiblingEducationExpenses $sibling_expense model
+     * @return boolean true - expenditure are in excess than income
+     */
+    public function expenditureExceedsIncome($family_expenses, $sibling_expenses, $sibling_expense) {
+        ApplicantsFamilyExpenses::loadMultiple($family_expenses, Yii::$app->request->post());
+        
+        $sibling_expense->load(Yii::$app->request->post());
+        
+        $totalIncome = static::returnApplicant($sibling_expense->applicant)->myTotalAnnualFamilyIncome();
+
+        $annual_expenses = [];
+
+        foreach ($sibling_expenses as $expense)
+            array_push($annual_expenses, $expense->id == $sibling_expense->id ? $sibling_expense->annual_fees : $expense->annual_fees);
+
+        $monthly_expenses = [];
+
+        foreach ($family_expenses as $expense)
+            array_push($monthly_expenses, $expense->amount);
+
+        $totalExpenditure = array_sum($annual_expenses) + array_sum($monthly_expenses) * 12 + ($sibling_expense->isNewRecord && is_numeric($sibling_expense->annual_fees) ? $sibling_expense->annual_fees : 0);
+
+        return $totalExpenditure > $totalIncome;
+    }
+
+    /**
+     * 
      * @return array married - yes, no
      */
     public static function marrieds() {

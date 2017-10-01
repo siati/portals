@@ -80,5 +80,16 @@ class ApplicantsParentsQuery extends \yii\db\ActiveQuery {
     public function distinctDetails($attribute, $value, $id) {
         return $this->where("$attribute = '$value' && id != '$id'")->one();
     }
+    
+    /**
+     * 
+     * @param string $attribute attribute of User model
+     * @param string $value value of [[$attribute]]
+     * @param integer $applicant applicant's id
+     * @return ApplicantsParents ActiveRecord
+     */
+    public function siblingNotParent($attribute, $value, $applicant) {
+        return $this->where("applicant = '$applicant' && $attribute = '$value'")->one();
+    }
 
 }

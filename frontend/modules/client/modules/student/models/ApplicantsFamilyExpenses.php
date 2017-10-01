@@ -37,9 +37,17 @@ class ApplicantsFamilyExpenses extends \yii\db\ActiveRecord {
             ['amount', 'sanitizeString'],
             ['amount', 'string', 'min' => 4, 'max' => 6],
             ['amount', 'positiveValue'],
+            ['amount', 'expenditureNotExceedIncome'],
             [['created_at', 'modified_at'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 15],
         ];
+    }
+
+    /**
+     * total expenditure must not exceed total income
+     */
+    public function expenditureNotExceedIncome() {
+        Applicants::expenditureExceedsIncome(static::expensesToLoad($this->applicant), ApplicantsSiblingEducationExpenses::expensesForApplicant($this->applicant), ApplicantsSiblingEducationExpenses::expenseToLoad(empty($_POST['ApplicantsSiblingEducationExpenses']['id']) ? '' : $_POST['ApplicantsSiblingEducationExpenses']['id'], $this->applicant, null, null)) ? $this->addError('amount', 'Your total family expenditure must not exceed income') : '';
     }
 
     /**

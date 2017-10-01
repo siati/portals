@@ -4,6 +4,7 @@ namespace frontend\modules\client\modules\student\models;
 
 use Yii;
 use common\models\User;
+use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
 use common\models\StaticMethods;
 use common\models\LmBaseEnums;
 
@@ -182,6 +183,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 ",
                 'message' => 'Employer\'s Phone No. or Email must be provided'
             ],
+            [['birth_cert_no', 'id_no'], 'notOwnJunior'],
             [['birth_cert_no', 'id_no', 'kra_pin'], 'notOwnParent'],
             [['birth_cert_no', 'id_no', 'kra_pin'], 'distinctDetails'],
             [['fname', 'mname', 'lname', 'location', 'sub_location', 'village', 'occupation', 'employer_name'], 'notNumerical'],
@@ -286,6 +288,15 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
             else
             if ((!empty($user->id_no) && !empty($this->id_no) && $user->id_no != $this->id_no) || (!empty($user->birth_cert_no) && !empty($this->birth_cert_no) && $user->birth_cert_no != $this->birth_cert_no) || (!empty($user->kra_pin) && !empty($this->kra_pin) && $user->kra_pin != $this->kra_pin))
                 $this->addError($attribute, 'Please confirm your parent\'s ID. No. or Birth Cert. No. or KRA PIN');
+    }
+    
+    /**
+     * parent cannot be sibling too
+     * 
+     * @param string $attribute attribute of [[$this]]
+     */
+    public function notOwnJunior($attribute) {
+        is_object(ApplicantsSiblingEducationExpenses::notOwnSenior($attribute, $this->$attribute, $this->applicant)) ? $this->addError($attribute, 'You\'ve already used this ' . $this->getAttributeLabel($attribute) . ' against your sibling') : '';
     }
 
     /**
@@ -392,6 +403,17 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
      */
     public static function byApplicantAndRelationship($applicant, $relationship) {
         return static::find()->byApplicantAndRelationship($applicant, $relationship);
+    }
+    
+    /**
+     * 
+     * @param string $attribute attribute of User model
+     * @param string $value value of [[$attribute]]
+     * @param integer $applicant applicant's id
+     * @return ApplicantsParents model
+     */
+    public static function siblingNotParent($attribute, $value, $applicant) {
+        return static::find()->siblingNotParent($attribute, $value, $applicant);
     }
 
     /**

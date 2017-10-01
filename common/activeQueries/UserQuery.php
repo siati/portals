@@ -86,6 +86,17 @@ class UserQuery extends \yii\db\ActiveQuery {
     
     /**
      * 
+     * @param string $attribute attribute of User model
+     * @param string $value value of [[$attribute]]
+     * @param integer $id applicant's id
+     * @return User ActiveRecord
+     */
+    public function notOwnSibling($attribute, $value, $id) {
+        return $this->where("id = '$id' && $attribute = '$value'")->one();
+    }
+    
+    /**
+     * 
      * @param string $username username or email
      * @param integer $status user status
      * @return User ActiveRecord

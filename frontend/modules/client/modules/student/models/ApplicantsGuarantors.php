@@ -3,6 +3,7 @@
 namespace frontend\modules\client\modules\student\models;
 
 use common\models\User;
+use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
 use common\models\StaticMethods;
 use Yii;
 
@@ -107,6 +108,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
                 'message' => 'Employer\'s Phone No. or Email must be provided'
             ],
             [['id_no', 'kra_pin'], 'notOwnParent'],
+            ['id_no', 'notOwnJunior'],
             [['id_no', 'kra_pin'], 'distinctDetails'],
             [['fname', 'mname', 'lname', 'location', 'sub_location', 'village', 'occupation', 'employer_name'], 'notNumerical'],
             [['fname', 'mname', 'lname'], 'string', 'min' => 3, 'max' => 20],
@@ -173,6 +175,15 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
             else
             if ((!empty($user->id_no) && !empty($this->id_no) && $user->id_no != $this->id_no) || (!empty($user->kra_pin) && !empty($this->kra_pin) && $user->kra_pin != $this->kra_pin))
                 $this->addError($attribute, 'Please confirm your guarantor\'s ID. No. or KRA PIN');
+    }
+    
+    /**
+     * guarantor cannot be sibling too
+     * 
+     * @param string $attribute attribute of [[$this]]
+     */
+    public function notOwnJunior($attribute) {
+        is_object(ApplicantsSiblingEducationExpenses::notOwnSenior($attribute, $this->$attribute, $this->applicant)) ? $this->addError($attribute, 'You\'ve already used this ' . $this->getAttributeLabel($attribute) . ' against your sibling') : '';
     }
 
     /**
@@ -254,6 +265,17 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
      */
     public static function searchGuarantors($applicant, $gender, $id_no, $phone, $email, $kra_pin) {
         return static::find()->searchGuarantors($applicant, $gender, $id_no, $phone, $email, $kra_pin);
+    }
+    
+    /**
+     * 
+     * @param string $attribute attribute of User model
+     * @param string $value value of [[$attribute]]
+     * @param integer $applicant applicant's id
+     * @return ApplicantsGuarantors model
+     */
+    public static function siblingNotGuarantor($attribute, $value, $applicant) {
+        return static::find()->siblingNotGuarantor($attribute, $value, $applicant);
     }
 
     /**
