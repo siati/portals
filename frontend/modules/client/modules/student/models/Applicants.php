@@ -4,6 +4,7 @@ namespace frontend\modules\client\modules\student\models;
 
 use Yii;
 use common\models\User;
+use common\models\LmBanks;
 use common\models\StaticMethods;
 
 /**
@@ -30,6 +31,10 @@ use common\models\StaticMethods;
  * @property string $village
  * @property string $postal_no
  * @property integer $postal_code
+ * @property integer $bank
+ * @property integer $bank_branch
+ * @property integer $account_number
+ * @property integer $smart_card_number
  * @property string $modified_by
  * @property string $modified_at
  */
@@ -109,7 +114,7 @@ class Applicants extends \yii\db\ActiveRecord {
                 "
             ],
             [['dob', 'modified_at'], 'safe'],
-            [['disability', 'married', 'parents', 'father_death_cert_no', 'mother_death_cert_no', 'county', 'sub_county', 'constituency', 'ward', 'postal_no', 'postal_code'], 'integer'],
+            [['disability', 'married', 'parents', 'father_death_cert_no', 'mother_death_cert_no', 'county', 'sub_county', 'constituency', 'ward', 'postal_no', 'postal_code', 'bank', 'bank_branch', 'account_number', 'smart_card_number'], 'integer'],
             [['fname', 'mname', 'lname'], 'string', 'min' => 3, 'max' => 20],
             [['location', 'sub_location', 'village'], 'string', 'min' => 3, 'max' => 30],
             [['father_death_cert_no', 'mother_death_cert_no'], 'string', 'min' => 6, 'max' => 8],
@@ -117,11 +122,37 @@ class Applicants extends \yii\db\ActiveRecord {
             [['modified_by'], 'string', 'max' => 15],
             [['other_disability'], 'string', 'min' => 4, 'max' => 40],
             ['dob', 'minimumAcceptableAge'],
-            [['father_death_cert_no', 'mother_death_cert_no', 'postal_no'], 'positiveValue'],
+            [['father_death_cert_no', 'mother_death_cert_no', 'postal_no', 'account_number', 'smart_card_number'], 'positiveValue'],
             [['fname', 'mname', 'lname', 'other_disability', 'location', 'sub_location', 'village'], 'notNumerical'],
-            [['fname', 'mname', 'lname', 'other_disability', 'location', 'sub_location', 'village'], 'sanitizeString'],
+            [['fname', 'mname', 'lname', 'other_disability', 'location', 'sub_location', 'village', 'account_number', 'smart_card_number'], 'sanitizeString'],
             [['postal_no', 'postal_code'], 'fullPostalAddress'],
+            ['account_number', 'string', 'min' => 6, 'max' => 16],
+            ['smart_card_number', 'string', 'length' => 16],
+            [['bank', 'bank_branch', 'account_number'], 'required',
+                'when' => function () {
+                    return !empty($this->bank) || !empty($this->bank_branch) || !empty($this->account_number) || !empty($this->smart_card_number);
+                },
+                'whenClient' => "
+                    function (attribute, value) {
+                        return $('#applicants-bank').val() !== '' || $('#applicants-bank').val() === null || $('#applicants-bank_branch').val() !== '' || $('#applicants-bank_branch').val() === null || $('#applicants-account_number').val() !== '' || $('#applicants-account_number').val() === null || $('#applicants-smart_card_number').val() !== '' || $('#applicants-smart_card_number').val() === null;
+                    } 
+                ",
+                'message' => 'This value is required too'
+            ],
+            ['account_number', 'validateBankNumber']
         ];
+    }
+
+    /**
+     * verify account numbers
+     */
+    public function validateBankNumber() {
+        if (is_object($bank = LmBanks::searchBanks($this->bank, null, 'one')) && $bank->CHECKDIGITS == LmBanks::check_digits_yes)
+            if (strlen($this->account_number) < $bank->MINIMUMACCOUNTDIGITS)
+                $this->addError('account_number', $this->getAttributeLabel('account_number') . " must have at least $bank->MINIMUMACCOUNTDIGITS digits");
+            else
+            if (strlen($this->account_number) > $bank->MAXIMUMACCOUNTDIGITS)
+                $this->addError('account_number', $this->getAttributeLabel('account_number') . " must have at most $bank->MAXIMUMACCOUNTDIGITS digits");
     }
 
     /**
@@ -196,6 +227,10 @@ class Applicants extends \yii\db\ActiveRecord {
             'village' => Yii::t('app', 'Village / Estate'),
             'postal_no' => Yii::t('app', 'Postal No'),
             'postal_code' => Yii::t('app', 'Postal Code'),
+            'bank' => Yii::t('app', 'Bank'),
+            'bank_branch' => Yii::t('app', 'Bank Branch'),
+            'account_number' => Yii::t('app', 'Account Number'),
+            'smart_card_number' => Yii::t('app', 'HELB Smart Card No.'),
             'modified_by' => Yii::t('app', 'Modified By'),
             'modified_at' => Yii::t('app', 'Modified At'),
         ];
@@ -340,7 +375,7 @@ class Applicants extends \yii\db\ActiveRecord {
 
         foreach (ApplicantsFamilyExpenses::expensesForApplicant($this->id) as $expense)
             array_push($monthly_expenses, $expense->amount);
-        
+
         return array_sum($annual_expenses) + array_sum($monthly_expenses) * 12;
     }
 
@@ -357,13 +392,13 @@ class Applicants extends \yii\db\ActiveRecord {
      * @param ApplicantsFamilyExpenses $family_expenses models
      * @param ApplicantsSiblingEducationExpenses $sibling_expenses models
      * @param ApplicantsSiblingEducationExpenses $sibling_expense model
-     * @return boolean true - expenditure are in excess than income
+     * @return boolean true - expenditures are in excess than income
      */
     public function expenditureExceedsIncome($family_expenses, $sibling_expenses, $sibling_expense) {
         ApplicantsFamilyExpenses::loadMultiple($family_expenses, Yii::$app->request->post());
-        
+
         $sibling_expense->load(Yii::$app->request->post());
-        
+
         $totalIncome = static::returnApplicant($sibling_expense->applicant)->myTotalAnnualFamilyIncome();
 
         $annual_expenses = [];
@@ -377,6 +412,37 @@ class Applicants extends \yii\db\ActiveRecord {
             array_push($monthly_expenses, $expense->amount);
 
         $totalExpenditure = array_sum($annual_expenses) + array_sum($monthly_expenses) * 12 + ($sibling_expense->isNewRecord && is_numeric($sibling_expense->annual_fees) ? $sibling_expense->annual_fees : 0);
+
+        return $totalExpenditure > $totalIncome;
+    }
+
+    /**
+     * 
+     * @param ApplicantsParents $parents models
+     * @param ApplicantsParents $select_parent models
+     * @return boolean true - incomes are than expenditure
+     */
+    public function incomeLessThanExpenditure($parents, $select_parent) {
+        $totalExpenditure = static::returnApplicant($select_parent->applicant)->myTotalAnnualFamilyExpenditure();
+
+        $select_parent->load(Yii::$app->request->post());
+
+        $incomes = [];
+
+        foreach ($parents as $parent) {
+
+            $parent->id == $select_parent->id ? $parent->attributes = $select_parent->attributes : '';
+
+            if ($parent->isPayingFees()) {
+                $parent->totalAnnualIncome();
+
+                $parent->hasErrors('total_annual_income') ? '' : array_push($incomes, $parent->total_annual_income);
+            }
+        }
+
+        $select_parent->isNewRecord ? $select_parent->totalAnnualIncome() : '';
+
+        $totalIncome = array_sum($incomes) + ($select_parent->isNewRecord && $select_parent->hasErrors('total_annual_income') && $select_parent->isPayingFees() && is_numeric($select_parent->total_annual_income) ? $select_parent->total_annual_income : 0);
 
         return $totalExpenditure > $totalIncome;
     }

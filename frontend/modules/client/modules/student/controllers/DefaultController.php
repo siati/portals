@@ -15,6 +15,7 @@ use frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses;
 use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
 use common\models\User;
 use common\models\StaticMethods;
+use common\models\LmBankBranch;
 use common\models\LmBaseEnums;
 use common\models\LmInstitution;
 use common\models\LmInstitutionBranches;
@@ -34,13 +35,13 @@ class DefaultController extends Controller {
                 'class' => AccessControl::className(),
                 'only' => [
                     'index', 'register', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
-                    'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses'
+                    'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses', 'bank-branches'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'index', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
-                            'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses'
+                            'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses', 'bank-branches'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -280,6 +281,13 @@ class DefaultController extends Controller {
             return $ajaxes;
 
         return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense]);
+    }
+    
+    /**
+     * load bank branches dynamically
+     */
+    public function actionBankBranches() {
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmBankBranch::searchBranches($_POST['bank'], null, 'all'), 'BRANCHCODE', 'BRANCHNAME', true), 'Bank Branch', $_POST['branch']);
     }
 
     /**

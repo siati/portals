@@ -12,6 +12,8 @@ use common\models\SubCounties;
 use common\models\Constituencies;
 use common\models\Wards;
 use common\models\PostalCodes;
+use common\models\LmBanks;
+use common\models\LmBankBranch;
 use common\models\StaticMethods;
 use common\models\LmBaseEnums;
 use frontend\modules\client\modules\student\models\Applicants;
@@ -57,6 +59,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
 
+            <table><tr><td>&nbsp;</td></tr></table>
+
             <table>
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::genders(), ['prompt' => '-- Gender --']) ?></td>
@@ -66,6 +70,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
 
+            <table><tr><td>&nbsp;</td></tr></table>
+
             <table>
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($user, 'phone', ['addon' => ['prepend' => ['content' => '<i class="glyphicon glyphicon-phone"></i>']]])->textInput(['maxlength' => true]) ?></td>
@@ -74,6 +80,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
 
+            <table><tr><td>&nbsp;</td></tr></table>
+
             <table>
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'married', ['addon' => ['prepend' => ['content' => '<i class="fa fa-heart"></i>']]])->dropDownList(Applicants::marrieds()) ?></td>
@@ -81,6 +89,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="td-pdg-lft" style="width: 50%"><?= $form->field($applicant, 'other_disability', ['addon' => ['prepend' => ['content' => '<i class="fa fa-align-justify"></i>']]])->textInput(['maxlength' => true]) ?></td>
                 </tr>
             </table>
+
+            <table><tr><td>&nbsp;</td></tr></table>
 
             <table>
                 <tr>
@@ -91,11 +101,24 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
 
+            <table><tr><td>&nbsp;</td></tr></table>
+
             <table>
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'location', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'sub_location', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'village', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                </tr>
+            </table>
+
+            <div class="gnrl-frm-divider">Bank Details <small>This section is optional</small></div>
+
+            <table>
+                <tr>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'bank', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(StaticMethods::modelsToArray(LmBanks::searchBanks(null, LmBanks::online, 'all'), 'BANKCODE', 'NAME', true), ['prompt' => '-- Bank Name --', 'onchange' => 'bankBranches()']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'bank_branch', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(StaticMethods::modelsToArray(LmBankBranch::searchBranches($applicant->bank, null, 'all'), 'BRANCHCODE', 'BRANCHNAME', true), ['prompt' => '-- Bank Branch --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'account_number', ['addon' => ['prepend' => ['content' => '<i class="fa fa-vcard"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'smart_card_number', ['addon' => ['prepend' => ['content' => '<i class="fa fa-vcard-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
                 </tr>
             </table>
 
@@ -111,3 +134,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
+
+<?php
+$this->registerJs(
+        "
+            function bankBranches() {
+                $.post('bank-branches', {'bank': $('#applicants-bank').val(), 'branch': $('#applicants-bank_branch').val()},
+                    function (branches) {
+                        $('#applicants-bank_branch').html(branches).blur();
+                    }
+                );
+            }
+        ", yii\web\View::POS_HEAD
+)
+?>

@@ -198,6 +198,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
             [['email', 'employer_email'], 'toLowerCase'],
             [['postal_no', 'employer_postal_no', 'gross_monthly_salary', 'monthly_pension'], 'string', 'max' => 6],
             [['farming_annual', 'business_annual', 'govt_support_annual', 'relief_annual', 'other_annual'], 'string', 'max' => 7],
+            [['farming_annual', 'business_annual', 'govt_support_annual', 'relief_annual', 'other_annual', 'gross_monthly_salary', 'monthly_pension'], 'incomeLessThanExpenditure'],
             [['birth_cert_no', 'id_no', 'phone', 'postal_no', 'employer_postal_no', 'employer_phone', 'gross_monthly_salary', 'monthly_pension', 'farming_annual', 'business_annual', 'govt_support_annual', 'relief_annual', 'other_annual'], 'positiveValue'],
             ['total_annual_income', 'totalAnnualIncome'],
             [['postal_no', 'postal_code'], 'fullPostalAddress'],
@@ -275,6 +276,15 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     }
 
     /**
+     * total income must not be less than total expenditure
+     * 
+     * @param string $attribute attribute of parent
+     */
+    public function incomeLessThanExpenditure($attribute) {
+        Applicants::incomeLessThanExpenditure(ApplicantsParents::searchParents($this->applicant, null, null, null, null, null, null, null, null), static::parentToLoad($this->id, $this->applicant, $this->relationship, null)) ? $this->addError($attribute, 'Total income must not be less than total expenditure') : '';
+    }
+
+    /**
      * applicant should not pose a parent himself
      * 
      * @param string $attribute attribute of parent
@@ -290,7 +300,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
             if ((!empty($user->id_no) && !empty($this->id_no) && $user->id_no != $this->id_no) || (!empty($user->birth_cert_no) && !empty($this->birth_cert_no) && $user->birth_cert_no != $this->birth_cert_no) || (!empty($user->kra_pin) && !empty($this->kra_pin) && $user->kra_pin != $this->kra_pin))
                 $this->addError($attribute, 'Please confirm your parent\'s ID. No. or Birth Cert. No. or KRA PIN');
     }
-    
+
     /**
      * parent cannot be sibling too
      * 
@@ -405,7 +415,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     public static function byApplicantAndRelationship($applicant, $relationship) {
         return static::find()->byApplicantAndRelationship($applicant, $relationship);
     }
-    
+
     /**
      * 
      * @param string $attribute attribute of User model

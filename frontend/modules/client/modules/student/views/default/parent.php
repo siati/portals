@@ -107,6 +107,8 @@ use frontend\modules\client\modules\student\models\ApplicantsParents;
 
         <div class="gnrl-frm-divider"><?= $relationship ?>'s Income Details</div>
 
+        <?php $parent->totalAnnualIncome() ?>
+        
         <table>
             <tr>
                 <td class="td-pdg-lft"><?= $form->field($parent, 'total_annual_income', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true, 'readonly' => true]) ?></td>
