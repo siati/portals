@@ -79,6 +79,7 @@ class Applicants extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicants-disability, #applicants-married, #applicants-county, #applicants-sub_county, #applicants-constituency, #applicants-ward').blur();
                         return $('#applicants-id').val() * 1 > 0;
                     } 
                 "
@@ -89,6 +90,7 @@ class Applicants extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicants-other_disability').blur();
                         return $('#applicants-disability').val() === '" . self::disability_other . "' || $('#applicants-disability').val() === '" . self::disability_multiple . "';
                     } 
                 "
@@ -99,6 +101,7 @@ class Applicants extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicants-father_death_cert_no').blur();
                         return $('#applicants-parents').val() === '" . self::parents_neither_alive . "' || $('#applicants-parents').val() === '" . self::parents_mother_alive . "';
                     } 
                 "
@@ -109,6 +112,7 @@ class Applicants extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicants-mother_death_cert_no').blur();
                         return $('#applicants-parents').val() === '" . self::parents_neither_alive . "' || $('#applicants-parents').val() === '" . self::parents_father_alive . "';
                     } 
                 "
@@ -134,6 +138,7 @@ class Applicants extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicants-bank, #applicants-bank_branch, #applicants-account_number').blur();
                         return $('#applicants-bank').val() !== '' || $('#applicants-bank').val() === null || $('#applicants-bank_branch').val() !== '' || $('#applicants-bank_branch').val() === null || $('#applicants-account_number').val() !== '' || $('#applicants-account_number').val() === null || $('#applicants-smart_card_number').val() !== '' || $('#applicants-smart_card_number').val() === null;
                     } 
                 ",

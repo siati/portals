@@ -79,6 +79,7 @@ class User extends ActiveRecord implements IdentityInterface {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#user-birth_cert_no, #user-id_no').blur();
                         return ($('#user-id_no').val() === null || $('#user-id_no').val() === '') && ($('#user-birth_cert_no').val() === null || $('#user-birth_cert_no').val() === '');
                     }
                 ",
@@ -90,6 +91,7 @@ class User extends ActiveRecord implements IdentityInterface {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#user-birth_cert_no').blur();
                         return $('#applicants-dob').val() === null || $('#applicants-dob').val() === '' || (new Date).getFullYear() - $('#applicants-dob').val().substring(0, 4) * 1 < " . Applicants::maturity . ";
                     }
                 "
@@ -100,6 +102,7 @@ class User extends ActiveRecord implements IdentityInterface {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#user-id_no').blur();
                         return $('#user-user_type').val() !== '" . self::USER_STUDENT . "' || ($('#applicants-dob').val() !== null && $('#applicants-dob').val() !== '' && (new Date).getFullYear() - $('#applicants-dob').val().substring(0, 4) * 1 >= " . Applicants::maturity . ");
                     }
                 "
@@ -118,7 +121,7 @@ class User extends ActiveRecord implements IdentityInterface {
             ['kra_pin', 'toUpperCase'],
             ['kra_pin', 'KRAPin'],
             [['username'], 'sanitizeString'],
-            [['username'], 'toLowerCase'],
+            [['username', 'email'], 'toLowerCase'],
             [['username'], 'notNumerical'],
             ['phone', 'kenyaPhoneNumber'],
             [['password', 'confirm_password'], 'validateConfirmPassword'],

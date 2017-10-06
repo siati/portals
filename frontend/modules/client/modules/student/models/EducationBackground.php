@@ -80,6 +80,7 @@ class EducationBackground extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function () {
+                        $('#educationbackground-score, #educationbackground-out_of').blur();
                         return $('#educationbackground-study_level').val() === '" . self::study_level_primary . "' || $('#educationbackground-study_level').val() === '" . self::study_level_secondary . "';
                     }
                 "
@@ -90,6 +91,7 @@ class EducationBackground extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function () {
+                        $('#educationbackground-grade').blur();
                         return $('#educationbackground-study_level').val() !== '" . self::study_level_masters . "' && $('#educationbackground-study_level').val() !== '" . self::study_level_phd . "';
                     }
                 "

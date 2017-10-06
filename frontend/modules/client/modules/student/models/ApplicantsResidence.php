@@ -114,7 +114,7 @@ class ApplicantsResidence extends \yii\db\ActiveRecord {
      * @return ApplicantsResidence model
      */
     public static function forApplicant($applicant) {
-        return static::searchResidences($applicant, null, null, null, null, null, null, null, null, null, 'one');
+        return static::searchResidences($applicant, null, null, null, null, null, null, null, null, null, self::one);
     }
     
     /**

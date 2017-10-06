@@ -56,6 +56,7 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantssiblingeducationexpenses-birth_cert_no, #applicantssiblingeducationexpenses-id_no').blur();
                         return ($('#applicantssiblingeducationexpenses-id_no').val() === null || $('#applicantssiblingeducationexpenses-id_no').val() === '') && ($('#applicantssiblingeducationexpenses-birth_cert_no').val() === null || $('#applicantssiblingeducationexpenses-birth_cert_no').val() === '');
                     }
                 ",
@@ -66,6 +67,7 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
             [['birth_cert_no', 'id_no'], 'parentNotBeSibling'],
             [['birth_cert_no', 'id_no'], 'distinctDetails'],
             ['id_no', 'guarantorNotBeSibling'],
+            ['id_no', 'notSiblingsSpouse'],
             [['institution_name'], 'string', 'min' => 10, 'max' => 40],
             [['fname', 'mname', 'lname', 'institution_name'], 'notNumerical'],
             [['birth_cert_no', 'id_no', 'fname', 'mname', 'lname', 'institution_name', 'annual_fees'], 'sanitizeString'],
@@ -99,6 +101,16 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
      */
     public function guarantorNotBeSibling($attribute) {
         is_object(ApplicantsGuarantors::siblingNotGuarantor($attribute, $this->$attribute, $this->applicant)) ? $this->addError($attribute, 'You\'ve already used this ' . $this->getAttributeLabel($attribute) . ' against your guarantor') : '';
+    }
+    
+    /**
+     * 
+     * sibling cannot be spouse too
+     * 
+     * @param string $attribute attribute of [[$this]]
+     */
+    public function notSiblingsSpouse($attribute) {
+        is_object(ApplicantsSpouse::siblingOrParentNotSpouse($attribute, $this->$attribute, $this->applicant)) ? $this->addError($attribute, 'You\'ve already used this ' . $this->getAttributeLabel($attribute) . ' against your spouse') : '';
     }
 
     /**
@@ -177,7 +189,7 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
      * @return ApplicantsSiblingEducationExpenses models
      */
     public static function expensesForApplicant($applicant) {
-        return static::searchExpenses($applicant, null, null, 'all');
+        return static::searchExpenses($applicant, null, null, self::all);
     }
 
     /**

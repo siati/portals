@@ -116,7 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <table>
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'bank', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(StaticMethods::modelsToArray(LmBanks::searchBanks(null, LmBanks::online, 'all'), 'BANKCODE', 'NAME', true), ['prompt' => '-- Bank Name --', 'onchange' => 'bankBranches()']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($applicant, 'bank_branch', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(StaticMethods::modelsToArray(LmBankBranch::searchBranches($applicant->bank, null, 'all'), 'BRANCHCODE', 'BRANCHNAME', true), ['prompt' => '-- Bank Branch --']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'bank_branch', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(StaticMethods::modelsToArray(LmBankBranch::searchBranches($applicant->bank, null, yii\db\ActiveRecord::all), 'BRANCHCODE', 'BRANCHNAME', true), ['prompt' => '-- Bank Branch --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'account_number', ['addon' => ['prepend' => ['content' => '<i class="fa fa-vcard"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'smart_card_number', ['addon' => ['prepend' => ['content' => '<i class="fa fa-vcard-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
                 </tr>

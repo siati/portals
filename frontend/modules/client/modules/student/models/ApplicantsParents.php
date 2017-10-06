@@ -99,6 +99,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsparents-mname, #applicantsparents-lname').blur();
                         return ($('#applicantsparents-mname').val() === null || $('#applicantsparents-mname').val() === '') && ($('#applicantsparents-lname').val() === null || $('#applicantsparents-lname').val() === '');
                     } 
                 ",
@@ -110,6 +111,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsparents-birth_cert_no, #applicantsparents-id_no').blur();
                         return ($('#applicantsparents-id_no').val() === null || $('#applicantsparents-id_no').val() === '') && ($('#applicantsparents-birth_cert_no').val() === null || $('#applicantsparents-birth_cert_no').val() === '');
                     }
                 ",
@@ -121,6 +123,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsparents-birth_cert_no').blur();
                         return $('#applicantsparents-yob').val() === null || $('#applicantsparents-yob').val() === '' || (new Date).getFullYear() - $('#applicantsparents-yob').val() * 1 < " . Applicants::maturity . ";
                     }
                 "
@@ -131,6 +134,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsparents-id_no').blur();
                         return $('#applicantsparents-relationship').val() === '" . self::relationship_guardian . "' || $('#applicantsparents-relationship').val() === '" . self::relationship_guardian_to_father . "' || $('#applicantsparents-relationship').val() === '" . self::relationship_guardian_to_mother . "' || (new Date).getFullYear() - $('#applicantsparents-yob').val() * 1 >= " . Applicants::maturity . ";
                     }
                 "
@@ -141,6 +145,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsparents-phone, #applicantsparents-email').blur();
                         return ($('#applicantsparents-phone').val() === null || $('#applicantsparents-phone').val() === '') && ($('#applicantsparents-email').val() === null || $('#applicantsparents-email').val() === '');
                     }
                 ",
@@ -152,6 +157,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsparents-occupation, #applicantsparents-total_annual_income').blur();
                         return $('#applicantsparents-pays_fees').val() === '" . self::pays_fees_yes . "';
                     } 
                 "
@@ -168,6 +174,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsparents-kra_pin, #applicantsparents-staff_no, #applicantsparents-employer_name, #applicantsparents-gross_monthly_salary').blur();
                         return $('#applicantsparents-pays_fees').val() === '" . self::pays_fees_yes . "' && $('#applicantsparents-employed').val() === '" . self::employed_yes . "';
                     } 
                 "
@@ -178,12 +185,14 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsparents-employer_phone, #applicantsparents-employer_email').blur();
                         return $('#applicantsparents-pays_fees').val() === '" . self::pays_fees_yes . "' && $('#applicantsparents-employed').val() === '" . self::employed_yes . "' && ($('#applicantsparents-employer_phone').val() === null || $('#applicantsparents-employer_phone').val() === '') && ($('#applicantsparents-employer_email').val() === null || $('#applicantsparents-employer_email').val() === '');
                     }
                 ",
                 'message' => 'Employer\'s Phone No. or Email must be provided'
             ],
             [['birth_cert_no', 'id_no'], 'notOwnJunior'],
+            [['id_no', 'kra_pin'], 'notJuniorsSpouse'],
             [['birth_cert_no', 'id_no', 'kra_pin'], 'notOwnParent'],
             [['birth_cert_no', 'id_no', 'kra_pin'], 'distinctDetails'],
             [['fname', 'mname', 'lname', 'location', 'sub_location', 'village', 'occupation', 'employer_name'], 'notNumerical'],
@@ -308,6 +317,16 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
      */
     public function notOwnJunior($attribute) {
         is_object(ApplicantsSiblingEducationExpenses::notOwnSenior($attribute, $this->$attribute, $this->applicant)) ? $this->addError($attribute, 'You\'ve already used this ' . $this->getAttributeLabel($attribute) . ' against your sibling') : '';
+    }
+    
+    /**
+     * 
+     * parent cannot be spouse too
+     * 
+     * @param string $attribute attribute of [[$this]]
+     */
+    public function notJuniorsSpouse($attribute) {
+        is_object(ApplicantsSpouse::siblingOrParentNotSpouse($attribute, $this->$attribute, $this->applicant)) ? $this->addError($attribute, 'You\'ve already used this ' . $this->getAttributeLabel($attribute) . ' against your spouse') : '';
     }
 
     /**
@@ -624,17 +643,6 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
         return [
             self::is_minor_no => 'No',
             self::is_minor_yes => 'Yes',
-        ];
-    }
-
-    /**
-     * 
-     * @return array employeds
-     */
-    public static function employeds() {
-        return [
-            self::employed_no => 'No',
-            self::employed_yes => 'Yes',
         ];
     }
 

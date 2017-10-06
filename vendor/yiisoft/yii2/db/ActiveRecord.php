@@ -78,6 +78,9 @@ use yii\helpers\StringHelper;
  * @since 2.0
  */
 class ActiveRecord extends BaseActiveRecord {
+    
+    const one = 'one';
+    const all = 'all';
 
     /**
      * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.

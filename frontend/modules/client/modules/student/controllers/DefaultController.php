@@ -13,6 +13,8 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 use frontend\modules\client\modules\student\models\ApplicantsInstitution;
 use frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses;
 use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
+use frontend\modules\client\modules\student\models\ApplicantsEmployment;
+use frontend\modules\client\modules\student\models\ApplicantsSpouse;
 use common\models\User;
 use common\models\StaticMethods;
 use common\models\LmBankBranch;
@@ -20,6 +22,7 @@ use common\models\LmBaseEnums;
 use common\models\LmInstitution;
 use common\models\LmInstitutionBranches;
 use common\models\LmCourses;
+use common\models\LmEmployers;
 
 /**
  * Default controller for the `student` module
@@ -35,13 +38,15 @@ class DefaultController extends Controller {
                 'class' => AccessControl::className(),
                 'only' => [
                     'index', 'register', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
-                    'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses', 'bank-branches'
+                    'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
+                    'expenses', 'spouse', 'bank-branches', 'dynamic-employers', 'employment-periods'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'index', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
-                            'institution', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year', 'expenses', 'bank-branches'
+                            'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
+                            'expenses', 'spouse', 'bank-branches', 'dynamic-employers', 'employment-periods'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -248,6 +253,24 @@ class DefaultController extends Controller {
 
         return $this->render('institution', ['model' => $model]);
     }
+    
+    /**
+     * 
+     * @return string view to update employment details
+     */
+    public function actionEmployment() {
+        $model = ApplicantsEmployment::employmentToLoad(empty($_POST['ApplicantsEmployment']['id']) ? '' : $_POST['ApplicantsEmployment']['id'], empty($_POST['ApplicantsEmployment']['applicant']) ? '' : $_POST['ApplicantsEmployment']['applicant']);
+
+        if (isset($_POST['ApplicantsEmployment']['employer_name']) && $model->load(Yii::$app->request->post())) {
+
+            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                return is_array($ajax) ? $ajax : [];
+
+            $model->modelSave();
+        }
+
+        return $this->render('employment', ['model' => $model]);
+    }
 
     /**
      * 
@@ -284,10 +307,35 @@ class DefaultController extends Controller {
     }
     
     /**
+     * 
+     * @return string view to update spouse details
+     */
+    public function actionSpouse() {
+        $model = ApplicantsSpouse::spouseToLoad(empty($_POST['ApplicantsSpouse']['id']) ? '' : $_POST['ApplicantsSpouse']['id'], empty($_POST['ApplicantsSpouse']['applicant']) ? '' : $_POST['ApplicantsSpouse']['applicant']);
+
+        if (isset($_POST['ApplicantsSpouse']['id_no']) && $model->load(Yii::$app->request->post())) {
+
+            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                return is_array($ajax) ? $ajax : [];
+
+            $model->modelSave();
+        }
+
+        return $this->render('spouse', ['model' => $model]);
+    }
+    
+    /**
+     * load employers dynamically
+     */
+    public function actionDynamicEmployers() {
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmEmployers::searchEmployers(null, $_POST['search_name'], \yii\db\ActiveRecord::all), 'ACCOUNTNUM', 'NAME', true), 'Select Employer', $_POST['selected']);
+    }
+    
+    /**
      * load bank branches dynamically
      */
     public function actionBankBranches() {
-        StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmBankBranch::searchBranches($_POST['bank'], null, 'all'), 'BRANCHCODE', 'BRANCHNAME', true), 'Bank Branch', $_POST['branch']);
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmBankBranch::searchBranches($_POST['bank'], null, \yii\db\ActiveRecord::all), 'BRANCHCODE', 'BRANCHNAME', true), 'Bank Branch', $_POST['branch']);
     }
 
     /**
@@ -385,6 +433,13 @@ class DefaultController extends Controller {
         $till = empty($since) ? [] : StaticMethods::ranges(max($since) + 4, $educationYears[0] + 2, 1, true);
 
         StaticMethods::populateDropDown(isset($_POST['since']) ? $since : $till, null, $_POST['value']);
+    }
+    
+    /**
+     * load employment durations dynamically
+     */
+    public function actionEmploymentPeriods() {
+        StaticMethods::populateDropDown(ApplicantsEmployment::employmentPeriod($_POST['terms']), 'Duration', $_POST['period']);
     }
 
 }

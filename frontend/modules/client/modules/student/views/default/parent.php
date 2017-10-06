@@ -84,7 +84,7 @@ use frontend\modules\client\modules\student\models\ApplicantsParents;
             <tr>
                 <td class="td-pdg-lft"><?= $form->field($parent, 'education_level', ['addon' => ['prepend' => ['content' => '<i class="fa fa-graduation-cap"></i>']]])->dropDownList(LmBaseEnums::studyLevels()) ?></td>
                 <td class="td-pdg-lft"><?= $form->field($parent, 'occupation', ['addon' => ['prepend' => ['content' => '<i class="fa fa-hand-grab-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
-                <td class="td-pdg-lft"><?= $form->field($parent, 'employed', ['addon' => ['prepend' => ['content' => '<i class="fa fa-bank"></i>']]])->dropDownList(ApplicantsParents::employeds()) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($parent, 'employed', ['addon' => ['prepend' => ['content' => '<i class="fa fa-bank"></i>']]])->dropDownList(LmBaseEnums::yesNo()) ?></td>
                 <td class="td-pdg-lft"><?= $form->field($parent, 'staff_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-badge"></i>']]])->textInput(['maxlength' => true]) ?></td>
             </tr>
         </table>

@@ -1,0 +1,137 @@
+<?php
+/* @var $this yii\web\View */
+/* @var $form \kartik\form\ActiveForm */
+/* @var $model \frontend\modules\client\modules\student\models\ApplicantsSpouse */
+
+use yii\helpers\Html;
+use kartik\form\ActiveForm;
+use common\models\StaticMethods;
+use common\models\LmBaseEnums;
+use common\models\LmEmployers;
+
+$this->title = 'Spouse Details';
+$this->params['breadcrumbs'][] = $this->title;
+?>
+
+<?php $initial_employer = LmEmployers::searchEmployers($model->employer_name, null, yii\db\ActiveRecord::one) ?>
+
+<div class="gnrl-frm stdt-sps">
+
+    <div class="gnrl-frm-cont">
+
+        <?php $form = ActiveForm::begin(['id' => 'form-stdt-sps', 'enableAjaxValidation' => true]); ?>
+
+        <div class="gnrl-frm-hdr"><?= $this->title ?></div>
+
+        <div class="gnrl-frm-bdy fit-in-pn">
+
+            <?= Html::activeHiddenInput($model, 'id') ?>
+
+            <?= Html::activeHiddenInput($model, 'applicant') ?>
+
+            <div class="gnrl-frm-divider">Spouse Details</div>
+
+            <table>
+                <tr>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'fname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'mname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'lname', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                </tr>
+            </table>
+
+            <table><tr><td>&nbsp;</td></tr></table>
+
+            <table>
+                <tr>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'id_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'phone', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                </tr>
+            </table>
+
+            <table><tr><td>&nbsp;</td></tr></table>
+
+            <table>
+                <tr>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'employed', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->dropDownList(LmBaseEnums::yesNo()) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'employee_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'kra_pin', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                </tr>
+            </table>
+
+            <table><tr><td>&nbsp;</td></tr></table>
+
+            <table>
+                <tr>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'employer_name', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'employer_phone', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'employer_email', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                </tr>
+            </table>
+
+        </div>
+
+        <div class="gnrl-frm-ftr">
+
+            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'spouse-button']) ?>
+
+        </div>
+
+        <?php ActiveForm::end(); ?>
+
+    </div>
+</div>
+
+<?php
+$this->registerJs(
+        "
+            function dynamicEmployers() {
+                $.post('dynamic-employers', {'search_name': $('#search_employer_name').val(), 'selected': $('#employer_name').val()},
+                    function (employers) {
+                        $('#employer_name').html(employers);
+                    }
+                );
+            }
+            
+            function employmentPeriods() {
+                $.post('employment-periods', {'terms': $('#applicantsemployment-employment_terms').val(), 'period': $('#applicantsemployment-employment_period').val()},
+                    function (periods) {
+                        $('#applicantsemployment-employment_period').html(periods).blur();
+                    }
+                );
+            }
+        "
+        , \yii\web\VIEW::POS_HEAD
+)
+?>
+
+<?php
+$this->registerJs(
+        "
+            $('#search_employer_name-btn').click(
+                function () {
+                    dynamicEmployers();
+                }
+            );
+            
+            $('#search_employer_name').keyup(
+                function () {
+                    $(this).val().length > 9 ? $('#search_employer_name-btn').click() : '';
+                }
+            );
+            
+            $('#employer_name').change(
+                function () {
+                    $('#applicantsemployment-employer_name').html($(this).find('[value=' + $(this).val() + ']').clone()).blur();
+                }
+            );
+            
+            $('#applicantsemployment-employment_terms').change(
+                function () {
+                    employmentPeriods();
+                }
+            );
+        "
+        , \yii\web\VIEW::POS_READY
+)
+?>

@@ -77,6 +77,10 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     const expense_type_mortgage = 'Mortgage';
     const expense_type_other = 'Other';
     const expense_type_travel_fuel = 'Travel_Fuel';
+    const employement_terms = 'LMEmploymentTerms';
+    const employement_terms_permanent = 'Permanent';
+    const employement_terms_temporary = 'Temporary';
+    const employement_terms_contract = 'Contract';
 
     /**
      * @inheritdoc
@@ -306,7 +310,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
 
     /**
      * 
-     * @param string $admission_category admission category
+     * @param string $admission_category admission category element
      * @return LmBaseEnums model
      */
     public static function admissionCategory($admission_category) {
@@ -315,7 +319,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
 
     /**
      * 
-     * @param string $admission_category admission category
+     * @param string $admission_category admission category value
      * @return LmBaseEnums model
      */
     public static function admissionCategory2($admission_category) {
@@ -371,6 +375,23 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
                 schoolType(
                         in_array(static::admissionCategory2($admission_category)->ELEMENT, [self::admission_category_public_govt_sponsored, self::admission_category_public_self_sponsored]) ? self::school_type_public : self::school_type_private
         );
+    }
+
+    /**
+     * 
+     * @return array employment terms
+     */
+    public static function employmentTerms() {
+        return StaticMethods::modelsToArray(static::itemElements(self::employement_terms, null), 'VALUE', 'LABEL', false);
+    }
+
+    /**
+     * 
+     * @param string $employment_term employment terms element
+     * @return LmBaseEnums model
+     */
+    public static function employmentTerm($employment_term) {
+        return static::byNameAndElement(self::employement_terms, $employment_term);
     }
 
     /**
@@ -510,6 +531,17 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      */
     public static function expenseType($expense_type) {
         return static::byNameAndElement(self::expense_type, $expense_type);
+    }
+
+    /**
+     * 
+     * @return array employeds
+     */
+    public static function employeds() {
+        return [
+            self::employed_no => 'No',
+            self::employed_yes => 'Yes',
+        ];
     }
 
 }

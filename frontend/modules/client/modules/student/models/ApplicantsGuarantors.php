@@ -70,6 +70,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsguarantors-mname, #applicantsguarantors-lname').blur();
                         return ($('#applicantsguarantors-mname').val() === null || $('#applicantsguarantors-mname').val() === '') && ($('#applicantsguarantors-lname').val() === null || $('#applicantsguarantors-lname').val() === '');
                     } 
                 ",
@@ -81,6 +82,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsguarantors-phone, #applicantsguarantors-email').blur();
                         return ($('#applicantsguarantors-phone').val() === null || $('#applicantsguarantors-phone').val() === '') && ($('#applicantsguarantors-email').val() === null || $('#applicantsguarantors-email').val() === '');
                     }
                 ",
@@ -92,6 +94,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsguarantors-kra_pin, #applicantsguarantors-staff_no, #applicantsguarantors-employer_name').blur();
                         return $('#applicantsguarantors-employed').val() === '" . self::employed_yes . "';
                     } 
                 "
@@ -102,12 +105,13 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
                 },
                 'whenClient' => "
                     function (attribute, value) {
+                        $('#applicantsguarantors-employer_phone, #applicantsguarantors-employer_email').blur();
                         return $('#applicantsguarantors-employed').val() === '" . self::employed_yes . "' && ($('#applicantsguarantors-employer_phone').val() === null || $('#applicantsguarantors-employer_phone').val() === '') && ($('#applicantsguarantors-employer_email').val() === null || $('#applicantsguarantors-employer_email').val() === '');
                     }
                 ",
                 'message' => 'Employer\'s Phone No. or Email must be provided'
             ],
-            [['id_no', 'kra_pin'], 'notOwnParent'],
+            [['id_no', 'kra_pin'], 'notOwnGuarantor'],
             ['id_no', 'notOwnJunior'],
             [['id_no', 'kra_pin'], 'distinctDetails'],
             [['fname', 'mname', 'lname', 'location', 'sub_location', 'village', 'occupation', 'employer_name'], 'notNumerical'],
@@ -166,7 +170,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
      * 
      * @param string $attribute attribute of guarantor
      */
-    public function notOwnParent($attribute) {
+    public function notOwnGuarantor($attribute) {
         if (is_object($user = User::notOwnSenior($attribute, $this->$attribute)) && is_object($applicant = Applicants::returnApplicant($user->id)))
             if ($applicant->id == $this->applicant)
                 $this->addError($attribute, 'You\'re trying to be your own guarantor!');
