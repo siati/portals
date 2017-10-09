@@ -5,6 +5,7 @@ namespace frontend\modules\client\modules\student\models;
 use common\models\User;
 use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 use Yii;
 
 /**
@@ -63,7 +64,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
             [['applicant', 'fname', 'yob', 'gender', 'id_no', 'county', 'sub_county', 'constituency', 'ward'], 'required'],
             ['occupation', 'required', 'message' => $this->isParent() ? 'Please update this parent\'s occupation first' : 'Occupation is required'],
             [['applicant', 'yob', 'id_no', 'phone', 'postal_no', 'postal_code', 'county', 'sub_county', 'constituency', 'ward', 'employed', 'employer_postal_no', 'employer_postal_code'], 'integer'],
-            ['id_no', 'IDNoIsParents'],
+            ['id_no', $this->isParent() ? 'IDNoIsParents' : 'IDNoIsSpouses'],
             [['mname', 'lname'], 'required',
                 'when' => function () {
                     return $this->middleOrLastNameRequired();
@@ -86,7 +87,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
                         return ($('#applicantsguarantors-phone').val() === null || $('#applicantsguarantors-phone').val() === '') && ($('#applicantsguarantors-email').val() === null || $('#applicantsguarantors-email').val() === '');
                     }
                 ",
-                'message' => 'Guarantor\'s Phone No. or Email must be provided'
+                'message' => $this->isParent() ? ('Please update this Parent\'s Phone No. or Email') : ($this->isSpouse() ? 'Please update this Spouse\'s Phone No. or Email' : 'Guarantor\'s Phone No. or Email must be provided')
             ],
             [['kra_pin', 'staff_no', 'employer_name'], 'required',
                 'when' => function () {
@@ -97,7 +98,8 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
                         $('#applicantsguarantors-kra_pin, #applicantsguarantors-staff_no, #applicantsguarantors-employer_name').blur();
                         return $('#applicantsguarantors-employed').val() === '" . self::employed_yes . "';
                     } 
-                "
+                ",
+                'message' => $this->isParent() ? ('Please update this under the Parent\'s Details tab') : ($this->isSpouse() ? 'Please update this under the Spouse\'s Details tab' : 'This value is required')
             ],
             [['employer_phone', 'employer_email'], 'required',
                 'when' => function () {
@@ -109,7 +111,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
                         return $('#applicantsguarantors-employed').val() === '" . self::employed_yes . "' && ($('#applicantsguarantors-employer_phone').val() === null || $('#applicantsguarantors-employer_phone').val() === '') && ($('#applicantsguarantors-employer_email').val() === null || $('#applicantsguarantors-employer_email').val() === '');
                     }
                 ",
-                'message' => 'Employer\'s Phone No. or Email must be provided'
+                'message' => $this->isParent() ? ('Please update this Parent\'s Employer\'s Phone No. or Email') : ($this->isSpouse() ? 'Please update this Spouse\'s Phone No. or Email' : 'Employer\'s Phone No. or Email must be provided')
             ],
             [['id_no', 'kra_pin'], 'notOwnGuarantor'],
             ['id_no', 'notOwnJunior'],
@@ -147,6 +149,41 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
         is_object($parent = $this->isParent()) ? $this->attributes = $parent->attributes : $is_not_parent = true;
         
         return empty($is_not_parent);
+    }
+
+    /**
+     * if guarantor is spouse then adopt spouse's attributes
+     * 
+     * @return boolean true - spouse's attributes have been adopted to guarantor
+     */
+    public function IDNoIsSpouses() {
+        is_object($spouse = $this->isSpouse()) ? $this->attributes = $spouse->attributes : $is_not_spouse = true;
+        
+        if (is_object($spouse)) {
+            $applicant = Applicants::returnApplicant($spouse->applicant);
+            
+            $this->postal_no = $applicant->postal_no;
+            
+            $this->postal_code = $applicant->postal_code;
+            
+            $this->county = $applicant->county;
+            
+            $this->sub_county = $applicant->sub_county;
+            
+            $this->constituency = $applicant->constituency;
+            
+            $this->ward = $applicant->ward;
+            
+            $this->location = $applicant->location;
+            
+            $this->sub_location = $applicant->sub_location;
+            
+            $this->village = $applicant->village;
+            
+            $this->gender = LmBaseEnums::gender($spouse->relationship == ApplicantsSpouse::wife ? LmBaseEnums::gender_female : LmBaseEnums::gender_male)->VALUE;
+        }
+        
+        return empty($is_not_spouse);
     }
 
     /**
@@ -295,10 +332,28 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param integer $applicant applicant id
+     * @param integer $id_no guarantor id
+     * @return ApplicantsSpouse model
+     */
+    public static function guarantorIsSpouse($applicant, $id_no) {
+        return !empty($id_no) && is_object($spouse = ApplicantsSpouse::searchSpouses($applicant, null, $id_no, null, null, null, \yii\db\ActiveRecord::one)) > 0 ? $spouse : false;
+    }
+
+    /**
+     * 
      * @return ApplicantsParents model
      */
     public function isParent() {
         return static::guarantorIsParent($this->applicant, $this->id_no);
+    }
+
+    /**
+     * 
+     * @return ApplicantsSpouse model
+     */
+    public function isSpouse() {
+        return static::guarantorIsSpouse($this->applicant, $this->id_no);
     }
 
     /**

@@ -170,29 +170,35 @@ $this->registerJs(
 <?php
 $this->registerJs(
         "
-            $('#search_employer_name-btn').click(
-                function () {
-                    dynamicEmployers();
-                }
-            );
-            
-            $('#search_employer_name').keyup(
-                function () {
-                    $(this).val().length > 9 ? $('#search_employer_name-btn').click() : '';
-                }
-            );
-            
-            $('#employer_name').change(
-                function () {
-                    $('#applicantsemployment-employer_name').html($(this).find('[value=' + $(this).val() + ']').clone()).blur();
-                }
-            );
-            
-            $('#applicantsemployment-employment_terms').change(
-                function () {
-                    employmentPeriods();
-                }
-            );
+            /* load desired employers dynamically */
+                $('#search_employer_name-btn').click(
+                    function () {
+                        dynamicEmployers();
+                    }
+                );
+                
+                $('#search_employer_name').keyup(
+                    function () {
+                        $(this).val().length > 9 ? $('#search_employer_name-btn').click() : '';
+                    }
+                );
+            /* load desired employers dynamically */
+
+            /* adopt selected employer */
+                $('#employer_name').change(
+                    function () {
+                        $('#applicantsemployment-employer_name').html($(this).find('[value=' + $(this).val() + ']').clone()).blur();
+                    }
+                );
+            /* adopt selected employer */
+
+            /* employment terms affect employment preiods */
+                $('#applicantsemployment-employment_terms').change(
+                    function () {
+                        employmentPeriods();
+                    }
+                );
+            /* employment terms affect employment preiods */
         "
         , \yii\web\VIEW::POS_READY
 )

@@ -24,7 +24,7 @@ use common\models\User;
  * @property string $employer_name
  * @property integer $employer_phone
  * @property string $employer_email
- * @property string $employee_no
+ * @property string $staff_no
  * @property string $created_by
  * @property string $created_at
  * @property string $modified_by
@@ -76,20 +76,20 @@ class ApplicantsSpouse extends \yii\db\ActiveRecord {
                 ",
                 'message' => 'Spouse\'s Phone No. or Email must be provided'
             ],
-            [['employee_no', 'kra_pin', 'employer_name'], 'required',
+            [['staff_no', 'kra_pin', 'employer_name'], 'required',
                 'when' => function () {
                     return $this->employed == self::employed_yes;
                 },
                 'whenClient' => "
                     function (attribute, value) {
-                        $('#applicantsspouse-employee_no, #applicantsspouse-kra_pin, #applicantsspouse-employer_name').blur();
+                        $('#applicantsspouse-staff_no, #applicantsspouse-kra_pin, #applicantsspouse-employer_name').blur();
                         return $('#applicantsspouse-employed').val() === '" . self::employed_yes . "';
                     }
                 "
             ],
             [['employer_phone', 'employer_email'], 'required',
                 'when' => function () {
-                    return $this->employed == self::employed_yes && (!empty($this->employer_phone) || !empty($this->employer_email));
+                    return $this->employed == self::employed_yes && empty($this->employer_phone) && empty($this->employer_email);
                 },
                 'whenClient' => "
                     function (attribute, value) {
@@ -106,8 +106,8 @@ class ApplicantsSpouse extends \yii\db\ActiveRecord {
             [['employed'], 'string'],
             [['created_at', 'modified_at'], 'safe'],
             [['fname', 'mname', 'lname', 'created_by', 'modified_by'], 'string', 'min' => 3, 'max' => 20],
-            [['fname', 'mname', 'lname', 'employee_no', 'employer_name'], 'notNumerical'],
-            [['fname', 'mname', 'lname', 'id_no', 'phone', 'email', 'employee_no', 'kra_pin', 'employer_name', 'employer_phone', 'employer_email'], 'sanitizeString'],
+            [['fname', 'mname', 'lname', 'staff_no', 'employer_name'], 'notNumerical'],
+            [['fname', 'mname', 'lname', 'id_no', 'phone', 'email', 'staff_no', 'kra_pin', 'employer_name', 'employer_phone', 'employer_email'], 'sanitizeString'],
             [['id_no'], 'string', 'min' => 7, 'max' => 8],
             [['phone', 'employer_phone'], 'string', 'min' => 9, 'max' => 13],
             [['phone', 'employer_phone'], 'kenyaPhoneNumber'],
@@ -116,9 +116,9 @@ class ApplicantsSpouse extends \yii\db\ActiveRecord {
             [['email', 'employer_email'], 'toLowerCase'],
             [['employer_name'], 'string', 'min' => 10, 'max' => 40],
             [['kra_pin'], 'string', 'max' => 11, 'length' => 11],
-            [['kra_pin', 'employee_no'], 'toUpperCase'],
+            [['kra_pin', 'staff_no'], 'toUpperCase'],
             [['kra_pin'], 'KRAPin'],
-            [['employee_no'], 'string', 'min' => 3, 'max' => 15],
+            [['staff_no'], 'string', 'min' => 3, 'max' => 15],
         ];
     }
 
@@ -184,7 +184,7 @@ class ApplicantsSpouse extends \yii\db\ActiveRecord {
             'employer_name' => Yii::t('app', 'Employer\'s Name'),
             'employer_phone' => Yii::t('app', 'Employer\'s Phone'),
             'employer_email' => Yii::t('app', 'Employer\'s Email'),
-            'employee_no' => Yii::t('app', 'Employee No.'),
+            'staff_no' => Yii::t('app', 'Employee No.'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),
             'modified_by' => Yii::t('app', 'Modified By'),
@@ -247,6 +247,24 @@ class ApplicantsSpouse extends \yii\db\ActiveRecord {
     /**
      * 
      * @param integer $applicant applicant id
+     * @param integer $id_no parent id
+     * @return ApplicantsGuarantors model
+     */
+    public static function spouseIsGuarantor($applicant, $id_no) {
+        return !empty($id_no) && count($guarantor = ApplicantsGuarantors::searchGuarantors($applicant, null, $id_no, null, null, null)) > 0 ? $guarantor[0] : false;
+    }
+
+    /**
+     * 
+     * @return ApplicantsGuarantors model
+     */
+    public function isGuarantor() {
+        return static::spouseIsGuarantor($this->applicant, $this->id_no);
+    }
+
+    /**
+     * 
+     * @param integer $applicant applicant id
      * @return ApplicantsSpouse model
      */
     public static function newSpouse($applicant) {
@@ -291,8 +309,19 @@ class ApplicantsSpouse extends \yii\db\ActiveRecord {
             $this->modified_by = Yii::$app->user->identity->username;
             $this->modified_at = StaticMethods::now();
         }
+        
+        Yii::$app->db->transaction === null ? $transaction = Yii::$app->db->beginTransaction() : '';
 
-        return $this->save();
+        try {
+            if ($this->save() && (!is_object($guarantor = $this->isGuarantor()) || ($guarantor->IDNoIsSpouses() && $guarantor->save(false)))) {
+                empty($transaction) ? '' : $transaction->commit();
+                return true;
+            }
+        } catch (Exception $ex) {
+            
+        }
+
+        empty($transaction) ? '' : $transaction->rollBack();
     }
 
 }

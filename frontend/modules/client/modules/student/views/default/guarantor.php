@@ -16,7 +16,7 @@ use common\models\LmBaseEnums;
 use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 ?>
 
-<?php $disabled = $model->isNewRecord || is_object($model->isParent()) ?>
+<?php $disabled = ($is_spouse = is_object($model->isSpouse())) || is_object($model->isParent()) || $model->isNewRecord ?>
 
 <?php $form = ActiveForm::begin(['id' => 'form-grntr-det', 'enableAjaxValidation' => true]); ?>
 
@@ -37,7 +37,7 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 <table>
     <tr>
         <td class="td-pdg-lft"><?= $form->field($model, 'id_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card"></i>']]])->textInput(['maxlength' => true, 'autofocus' => 'autofocus']) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'yob', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(StaticMethods::ranges(ApplicantsGuarantors::oldest(), ApplicantsGuarantors::youngest(), 1, true), ['disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'yob', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar"></i>']]])->dropDownList(StaticMethods::ranges(ApplicantsGuarantors::oldest(), ApplicantsGuarantors::youngest(), 1, true), ['disabled' => $disabled && !$is_spouse, 'prt' => 'prt']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'gender', ['addon' => ['prepend' => ['content' => '<i class="fa fa-intersex"></i>']]])->dropDownList(LmBaseEnums::genders(), ['prompt' => '-- Gender --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'phone', ['addon' => ['prepend' => ['content' => '<i class="glyphicon glyphicon-phone"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
@@ -46,7 +46,7 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 <table>
     <tr>
         <td class="td-pdg-lft"><?= $form->field($model, 'email', ['addon' => ['prepend' => ['content' => '<i class="fa fa-at"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'occupation', ['addon' => ['prepend' => ['content' => '<i class="fa fa-hand-grab-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'occupation', ['addon' => ['prepend' => ['content' => '<i class="fa fa-hand-grab-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled && !$is_spouse, 'prt' => 'prt']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'kra_pin', ['addon' => ['prepend' => ['content' => '<i class="fa fa-certificate"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
 </table>
@@ -91,8 +91,8 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
     <table>
         <tr>
             <td class="td-pdg-lft"><?= $form->field($model, 'employer_email', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
-            <td class="td-pdg-lft"><?= $form->field($model, 'employer_postal_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
-            <td class="td-pdg-lft"><?= $form->field($model, 'employer_postal_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-building-o"></i>']]])->dropDownList($postalCodes, ['prompt' => '-- Select Town --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'employer_postal_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-envelope-o"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled && !$is_spouse, 'prt' => 'prt']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'employer_postal_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-building-o"></i>']]])->dropDownList($postalCodes, ['prompt' => '-- Select Town --', 'disabled' => $disabled && !$is_spouse, 'prt' => 'prt']) ?></td>
         </tr>
     </table>
 

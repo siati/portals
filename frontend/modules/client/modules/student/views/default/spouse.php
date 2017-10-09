@@ -5,7 +5,6 @@
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
-use common\models\StaticMethods;
 use common\models\LmBaseEnums;
 use common\models\LmEmployers;
 
@@ -54,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <table>
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'employed', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->dropDownList(LmBaseEnums::yesNo()) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'employee_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'staff_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'kra_pin', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-card-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
                 </tr>
             </table>
@@ -81,57 +80,3 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
-
-<?php
-$this->registerJs(
-        "
-            function dynamicEmployers() {
-                $.post('dynamic-employers', {'search_name': $('#search_employer_name').val(), 'selected': $('#employer_name').val()},
-                    function (employers) {
-                        $('#employer_name').html(employers);
-                    }
-                );
-            }
-            
-            function employmentPeriods() {
-                $.post('employment-periods', {'terms': $('#applicantsemployment-employment_terms').val(), 'period': $('#applicantsemployment-employment_period').val()},
-                    function (periods) {
-                        $('#applicantsemployment-employment_period').html(periods).blur();
-                    }
-                );
-            }
-        "
-        , \yii\web\VIEW::POS_HEAD
-)
-?>
-
-<?php
-$this->registerJs(
-        "
-            $('#search_employer_name-btn').click(
-                function () {
-                    dynamicEmployers();
-                }
-            );
-            
-            $('#search_employer_name').keyup(
-                function () {
-                    $(this).val().length > 9 ? $('#search_employer_name-btn').click() : '';
-                }
-            );
-            
-            $('#employer_name').change(
-                function () {
-                    $('#applicantsemployment-employer_name').html($(this).find('[value=' + $(this).val() + ']').clone()).blur();
-                }
-            );
-            
-            $('#applicantsemployment-employment_terms').change(
-                function () {
-                    employmentPeriods();
-                }
-            );
-        "
-        , \yii\web\VIEW::POS_READY
-)
-?>

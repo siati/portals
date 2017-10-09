@@ -563,7 +563,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
         Yii::$app->db->transaction === null ? $transaction = Yii::$app->db->beginTransaction() : '';
 
         try {
-            if ($this->save() && (!is_object($guarantor = $this->isGuarantor()) || (($guarantor->attributes = $this->attributes) && $guarantor->save(false)))) {
+            if ($this->save() && (!is_object($guarantor = $this->isGuarantor()) || ($guarantor->IDNoIsParents() && $guarantor->save(false)))) {
                 empty($transaction) ? '' : $transaction->commit();
                 return true;
             }

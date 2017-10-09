@@ -186,44 +186,56 @@ $this->registerJs(
 <?php
 $this->registerJs(
         "
-            $('#applicantsinstitution-country, #applicantsinstitution-level_of_study, #applicantsinstitution-institution_type, #applicantsinstitution-admission_category').change(
-                function () {
-                    dynamicInstitutions();
-                }
-            );
+            /* load institutions dynamically */
+                $('#applicantsinstitution-country, #applicantsinstitution-level_of_study, #applicantsinstitution-institution_type, #applicantsinstitution-admission_category').change(
+                    function () {
+                        dynamicInstitutions();
+                    }
+                );
+            /* load institutions dynamically */
 
-            $('#applicantsinstitution-institution_code').change(
-                function () {
-                    dynamicInstitutionBranches();
-                }
-            );
+            /* load institution branches dynamically */
+                $('#applicantsinstitution-institution_code').change(
+                    function () {
+                        dynamicInstitutionBranches();
+                    }
+                );
+            /* load institution branches dynamically */
 
-            $('#applicantsinstitution-level_of_study').change(
-                function () {
-                    dynamicInstTypes();
-                    dynamicAdmissionCategories();
-                    courseDurations();
-                    studyYears();
-                }
-            );
-            
-            $('#applicantsinstitution-institution_code, #applicantsinstitution-institution_branch_code, #applicantsinstitution-level_of_study, #applicantsinstitution-faculty, #applicantsinstitution-course_type, #applicantsinstitution-course_category').change(
-                function () {
-                    dynamicCourses();
-                }
-            );
+            /* level of study change has a number of effects */
+                $('#applicantsinstitution-level_of_study').change(
+                    function () {
+                        dynamicInstTypes();
+                        dynamicAdmissionCategories();
+                        courseDurations();
+                        studyYears();
+                    }
+                );
+            /* level of study change has a number of effects */
 
-            $('#applicantsinstitution-year_of_admission, #applicantsinstitution-admission_month, #applicantsinstitution-duration').change(
-                function () {
-                    completionYear();
-                }
-            );
-            
-            $('#applicantsinstitution-annual_fees, #applicantsinstitution-annual_upkeep, #applicantsinstitution-amount_can_raise').change(
-                function () {
-                    amountApplied();
-                }
-            );
+            /* load courses dynamically */
+                $('#applicantsinstitution-institution_code, #applicantsinstitution-institution_branch_code, #applicantsinstitution-level_of_study, #applicantsinstitution-faculty, #applicantsinstitution-course_type, #applicantsinstitution-course_category').change(
+                    function () {
+                        dynamicCourses();
+                    }
+                );
+            /* load courses dynamically */
+
+            /* completion years vary on a number of circumstances */
+                $('#applicantsinstitution-year_of_admission, #applicantsinstitution-admission_month, #applicantsinstitution-duration').change(
+                    function () {
+                        completionYear();
+                    }
+                );
+            /* completion years vary on a number of circumstances */
+
+            /* auto compute amount applied */
+                $('#applicantsinstitution-annual_fees, #applicantsinstitution-annual_upkeep, #applicantsinstitution-amount_can_raise').change(
+                    function () {
+                        amountApplied();
+                    }
+                );
+            /* auto compute amount applied */
         "
         , \yii\web\VIEW::POS_READY
 )

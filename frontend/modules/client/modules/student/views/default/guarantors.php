@@ -75,15 +75,27 @@ $this->registerJs(
                     function (values) {
                         $.each(values[1],
                             function(attr, val) {
-                                $('#' + attr).val(val).blur().attr('disabled', values[0] ? true : false);
+                                if ($('#' + attr).length) {
+                                    $('#' + attr).val(val).blur().attr('disabled', values[0] ? true : false);
+
+                                    if (attr === 'applicantsguarantors-employed')
+                                        $('#' + attr).change();
+                                    else
+                                    if (attr === 'applicantsguarantors-county') {
+                                        $('#applicantsguarantors-ward').val(values[1]['applicantsguarantors-ward']);
+                                        countyChanged(values[1]['applicantsguarantors-county'], values[1]['applicantsguarantors-sub_county'], $('#applicantsguarantors-sub_county'), '../../../site/dynamic-subcounties', values[1]['applicantsguarantors-constituency'], $('#applicantsguarantors-constituency'), '../../../site/dynamic-constituencies');
+                                    } else
+                                    if (attr === 'applicantsguarantors-constituency')
+                                        dynamicWards(values[1]['applicantsguarantors-constituency'], values[1]['applicantsguarantors-ward'], $('#applicantsguarantors-ward'), '../../../site/dynamic-wards');
+                                }
                             }
                         );
                         
-                        $('#applicantsguarantors-employed').change();
-                        
-                        countyChanged(values[1]['applicantsguarantors-county'], values[1]['applicantsguarantors-sub_county'], $('#applicantsguarantors-sub_county'), '../../../site/dynamic-subcounties', values[1]['applicantsguarantors-constituency'], $('#applicantsguarantors-constituency'), '../../../site/dynamic-constituencies');
-                        
-                        dynamicWards(values[1]['applicantsguarantors-constituency'], values[1]['applicantsguarantors-ward'], $('#applicantsguarantors-ward'), '../../../site/dynamic-wards');
+                        $.each(values[2],
+                            function(attr, val) {
+                                $('#' + attr).length ? $('#' + attr).blur().attr('disabled', false) : '';
+                            }
+                        );
                     }
                 );
             }

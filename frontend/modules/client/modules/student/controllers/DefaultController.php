@@ -98,14 +98,14 @@ class DefaultController extends Controller {
 
         return $this->render($user->isNewRecord ? 'register' : 'personal', ['applicant' => $applicant, 'user' => $user]);
     }
-    
+
     /**
      * 
      * @return string view to update residence details
      */
     public function actionResidence() {
         $model = ApplicantsResidence::residenceToLoad(empty($_POST['ApplicantsResidence']['id']) ? '' : $_POST['ApplicantsResidence']['id'], empty($_POST['ApplicantsResidence']['applicant']) ? '' : $_POST['ApplicantsResidence']['applicant']);
-        
+
         if (isset($_POST['ApplicantsResidence']['nearest_primary']) && $model->load(Yii::$app->request->post())) {
 
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
@@ -207,7 +207,7 @@ class DefaultController extends Controller {
 
         $model = ApplicantsGuarantors::guarantorToLoad(empty($_POST['ApplicantsGuarantors']['id']) ? '' : $_POST['ApplicantsGuarantors']['id'], empty($applicant->id) ? '' : $applicant->id, empty($_POST['ApplicantsGuarantors']['id_no']) ? '' : $_POST['ApplicantsGuarantors']['id_no'], $dob = empty($applicant->dob) ? Applicants::min_age : substr($applicant->dob, 0, 4));
 
-        if (isset($_POST['ApplicantsGuarantors']['id_no']) && ($model->IDNoIsParents() || $model->load(Yii::$app->request->post()))) {
+        if (isset($_POST['ApplicantsGuarantors']['id_no']) && ($model->IDNoIsParents() || ($model->load(Yii::$app->request->post()) && ($model->IDNoIsSpouses() || true)))) {
 
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
@@ -227,11 +227,19 @@ class DefaultController extends Controller {
 
         $model = ApplicantsGuarantors::guarantorToLoad($_POST['ApplicantsGuarantors']['id'], $_POST['ApplicantsGuarantors']['applicant'], $_POST['ApplicantsGuarantors']['id_no'], Applicants::min_age);
 
-        $attributes = ['0' => $model->IDNoIsParents()];
+        $attributes = ['0' => ($isParent = $model->IDNoIsParents()) || ($isSpouse = $model->IDNoIsSpouses()), '1' => [], '2' => []];
+
+        $mdl = !empty($isSpouse) ? (new ApplicantsSpouse()) : (!empty($isParent) ? new ApplicantsParents() : []);
+
+        $attributeLabels = empty($mdl) ? [] : $mdl->attributeLabels();
+
+        !empty($isSpouse) ? $attributeLabels += [$attr = 'gender' => $model->getAttributeLabel($attr), $attr = 'postal_no' => $model->getAttributeLabel($attr), $attr = 'postal_code' => $model->getAttributeLabel($attr), $attr = 'county' => $model->getAttributeLabel($attr), $attr = 'sub_county' => $model->getAttributeLabel($attr), $attr = 'constituency' => $model->getAttributeLabel($attr), $attr = 'ward' => $model->getAttributeLabel($attr), $attr = 'location' => $model->getAttributeLabel($attr), $attr = 'sub_location' => $model->getAttributeLabel($attr), $attr = 'village' => $model->getAttributeLabel($attr)] : '';
 
         foreach ($model->attributeLabels() as $attribute => $label)
-            if (!in_array($attribute, ['id', 'applicant', 'id_no', 'created_by', 'created_at', 'modified_by', 'modified_at']))
+            if (!in_array($attribute, ['id', 'applicant', 'id_no', 'created_by', 'created_at', 'modified_by', 'modified_at'])) {
                 $attributes['1']["applicantsguarantors-$attribute"] = $model->$attribute;
+                isset($attributeLabels[$attribute]) ? '' : $attributes['2']["applicantsguarantors-$attribute"] = $model->$attribute;
+            }
 
         return $attributes;
     }
@@ -253,7 +261,7 @@ class DefaultController extends Controller {
 
         return $this->render('institution', ['model' => $model]);
     }
-    
+
     /**
      * 
      * @return string view to update employment details
@@ -305,7 +313,7 @@ class DefaultController extends Controller {
 
         return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense]);
     }
-    
+
     /**
      * 
      * @return string view to update spouse details
@@ -323,14 +331,14 @@ class DefaultController extends Controller {
 
         return $this->render('spouse', ['model' => $model]);
     }
-    
+
     /**
      * load employers dynamically
      */
     public function actionDynamicEmployers() {
         StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmEmployers::searchEmployers(null, $_POST['search_name'], \yii\db\ActiveRecord::all), 'ACCOUNTNUM', 'NAME', true), 'Select Employer', $_POST['selected']);
     }
-    
+
     /**
      * load bank branches dynamically
      */
@@ -434,7 +442,7 @@ class DefaultController extends Controller {
 
         StaticMethods::populateDropDown(isset($_POST['since']) ? $since : $till, null, $_POST['value']);
     }
-    
+
     /**
      * load employment durations dynamically
      */

@@ -74,19 +74,25 @@ $this->registerJs(
 <?php
 $this->registerJs(
         "
-            $('.sblg-slct').click(
-                function () {
-                    loadSibling($(this).attr('sblg'));
-                }
-            );
-            
-            $('#applicantssiblingeducationexpenses-study_level').change(
-                function () {
-                    dynamicInstTypes();
-                }
-            );
-            
-            $('.sbln-exps-lft').css('max-height', '350px').css('overflow-x', 'hidden');
+            /* load selected sibling */
+                $('.sblg-slct').click(
+                    function () {
+                        loadSibling($(this).attr('sblg'));
+                    }
+                );
+            /* load selected sibling */
+
+            /* study level affects institution types */
+                $('#applicantssiblingeducationexpenses-study_level').change(
+                    function () {
+                        dynamicInstTypes();
+                    }
+                );
+            /* study level affects institution types */
+
+            /* well, just some css here */
+                $('.sbln-exps-lft').css('max-height', '350px').css('overflow-x', 'hidden');
+            /* well, just some css here */
         "
         , \yii\web\VIEW::POS_READY
 )

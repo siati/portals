@@ -6,7 +6,7 @@ function countyChanged(county, subcounty, subcountyField, subcountyUrl, constitu
 function dynamicSubcounties(county, subcounty, subcountyField, url) {
     $.post(url, {'county': county, 'subcounty': subcounty},
             function (subcounties) {
-                subcountyField.html(subcounties).change();
+                subcountyField.html(subcounties).change().find('[value=' + subcounty + ']').parent().val(subcounty);
             }
     );
 }
@@ -14,7 +14,7 @@ function dynamicSubcounties(county, subcounty, subcountyField, url) {
 function dynamicConstituencies(county, constituency, constituencyField, url) {
     $.post(url, {'county': county, 'constituency': constituency},
             function (constituencies) {
-                constituencyField.html(constituencies).change();
+                constituencyField.html(constituencies).change().find('[value=' + constituency + ']').parent().val(constituency);
             }
     );
 }
@@ -22,7 +22,7 @@ function dynamicConstituencies(county, constituency, constituencyField, url) {
 function dynamicWards(constituency, ward, wardField, url) {
     $.post(url, {'constituency': constituency, 'ward': ward},
             function (wards) {
-                wardField.html(wards);
+                wardField.html(wards).find('[value=' + ward + ']').parent().val(ward);
             }
     );
 }
