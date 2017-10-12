@@ -3,6 +3,7 @@
 namespace frontend\modules\business\models;
 
 use Yii;
+use common\models\StaticMethods;
 
 /**
  * This is the model class for table "{{%product_access_properties}}".
@@ -20,21 +21,22 @@ use Yii;
  * @property string $modified_by
  * @property string $modified_at
  */
-class ProductAccessProperties extends \yii\db\ActiveRecord
-{
+class ProductAccessProperties extends \yii\db\ActiveRecord {
+    
+    const active = '1';
+    const not_active = '0';
+    
     /**
      * @inheritdoc
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%product_access_properties}}';
     }
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['property', 'name', 'table', 'model_class', 'created_by', 'created_at'], 'required'],
             [['active'], 'string'],
@@ -48,8 +50,7 @@ class ProductAccessProperties extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id' => Yii::t('app', 'ID'),
             'property' => Yii::t('app', 'Property'),
@@ -70,8 +71,116 @@ class ProductAccessProperties extends \yii\db\ActiveRecord
      * @inheritdoc
      * @return \frontend\modules\business\activeQueries\ProductAccessPropertiesQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find() {
         return new \frontend\modules\business\activeQueries\ProductAccessPropertiesQuery(get_called_class());
     }
+    
+    /**
+     * 
+     * @param integer $pk property id
+     * @return ProductAccessProperties model
+     */
+    public static function returnProperty($pk) {
+        return static::find()->byPk($pk);
+    }
+    
+    /**
+     * 
+     * @param string $property property
+     * @param string $name property name
+     * @param string $table related table
+     * @param string $column column from [[$table]]
+     * @param string $model_class corresponding model class for [[$table]]
+     * @param string $attribute attribute of [[$model_class]]
+     * @param integer $active active or inactive
+     * @param string $oneOrAll one or all
+     * @return ProductAccessProperties model(s)
+     */
+    public static function searchProperties($property, $name, $table, $column, $model_class, $attribute, $active, $oneOrAll) {
+        return static::find()->searchProperties($property, $name, $table, $column, $model_class, $attribute, $active, $oneOrAll);
+    }
+    
+    /**
+     * 
+     * @param string $property property
+     * @return ProductAccessProperties model
+     */
+    public static function byProperty($property) {
+        return static::searchProperties($property, null, null, null, null, null, null, self::one);
+    }
+    
+    /**
+     * 
+     * @param string $table related table
+     * @param string $column column from [[$table]]
+     * @return ProductAccessProperties model
+     */
+    public static function byTableAndColumn($table, $column) {
+        return static::searchProperties(null, null, $table, $column, null, null, null, self::one);
+    }
+    
+    /**
+     * 
+     * @param string $model_class corresponding model class for [[$table]]
+     * @param string $attribute attribute of [[$model_class]]
+     * @return ProductAccessProperties model
+     */
+    public static function byModelclassAndAttribute($model_class, $attribute) {
+        return static::searchProperties(null, null, null, null, $model_class, $attribute, null, self::one);
+    }
+    
+    /**
+     * 
+     * @param string $property property
+     * @param string $table related table
+     * @param string $column column from [[$table]]
+     * @param string $model_class corresponding model class for [[$table]]
+     * @param string $attribute attribute of [[$model_class]]
+     * @return ProductAccessProperties model
+     */
+    public static function newProperty($property, $table, $column, $model_class, $attribute) {
+        $model = new ProductAccessProperties;
+        
+        $model->property = $property;
+        $model->table = $table;
+        $model->column = $column;
+        $model->model_class = $model_class;
+        $model->attribute = $attribute;
+        
+        $model->active = self::not_active;
+        
+        $model->created_by = Yii::$app->user->identity->username;
+        
+        return $model;
+    }
+    
+    /**
+     * 
+     * @param integer $id property id
+     * @param string $property property
+     * @param string $table related table
+     * @param string $column column from [[$table]]
+     * @param string $model_class corresponding model class for [[$table]]
+     * @param string $attribute attribute of [[$model_class]]
+     * @return ProductAccessProperties model
+     */
+    public static function propertyToLoad($id, $property, $table, $column, $model_class, $attribute) {
+        return is_object($model = static::returnProperty($id)) || is_object($model = static::byTableAndColumn($table, $column)) || is_object($model = static::byModelclassAndAttribute($model_class, $attribute)) ? $model_class : static::newProperty($property, $table, $column, $model_class, $attribute);
+    }
+    
+    /**
+     * 
+     * @return boolean true - model saved
+     */
+    public function modelSave() {
+        if ($this->isNewRecord)
+            $this->created_at = StaticMethods::now();
+        else {
+            $this->modified_by = Yii::$app->user->identity->username;
+            $this->modified_at = StaticMethods::now();
+        }
+
+        return $this->save();
+    }
+
 }
