@@ -4,7 +4,6 @@ namespace frontend\modules\business\models;
 
 use Yii;
 use common\models\StaticMethods;
-
 /**
  * This is the model class for table "{{%product_access_properties}}".
  *
@@ -15,6 +14,7 @@ use common\models\StaticMethods;
  * @property string $column
  * @property string $model_class
  * @property string $attribute
+ * @property string $operation
  * @property string $active
  * @property string $created_by
  * @property string $created_at
@@ -39,7 +39,7 @@ class ProductAccessProperties extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['property', 'name', 'table', 'model_class', 'created_by', 'created_at'], 'required'],
-            [['active'], 'string'],
+            [['operation', 'active'], 'string'],
             [['created_at', 'modified_at'], 'safe'],
             [['property', 'created_by', 'modified_by'], 'string', 'max' => 20],
             [['name'], 'string', 'max' => 40],
@@ -59,6 +59,7 @@ class ProductAccessProperties extends \yii\db\ActiveRecord {
             'column' => Yii::t('app', 'Column Name'),
             'model_class' => Yii::t('app', 'Related Model Class'),
             'attribute' => Yii::t('app', 'Model Attribute'),
+            'operation' => Yii::t('app', 'Operation'),
             'active' => Yii::t('app', 'Active'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),
@@ -146,6 +147,8 @@ class ProductAccessProperties extends \yii\db\ActiveRecord {
         $model->column = $column;
         $model->model_class = $model_class;
         $model->attribute = $attribute;
+        
+        empty($this->table) || empty($this->column) ? ('') : ($this->operation = "$model->column " . \frontend\modules\client\modules\student\models\ApplicantProductAccessCheckers::equal_to);
         
         $model->active = self::not_active;
         

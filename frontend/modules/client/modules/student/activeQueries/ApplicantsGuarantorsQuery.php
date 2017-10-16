@@ -44,7 +44,7 @@ class ApplicantsGuarantorsQuery extends \yii\db\ActiveQuery {
         return $this->where(
                         'id > 0' .
                         (empty($applicant) ? '' : " && applicant = '$applicant'") .
-                        (empty($gender) ? '' : " && gender = '$gender'") .
+                        (is_numeric($gender) ? " && gender = '$gender'" : '') .
                         (empty($id_no) ? '' : " && id_no = '$id_no'") .
                         (empty($phone) ? '' : " && phone like '%$phone%'") .
                         (empty($email) ? '' : " && email like '%$email%'") .

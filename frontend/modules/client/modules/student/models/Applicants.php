@@ -6,6 +6,7 @@ use Yii;
 use common\models\User;
 use common\models\LmBanks;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 
 /**
  * This is the model class for table "{{%applicants}}".
@@ -35,6 +36,7 @@ use common\models\StaticMethods;
  * @property integer $bank_branch
  * @property integer $account_number
  * @property integer $smart_card_number
+ * @property integer $employed
  * @property string $modified_by
  * @property string $modified_at
  */
@@ -118,7 +120,7 @@ class Applicants extends \yii\db\ActiveRecord {
                 "
             ],
             [['dob', 'modified_at'], 'safe'],
-            [['disability', 'married', 'parents', 'father_death_cert_no', 'mother_death_cert_no', 'county', 'sub_county', 'constituency', 'ward', 'postal_no', 'postal_code', 'bank', 'bank_branch', 'account_number', 'smart_card_number'], 'integer'],
+            [['disability', 'married', 'parents', 'father_death_cert_no', 'mother_death_cert_no', 'county', 'sub_county', 'constituency', 'ward', 'postal_no', 'postal_code', 'bank', 'bank_branch', 'account_number', 'smart_card_number', 'employed'], 'integer'],
             [['fname', 'mname', 'lname'], 'string', 'min' => 3, 'max' => 20],
             [['location', 'sub_location', 'village'], 'string', 'min' => 3, 'max' => 30],
             [['father_death_cert_no', 'mother_death_cert_no'], 'string', 'min' => 6, 'max' => 8],
@@ -236,6 +238,7 @@ class Applicants extends \yii\db\ActiveRecord {
             'bank_branch' => Yii::t('app', 'Bank Branch'),
             'account_number' => Yii::t('app', 'Account Number'),
             'smart_card_number' => Yii::t('app', 'HELB Smart Card No.'),
+            'employed' => Yii::t('app', 'You\'re Employed'),
             'modified_by' => Yii::t('app', 'Modified By'),
             'modified_at' => Yii::t('app', 'Modified At'),
         ];
@@ -272,6 +275,8 @@ class Applicants extends \yii\db\ActiveRecord {
         $model->married = self::married_no;
 
         $model->parents = self::parents_both_alive;
+        
+        $model->employed = LmBaseEnums::yesOrNo(LmBaseEnums::no)->VALUE;
 
         return $model;
     }

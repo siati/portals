@@ -323,5 +323,13 @@ class ApplicantsSpouse extends \yii\db\ActiveRecord {
 
         empty($transaction) ? '' : $transaction->rollBack();
     }
+    
+    /**
+     * 
+     * @return array spouse relationships husband, wife
+     */
+    public static function relatioships() {
+        return [self::husband => 'Husband', self::wife => 'Wife'];
+    }
 
 }

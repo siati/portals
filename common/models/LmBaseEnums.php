@@ -420,18 +420,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      * @return array course durations
      */
     public static function courseDurations($level_of_study) {
-        $durations = static::fractionalYears($level_of_study) ? [
-            '1' => 'One Year',
-            '1.5' => 'One and A Half Years',
-            '2' => 'Two Years',
-            '2.5' => 'Two and A Half Years',
-            '3' => 'Three Years',
-            '3.5' => 'Three and A Half Years',
-            '4' => 'Four Years',
-            '5' => 'Five Years',
-            '6' => 'Six Years',
-            '7' => 'Seven Years'
-                ] : [
+        $durations = static::fractionalYears($level_of_study) ? static::courseDurationWithFractions() : [
             '1' => 'One Year',
             '2' => 'Two Years',
             '3' => 'Three Years',
@@ -442,6 +431,25 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
         ];
 
         return static::maxCourseDurations($durations, $level_of_study);
+    }
+
+    /**
+     * 
+     * @return array course durations
+     */
+    public static function courseDurationWithFractions() {
+        return [
+            '1' => 'One Year',
+            '1.5' => 'One and A Half Years',
+            '2' => 'Two Years',
+            '2.5' => 'Two and A Half Years',
+            '3' => 'Three Years',
+            '3.5' => 'Three and A Half Years',
+            '4' => 'Four Years',
+            '5' => 'Five Years',
+            '6' => 'Six Years',
+            '7' => 'Seven Years'
+        ];
     }
 
     /**

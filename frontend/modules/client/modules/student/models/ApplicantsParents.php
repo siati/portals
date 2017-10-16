@@ -162,12 +162,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
                     } 
                 "
             ],
-            ['occupation', 'required',
-                'when' => function () {
-                    return is_object($this->isGuarantor());
-                },
-                'message' => 'Occupation is required, this parent being your guarantor too'
-            ],
+            ['occupation', 'occupationRequired'],
             [['kra_pin', 'staff_no', 'employer_name', 'gross_monthly_salary'], 'required',
                 'when' => function () {
                     return $this->isPayingFees() && $this->isFormallyEmployed();
@@ -272,6 +267,14 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
      */
     public function isFormallyEmployed() {
         return $this->employed == self::employed_yes;
+    }
+    
+    /**
+     * occupation is required conditionally
+     */
+    public function occupationRequired() {
+        if (empty($this->occupation) && is_object($this->isGuarantor()))
+            $this->addError ('occupation', 'Occupation is required, this parent being your guarantor too');
     }
 
     /**

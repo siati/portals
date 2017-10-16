@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     <?= Html::button('Guarantor ' . ++$i, ['class' => "grntr grntr-$guarantor->id btn btn-sm btn-primary grntr-nav-btn", 'name' => 'grntr-det-btn-btn', 'of-id' => $guarantor->id]) ?>
                 <?php endforeach; ?>
 
-                <?= Html::button('New Guarantor', ['class' => 'grntr grntr-new btn btn-sm btn-primary grntr-nav-btn', 'name' => 'grntr-det-btn-btn', 'of-id' => '']) ?>
+                <?= Html::button('Add Guarantor', ['class' => 'grntr grntr-new btn btn-sm btn-primary grntr-nav-btn', 'name' => 'grntr-det-btn-btn', 'of-id' => '']) ?>
 
                 <?php ActiveForm::end(); ?>
             </div>
