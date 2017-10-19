@@ -4,6 +4,7 @@ namespace frontend\modules\business\models;
 
 use Yii;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 
 /**
  * This is the model class for table "{{%product_opening}}".
@@ -74,7 +75,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
     public static function find() {
         return new \frontend\modules\business\activeQueries\ProductOpeningQuery(get_called_class());
     }
-    
+
     /**
      * 
      * @param integer $pk opening id
@@ -83,7 +84,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
     public static function returnOpening($pk) {
         return static::find()->byPk($pk);
     }
-    
+
     /**
      * 
      * @param integer $product product id
@@ -100,7 +101,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
     public static function searchOpening($product, $academic_year, $subsequent, $since, $till, $grace, $min_apps, $max_apps, $oneOrAll) {
         return static::find()->searchOpening($product, $academic_year, $subsequent, $since, $till, $grace, $min_apps, $max_apps, $oneOrAll);
     }
-    
+
     /**
      * 
      * @param integer $product product id
@@ -112,7 +113,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
     public static function forProductAcademicyearAndSubsequent($product, $academic_year, $subsequent, $oneOrAll) {
         return static::searchOpening($product, $academic_year, $subsequent, null, null, null, null, null, $oneOrAll);
     }
-    
+
     /**
      * 
      * @param integer $product product id
@@ -123,7 +124,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
     public static function byProductAcademicyearAndSubsequent($product, $academic_year, $subsequent) {
         return static::forProductAcademicyearAndSubsequent($product, $academic_year, $subsequent, self::one);
     }
-    
+
     /**
      * 
      * @param integer $product product id
@@ -133,18 +134,38 @@ class ProductOpening extends \yii\db\ActiveRecord {
      */
     public static function newOpening($product, $academic_year, $subsequent) {
         $model = new ProductOpening;
-        
+
         $model->product = $product;
-        $model->academic_year = $academic_year;
-        $model->subsequent = $subsequent;
-        
+
+        $model->academic_year = empty($academic_year) ? static::defaultAcademicYear() : $academic_year;
+
+        $model->subsequent = empty($subsequent) ? static::defaultSubsequent($product, $academic_year) : $subsequent;
+
         $model->grace = $model->till = $model->since = substr(StaticMethods::now(), 0, 10);
-        
+
         $model->created_by = Yii::$app->user->identity->username;
-        
+
         return $model;
     }
-    
+
+    /**
+     * 
+     * @return string academic year
+     */
+    public static function defaultAcademicYear() {
+        return date('m') < 7 ? ((date('Y') - 1) . '/' . date('Y')) : (date('Y') . '/' . (date('Y') + 1));
+    }
+
+    /**
+     * 
+     * @param integer $product product id
+     * @param string $academic_year academic year
+     * @return integer subsequent 2, first time 1
+     */
+    public static function defaultSubsequent($product, $academic_year) {
+        return is_object(static::byProductAcademicyearAndSubsequent($product, $academic_year, $subsequent = LmBaseEnums::applicantType(LmBaseEnums::applicant_type_subsequent)->VALUE)) ? LmBaseEnums::applicantType(LmBaseEnums::applicant_type_first_time)->VALUE : $subsequent;
+    }
+
     /**
      * 
      * @param integer $id opening id
@@ -156,7 +177,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
     public static function openingToLoad($id, $product, $academic_year, $subsequent) {
         return is_object($model = static::returnOpening($id)) || is_object($model = static::byProductAcademicyearAndSubsequent($product, $academic_year, $subsequent)) ? $model : static::newOpening($product, $academic_year, $subsequent);
     }
-    
+
     /**
      * 
      * @return boolean true - model saved
@@ -170,6 +191,17 @@ class ProductOpening extends \yii\db\ActiveRecord {
         }
 
         return $this->save();
+    }
+
+    /**
+     * 
+     * @return array academic years
+     */
+    public static function academicYears() {
+        foreach (range(date('Y') + 1, 2016, 1) as $year)
+            $academic_years[$academic_year = ($year - 1) . "/$year"] = $academic_year;
+        
+        return empty($academic_years) ? [] : $academic_years;
     }
 
 }

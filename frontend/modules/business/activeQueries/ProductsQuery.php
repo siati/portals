@@ -36,15 +36,17 @@ class ProductsQuery extends \yii\db\ActiveQuery {
      * @param string $code product code
      * @param string $name product name
      * @param string $helb_code HELB code
+     * @param integer $active active: 1 - yes; 0 - no
      * @param string $oneOrAll one or all
      * @return Products ActiveRecord(s)
      */
-    public function searchProducts($code, $name, $helb_code, $oneOrAll) {
+    public function searchProducts($code, $name, $helb_code, $active, $oneOrAll) {
         return $this->where(
                         'id > 0' .
                         (empty($code) ? '' : " && code = '$code'") .
                         (empty($name) ? '' : " && name like '%$name%'") .
-                        (empty($helb_code) ? '' : " && code = '$helb_code'")
+                        (empty($helb_code) ? '' : " && code = '$helb_code'") .
+                        (is_numeric($active) ? " && active = '$active'" : '')
                 )->orderBy('name asc')->$oneOrAll();
     }
 

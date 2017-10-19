@@ -241,9 +241,10 @@ class SideNav extends \yii\widgets\Menu {
      * @param string $method method
      * @param string $elements form elements - input tags
      * @param string $label label
+     * @param string $id form id
      * @return string html element
      */
-    public static function linkHelper($url, $method, $elements, $label) {
+    public static function linkHelper($url, $method, $elements, $label, $id) {
         if (is_array($elements))
             foreach ($elements as $element => $value)
                 $inputs = (empty($inputs) ? '' : $inputs) . "<input name='$element' type='hidden' value='$value'>";
@@ -251,7 +252,7 @@ class SideNav extends \yii\widgets\Menu {
         $csrf = Yii::$app->request->getCsrfToken();
 
         return $label
-                . "<form method=$method role=form>"
+                . "<form id=$id method=$method role=form>"
                 . "<input name='_csrf-frontend' value='$csrf' type='hidden'>"
                 . (empty($inputs) ? '' : $inputs)
                 . Html::submitButton($label, ['formaction' => \Yii::$app->request->baseUrl . $url, 'style' => 'display: none'])

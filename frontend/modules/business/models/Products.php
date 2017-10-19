@@ -12,12 +12,16 @@ use common\models\StaticMethods;
  * @property string $code
  * @property string $name
  * @property string $helb_code
+ * @property integer $active
  * @property string $created_by
  * @property string $created_at
  * @property string $modified_by
  * @property string $modified_at
  */
 class Products extends \yii\db\ActiveRecord {
+
+    const active_yes = '1';
+    const active_no = '0';
 
     /**
      * @inheritdoc
@@ -31,14 +35,16 @@ class Products extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['code', 'name', 'created_by'], 'required'],
+            [['code', 'name', 'active', 'created_by'], 'required'],
             [['created_at', 'modified_at'], 'safe'],
-            [['code'], 'string', 'max' => 3],
-            [['name'], 'string', 'max' => 60],
+            [['code'], 'string', 'min' => 2, 'max' => 3],
+            [['name'], 'string', 'min' => 10, 'max' => 60],
             [['helb_code'], 'string', 'max' => 15],
             [['created_by', 'modified_by'], 'string', 'max' => 20],
-            [['code'], 'unique'],
-            [['name'], 'unique'],
+            [['name', 'code'], 'sanitizeString'],
+            [['name', 'code'], 'notNumerical'],
+            [['code'], 'toUpperCase'],
+            [['name', 'code'], 'unique']
         ];
     }
 
@@ -51,6 +57,7 @@ class Products extends \yii\db\ActiveRecord {
             'code' => Yii::t('app', 'Product Code'),
             'name' => Yii::t('app', 'Product Name'),
             'helb_code' => Yii::t('app', 'HELB Code'),
+            'active' => Yii::t('app', 'Active'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),
             'modified_by' => Yii::t('app', 'Modified By'),
@@ -80,11 +87,20 @@ class Products extends \yii\db\ActiveRecord {
      * @param string $code product code
      * @param string $name product name
      * @param string $helb_code HELB code
+     * @param integer $active active: 1 - yes; 0 - no
      * @param string $oneOrAll one or all
      * @return Products model(s)
      */
-    public static function searchProducts($code, $name, $helb_code, $oneOrAll) {
-        return static::find()->searchProducts($code, $name, $helb_code, $oneOrAll);
+    public static function searchProducts($code, $name, $helb_code, $active, $oneOrAll) {
+        return static::find()->searchProducts($code, $name, $helb_code, $active, $oneOrAll);
+    }
+    
+    /**
+     * 
+     * @return Products models
+     */
+    public static function allProducts() {
+        return static::searchProducts(null, null, null, null, self::all);
     }
 
     /**
@@ -93,7 +109,7 @@ class Products extends \yii\db\ActiveRecord {
      * @return Products model
      */
     public static function byCode($code) {
-        return static::searchProducts($code, null, null, self::one);
+        return static::searchProducts($code, null, null, null, self::one);
     }
 
     /**
@@ -102,7 +118,7 @@ class Products extends \yii\db\ActiveRecord {
      * @return Products models
      */
     public static function forName($name) {
-        return static::searchProducts(null, $name, null, self::all);
+        return static::searchProducts(null, $name, null, null, self::all);
     }
 
     /**
@@ -111,7 +127,7 @@ class Products extends \yii\db\ActiveRecord {
      * @return Products models
      */
     public static function forHELBCode($helb_code) {
-        return static::searchProducts(null, null, $helb_code, self::all);
+        return static::searchProducts(null, null, $helb_code, null, self::all);
     }
 
     /**
@@ -131,6 +147,8 @@ class Products extends \yii\db\ActiveRecord {
      */
     public static function newProduct() {
         $model = new Products;
+
+        $model->active = self::active_no;
 
         $model->created_by = Yii::$app->user->identity->username;
 
@@ -159,6 +177,17 @@ class Products extends \yii\db\ActiveRecord {
         }
 
         return $this->save();
+    }
+
+    /**
+     * 
+     * @return array actives
+     */
+    public static function actives() {
+        return [
+            self::active_yes => 'Active',
+            self::active_no => 'Inactive'
+        ];
     }
 
 }

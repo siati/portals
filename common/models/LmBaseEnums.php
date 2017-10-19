@@ -81,6 +81,10 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
     const employement_terms_permanent = 'Permanent';
     const employement_terms_temporary = 'Temporary';
     const employement_terms_contract = 'Contract';
+    const applicant_type = 'LMApplicantType';
+    const applicant_type_none = 'None';
+    const applicant_type_first_time = 'First Time';
+    const applicant_type_subsequent = 'Subsequent';
 
     /**
      * @inheritdoc
@@ -194,6 +198,27 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      */
     public static function gender($gender) {
         return static::byNameAndElement(self::gender, $gender);
+    }
+
+    /**
+     * 
+     * @return array applicant types
+     */
+    public static function applicantTypes() {
+        foreach ($applicantTypes = static::itemElements(self::applicant_type, null) as $i => $applicantType)
+            if (strtolower($applicantType->ELEMENT) == strtolower(self::applicant_type_none))
+                unset($applicantTypes[$i]);
+
+        return StaticMethods::modelsToArray($applicantTypes, 'VALUE', 'LABEL', false);
+    }
+
+    /**
+     * 
+     * @param string $applicant_type applicant type
+     * @return LmBaseEnums model
+     */
+    public static function applicantType($applicant_type) {
+        return static::byNameAndElement(self::applicant_type, $applicant_type);
     }
 
     /**
