@@ -7,6 +7,10 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use frontend\modules\business\models\Products;
 use frontend\modules\business\models\ProductOpening;
+use frontend\modules\business\models\ProductOpeningSettings;
+use frontend\modules\business\models\ProductAccessProperties;
+use frontend\modules\business\models\ProductAccessPropertyItems;
+use frontend\modules\client\modules\student\models\ApplicantProductAccessCheckers;
 
 /**
  * Default controller for the `business` module
@@ -21,12 +25,12 @@ class DefaultController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'index', 'products', 'save-product', 'save-opening'
+                    'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item'
                 ],
                 'rules' => [
                     [
                         'actions' => [
-                            'index', 'products', 'save-product', 'save-opening'
+                            'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -52,7 +56,8 @@ class DefaultController extends Controller {
     public function actionProducts() {
         return $this->render('product-settings', [
                     'product' => $product = Products::productToLoad(empty($_POST['Products']['id']) ? '' : $_POST['Products']['id']),
-                    'opening' => ProductOpening::openingToLoad(empty($_POST['ProductOpening']['id']) ? '' : $_POST['ProductOpening']['id'], $product->id, empty($_POST['ProductOpening']['academic_year']) ? '' : $_POST['ProductOpening']['academic_year'], empty($_POST['ProductOpening']['subsequent']) ? '' : $_POST['ProductOpening']['subsequent'])
+                    'opening' => $opening = ProductOpening::openingToLoad(empty($_POST['ProductOpening']['id']) ? '' : $_POST['ProductOpening']['id'], $product->id, empty($_POST['ProductOpening']['academic_year']) ? '' : $_POST['ProductOpening']['academic_year'], empty($_POST['ProductOpening']['subsequent']) ? '' : $_POST['ProductOpening']['subsequent']),
+                    'settings' => ProductOpeningSettings::settingsToLoad($opening->id)
                         ]
         );
     }
@@ -86,8 +91,108 @@ class DefaultController extends Controller {
 
         if (($ajax = $this->ajaxValidate($opening)) === self::IS_AJAX || count($ajax) > 0) {
 
-            if (isset($_POST['sbmt']) && $opening->modelSave())
-                return [];
+            if (isset($_POST['sbmt']))
+                return $opening->modelSave() ? [true] : [false, $opening->errors];
+
+            return is_array($ajax) ? $ajax : [];
+        }
+    }
+
+    /**
+     * load opening id to the client
+     */
+    public function actionOpeningID() {
+        echo ProductOpening::openingToLoad(empty($_POST['id']) ? '' : $_POST['id'], empty($_POST['product']) ? '' : $_POST['product'], empty($_POST['academic_year']) ? '' : $_POST['academic_year'], empty($_POST['subsequent']) ? '' : $_POST['subsequent'])->id;
+    }
+
+    /**
+     * 
+     * @return string save product setting
+     */
+    public function actionSaveSettings() {
+        $settings = ProductOpeningSettings::settingsToLoad(empty($_POST['ProductOpeningSettings']['application']) ? '' : $_POST['ProductOpeningSettings']['application']);
+
+        foreach ($settings as $setting)
+            isset($_POST['ProductOpeningSettings'][$setting->setting]) ? $setting->attributes = $_POST['ProductOpeningSettings'][$setting->setting] : '';
+
+        if (($ajax = $this->ajaxValidateMultiple($settings)) === self::IS_AJAX || count($ajax) > 0) {
+
+            if (isset($_POST['sbmt'])) {
+                foreach ($settings as $setting)
+                    isset($_POST['ProductOpeningSettings'][$setting->setting]) ? ($setting->modelSave() ? '' : $hasError[] = $setting->name) : ('');
+
+                return empty($hasError) ? [true] : [false, empty($hasError)];
+            }
+
+            return is_array($ajax) ? $ajax : [];
+        }
+    }
+
+    /**
+     * 
+     * @return array load product settings dynamically to client
+     */
+    public function actionDynamicSettings() {
+        $opening = ProductOpening::openingToLoad(empty($_POST['id']) ? '' : $_POST['id'], empty($_POST['product']) ? '' : $_POST['product'], empty($_POST['academic_year']) ? '' : $_POST['academic_year'], empty($_POST['subsequent']) ? '' : $_POST['subsequent']);
+
+        foreach (['min_apps', 'max_apps', 'consider_counts', 'since', 'till', 'grace', 'appeal_since', 'appeal_till'] as $attribute)
+            $settings["productopening-$attribute"] = $opening->$attribute;
+
+        foreach (ProductOpeningSettings::settingsToLoad($opening->id) as $setting)
+            $settings["productopeningsettings-$setting->setting-value"] = $setting->value;
+
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        return empty($settings) ? [] : $settings;
+    }
+
+    /**
+     * 
+     * @return string main interface for more product settings
+     */
+    public function actionAccessCheckers() {
+        return $this->renderAjax('advanced-settings', ['sections' => ApplicantProductAccessCheckers::checkerSections(), 'application' => $_POST['application']]);
+    }
+
+    /**
+     * 
+     * @return array save applicant product access rules
+     */
+    public function actionSaveAccessProperty() {
+        foreach ($_POST['ProductAccessProperties'] as $property => $post) {
+            $models[$property] = ProductAccessProperties::propertyToLoad(empty($post['id']) ? '' : $post['id'], $property, empty($post['table']) ? '' : $post['table'], empty($post['column']) ? '' : $post['column'], empty($post['model_class']) ? '' : $post['model_class'], empty($post['attribute']) ? '' : $post['attribute']);
+            $models[$property]->attributes = $post;
+        }
+
+        if (($ajax = $this->ajaxValidateMultiple($models)) === self::IS_AJAX || count($ajax) > 0) {
+
+            if (isset($_POST['sbmt'])) {
+                $models[$_POST['sbmt']]->modelSave() ? '' : $hasError[] = $models[$_POST['sbmt']]->property;
+
+                return [empty($hasError), $models[$_POST['sbmt']]->name];
+            }
+
+            return is_array($ajax) ? $ajax : [];
+        }
+    }
+    
+    /**
+     * 
+     * @return array save applicant product access rules
+     */
+    public function actionSaveAccessPropertyItem() {
+        foreach ($_POST['ProductAccessPropertyItems'] as $property => $post) {
+            $models[$property] = ProductAccessPropertyItems::itemToLoad(empty($post['id']) ? '' : $post['id'], empty($post['application']) ? '' : $post['application'], $property);
+            $models[$property]->attributes = $post;
+        }
+
+        if (($ajax = $this->ajaxValidateMultiple($models)) === self::IS_AJAX || count($ajax) > 0) {
+
+            if (isset($_POST['sbmt'])) {
+                $models[$_POST['sbmt']]->modelSave() ? '' : $hasError[] = $models[$_POST['sbmt']]->property;
+
+                return [empty($hasError), $models[$_POST['sbmt']]->property];
+            }
 
             return is_array($ajax) ? $ajax : [];
         }

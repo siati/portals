@@ -1,6 +1,7 @@
 <?php
 
 namespace frontend\modules\business\activeQueries;
+
 use frontend\modules\business\models\ProductAccessProperties;
 
 /**
@@ -45,14 +46,14 @@ class ProductAccessPropertiesQuery extends \yii\db\ActiveQuery {
     public function searchProperties($property, $name, $table, $column, $model_class, $attribute, $active, $oneOrAll) {
         return $this->where(
                         'id > 0' .
-                        (empty($property) ? '' : " && property = '$property'") .
-                        (empty($name) ? '' : " && name like '%$name%'") .
-                        (empty($table) ? '' : " && table = '$table'") .
-                        (empty($column) ? '' : " && column = '$column'") .
-                        (empty($model_class) ? '' : " && model_class = '$model_class'") .
-                        (empty($attribute) ? '' : " && attribute = '$attribute'") .
-                        (is_numeric($property) ? " && active = '$active'" : '')
-                )->orderBy('name asc')->$oneOrAll();
+                        (empty($property) ? '' : " && `property` = '$property'") .
+                        (empty($name) ? '' : " && `name` like '%$name%'") .
+                        (empty($table) ? '' : " && `table` = '$table'") .
+                        (empty($column) ? '' : " && `column` = '$column'") .
+                        (empty($model_class) ? '' : " && `model_class` = '$model_class'") .
+                        (empty($attribute) ? '' : " && `attribute` = '$attribute'") .
+                        (is_numeric($property) ? " && `active` = '$active'" : '')
+                )->orderBy('`name` asc')->$oneOrAll();
     }
 
 }

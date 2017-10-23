@@ -34,20 +34,18 @@ class ProductOpeningSettingsQuery extends \yii\db\ActiveQuery {
      * @param integer $application product opening id
      * @param string $setting setting
      * @param string $name setting name
-     * @param string $label setting label
      * @param string $value setting value
      * @param integer $active active: 0 - false, true
      * @param string $remark setting remark
      * @param string $oneOrAll one or all
      * @return ProductOpeningSettings ActiveRecord(s)
      */
-    public static function searchSettings($application, $setting, $name, $label, $value, $active, $remark, $oneOrAll) {
+    public function searchSettings($application, $setting, $name, $value, $active, $remark, $oneOrAll) {
         return $this->where(
                         'id > 0' .
                         (empty($application) ? '' : " && application = '$application'") .
                         (empty($setting) ? '' : " && setting = '$setting'") .
                         (empty($name) ? '' : " && name like '%$name%'") .
-                        (empty($label) ? '' : " && label = '%$label%'") .
                         (empty($value) ? '' : " && value = '$value'") .
                         (is_numeric($active) ? " && active = '$active'" : '') .
                         (empty($remark) ? '' : " && remark like '%$remark%'")

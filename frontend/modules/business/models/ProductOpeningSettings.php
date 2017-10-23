@@ -3,6 +3,8 @@
 namespace frontend\modules\business\models;
 
 use Yii;
+use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 
 /**
  * This is the model class for table "{{%product_opening_settings}}".
@@ -11,7 +13,6 @@ use Yii;
  * @property integer $application
  * @property string $setting
  * @property string $name
- * @property string $label
  * @property string $value
  * @property string $active
  * @property string $remark
@@ -21,9 +22,15 @@ use Yii;
  * @property string $modified_at
  */
 class ProductOpeningSettings extends \yii\db\ActiveRecord {
-    
+
     const active = 1;
     const not_active = 0;
+
+    /**
+     *
+     * @var array possible option values
+     */
+    public $values;
 
     /**
      * @inheritdoc
@@ -37,13 +44,32 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['application', 'setting', 'name', 'label', 'value', 'created_by'], 'required'],
-            [['application'], 'integer'],
-            [['active', 'remark'], 'string'],
+            [['application', 'setting', 'name', 'value', 'created_by'], 'required'],
+            [['application', 'value', 'active'], 'integer'],
+            [['application'], 'positiveValue'],
+            [['remark'], 'string'],
             [['created_at', 'modified_at'], 'safe'],
-            [['setting', 'value', 'created_by', 'modified_by'], 'string', 'max' => 20],
-            [['name', 'label'], 'string', 'max' => 40],
+            [['created_by', 'modified_by'], 'string', 'max' => 20],
+            [['setting', 'name'], 'string', 'max' => 40],
+            [['setting', 'value'], 'subsequentCheck'],
         ];
+    }
+
+    /**
+     * 
+     * @return boolean true - subsequent check passed
+     */
+    public function subsequentCheck() {
+        if ($this->setting == ProductSettings::has_subsequent &&
+                is_object($application = ProductOpening::returnOpening($this->application)) &&
+                $application->subsequent == LmBaseEnums::applicantType(LmBaseEnums::applicant_type_subsequent)->VALUE) {
+            $this->addError('setting', 'This setting is not applicable on subsequent applications');
+            $this->addError('value', 'This setting is not applicable on subsequent applications');
+
+            return !$this->hasErrors('setting');
+        }
+        
+        return true;
     }
 
     /**
@@ -55,7 +81,6 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
             'application' => Yii::t('app', 'Application'),
             'setting' => Yii::t('app', 'Parameter'),
             'name' => Yii::t('app', 'Name'),
-            'label' => Yii::t('app', 'Label'),
             'value' => Yii::t('app', 'Value'),
             'active' => Yii::t('app', 'Active'),
             'remark' => Yii::t('app', 'Remark'),
@@ -73,7 +98,7 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
     public static function find() {
         return new \frontend\modules\business\activeQueries\ProductOpeningSettingsQuery(get_called_class());
     }
-    
+
     /**
      * 
      * @param integer $pk setting id
@@ -82,23 +107,22 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
     public static function returnSetting($pk) {
         return static::find()->byPk($pk);
     }
-    
+
     /**
      * 
      * @param integer $application product opening id
      * @param string $setting setting
      * @param string $name setting name
-     * @param string $label setting label
      * @param string $value setting value
      * @param integer $active active: 0 - false, true
      * @param string $remark setting remark
      * @param string $oneOrAll one or all
      * @return ProductOpeningSettings model(s)
      */
-    public static function searchSettings($application, $setting, $name, $label, $value, $active, $remark, $oneOrAll) {
-        return static::find()->searchSettings($application, $setting, $name, $label, $value, $active, $remark, $oneOrAll);
+    public static function searchSettings($application, $setting, $name, $value, $active, $remark, $oneOrAll) {
+        return static::find()->searchSettings($application, $setting, $name, $value, $active, $remark, $oneOrAll);
     }
-    
+
     /**
      * 
      * @param integer $application product opening id
@@ -108,9 +132,9 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
      * @return ProductOpeningSettings model(s)
      */
     public static function forApplicationSettingAndActive($application, $setting, $active, $oneOrAll) {
-        return static::searchSettings($application, $setting, null, null, null, $active, null, $oneOrAll);
+        return static::searchSettings($application, $setting, null, null, $active, null, $oneOrAll);
     }
-    
+
     /**
      * 
      * @param integer $application product opening id
@@ -118,9 +142,9 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
      * @return ProductOpeningSettings model
      */
     public static function byApplicationAndSetting($application, $setting) {
-        return static::searchSettings($application, $setting, null, null, null, null, null, self::one);
+        return static::searchSettings($application, $setting, null, null, null, null, self::one);
     }
-    
+
     /**
      * 
      * @param integer $application product opening id
@@ -129,16 +153,16 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
      */
     public static function newSetting($application, $setting) {
         $model = new ProductOpeningSettings;
-        
+
         $model->application = $application;
         $model->setting = $setting;
         $model->active = self::active;
-        
+
         $model->created_by = Yii::$app->user->identity->username;
-        
+
         return $model;
     }
-    
+
     /**
      * 
      * @param integer $id setting id
@@ -147,9 +171,32 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
      * @return ProductOpeningSettings model
      */
     public static function settingToLoad($id, $application, $setting) {
-        return is_object($model = static::returnSetting($id)) || is_object($model = static::byApplicationAndSetting($application, $setting)) ? $model : static::newSetting($application, $setting);
+        return is_object($model = static::returnSetting($id)) || (!empty($application) && !empty($setting) && is_object($model = static::byApplicationAndSetting($application, $setting))) ? $model : static::newSetting($application, $setting);
     }
-    
+
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return ProductOpeningSettings models
+     */
+    public static function settingsToLoad($application) {
+        foreach (ProductSettings::theSettings() as $setting => $detail) {
+            $settingModel = static::settingToLoad(null, $application, $setting);
+
+            if ($settingModel->isNewRecord && $detail[ProductSettings::active] == ProductSettings::yes) {
+                $settingModel->value = $detail[ProductSettings::default_value];
+                $settingModel->remark = $settingModel->name = $detail[ProductSettings::name];
+            }
+
+            $settingModel->values = $detail[ProductSettings::values];
+
+            if (!$settingModel->isNewRecord || $detail[ProductSettings::active] == ProductSettings::yes)
+                $settings[] = $settingModel;
+        }
+
+        return empty($settings) ? [] : $settings;
+    }
+
     /**
      * 
      * @return boolean true - model saved
@@ -162,7 +209,7 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
             $this->modified_at = StaticMethods::now();
         }
 
-        return $this->save();
+        return $this->subsequentCheck() ? $this->save() : true;
     }
 
 }

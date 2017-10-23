@@ -35,7 +35,6 @@ class ProductAccessPropertyItemsQuery extends \yii\db\ActiveQuery {
      * 
      * @param integer $application application id
      * @param string $property access property
-     * @param string $item item in [[$property]]
      * @param string $min_value minimum value
      * @param string $max_value maximum value
      * @param stgring $specific_values comma separated values
@@ -44,17 +43,16 @@ class ProductAccessPropertyItemsQuery extends \yii\db\ActiveQuery {
      * @param string $oneOrAll one or all
      * @return ProductAccessPropertyItems model(s)
      */
-    public function searchItems($application, $property, $item, $min_value, $max_value, $specific_values, $required, $active, $oneOrAll) {
+    public function searchItems($application, $property, $min_value, $max_value, $specific_values, $required, $active, $oneOrAll) {
         return $this->where(
                         'id > 0' .
                         (empty($application) ? '' : " && application = '$application'") .
                         (empty($property) ? '' : " && property = '$property'") .
-                        (empty($item) ? '' : " && item = '$item'") .
                         (is_null($min_value) || $min_value == '' ? '' : " && '$min_value' >= min_value && (max_value is null || max_value = '' || '$min_value' <= max_value)") .
                         (is_null($max_value) || $max_value == '' ? '' : " && '$max_value' <= max_value && (min_value is null || min_value = '' || '$max_value' >= min_value)") .
                         (empty($specific_values) ? '' : " && (specific_values = '$specific_values' || specific_values like '$specific_values,%' || specific_values like '%,$specific_values,%' || specific_values like '%,$specific_values')") .
-                        (is_number($required) ? " && required = '$required'" : '') .
-                        (is_number($active) ? " && active = '$active'" : '')
+                        (is_numeric($required) ? " && required = '$required'" : '') .
+                        (is_numeric($active) ? " && active = '$active'" : '')
                 )->$oneOrAll();
     }
 

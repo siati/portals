@@ -2,29 +2,14 @@
 /* @var $this yii\web\View */
 /* @var $product \frontend\modules\business\models\Products */
 /* @var $opening \frontend\modules\business\models\ProductOpening */
-
-use yii\bootstrap\ButtonDropdown;
+/* @var $settings \frontend\modules\business\models\ProductOpeningSettings */
 
 $this->title = 'Product Settings';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php
-$items[] = ['label' => 'New Product', 'url' => '#', 'options' => ['class' => 'btn btn-xs ld-prdct', 'prd-id' => '', 'style' => 'width: 100%; font-weight: bold; float: left; text-align: justify']];
-
-foreach (\frontend\modules\business\models\Products::allProducts() as $prod_on_list)
-    $items[] = ['label' => $prod_on_list->name, 'url' => '#', 'options' => ['class' => 'btn btn-xs ld-prdct', 'prd-id' => $prod_on_list->id, 'style' => 'width: 100%; font-weight: bold; float: left; text-align: justify']];
-
-$buttonDrop = empty($items) ? '' :
-        ButtonDropdown::widget([
-            'label' => 'Click To See All Products',
-            'containerOptions' => ['class' => 'btn btn-xs btn-success', 'style' => 'width: auto; padding: 0'],
-            'options' => ['class' => 'btn btn-xs btn-success', 'style' => 'width: 100%; border: none; font-weight: bold'],
-            'dropdown' => [
-                'items' => $items
-            ]
-        ])
-?>
+<?php $subsequent_name = \frontend\modules\business\models\ProductSettings::has_subsequent ?>
+<?php $subsequent_value = common\models\LmBaseEnums::applicantType(common\models\LmBaseEnums::applicant_type_subsequent)->VALUE ?>
 
 <div class="gnrl-frm prdct-stng">
 
@@ -32,13 +17,26 @@ $buttonDrop = empty($items) ? '' :
 
         <div class="gnrl-frm-hdr"><?= $this->title ?></div>
 
-        <div class="gnrl-frm-bdy fit-in-pn">
+        <div class="gnrl-frm-bdy gnrl-frm-pdg-top-0 gnrl-frm-pdg-rgt-0 gnrl-frm-pdg-btm-0 fit-in-pn"  style="height: 85%">
+            <div class="prdcts-tab-pn pull-left">
+                <ol style="width: 100%; padding: 0">
+                    <li class="ld-prdct kasa-pointa" prd-id="" title="Create New Product" style="padding: 0 3px"><small><b>&bullet; Create New Product</b></small></li>
 
-            <?= $buttonDrop ?>
+                    <?php foreach (\frontend\modules\business\models\Products::allProducts() as $prod_on_list): ?>
+                        <li class="ld-prdct kasa-pointa" prd-id="<?= $prod_on_list->id ?>" title="<?= $prod_on_list->name ?>" style="padding: 0 3px"><small><b>&bullet; <?= substr($prod_on_list->name, 0, 22) ?></b></small></li>
+                    <?php endforeach; ?>
+                </ol>
+            </div>
 
-            <?= $this->render('product', ['product' => $product]) ?>
+            <div class="prdcts-frm-pn pull-right">
+                <?= $this->render('product', ['product' => $product]) ?>
 
-            <?= $this->render('opening', ['opening' => $opening]) ?>
+                <?= $this->render('opening', ['opening' => $opening]) ?>
+
+                <?= $this->render('settings', ['settings' => $settings]) ?>
+            </div>
+
+
 
         </div>
 
@@ -57,7 +55,7 @@ $this->registerJs(
             }
             
             function saveProduct() {
-                post = $('#form-prdct-stng').serializeArray();
+                post = $('#form-prdct-nm').serializeArray();
                 
                 post.push({name: 'sbmt', value: ''});
                 
@@ -72,11 +70,75 @@ $this->registerJs(
             }
             
             function saveOpening() {
-                post = $('#form-prdct-opng').serializeArray();
-                
-                post.push({name: 'ProductOpening[product]', value: $('#products-id').val()}, {name: 'sbmt', value: ''});
-                
-                $.post('save-opening', post, function () {});
+                if ($('#products-id').val() * 1 > 0) {
+                    post = $('#form-prdct-opng').serializeArray();
+
+                    post.push({name: 'ProductOpening[product]', value: $('#products-id').val()}, {name: 'sbmt', value: ''});
+
+                    $.post('save-opening', post,
+                        function(saveds) {
+                            saveds[0] ?
+                                customSwal('Success', 'Application Dates Saved', '2500', 'success', false, true, 'ok', '#a5dc86', false, 'cancel') :
+                                customSwal('Failed', 'Application Dates Were Not Saved<br\><br\>Please make any changes and retry', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
+                        }
+                    );
+                } else
+                    customSwal('Declined', 'The new product above must first be saved', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
+            }
+            
+            function saveSettings() {
+                $.post('opening-i-d', {'product': $('#products-id').val(), 'academic_year': $('#productopening-academic_year').val(), 'subsequent': $('#productopening-subsequent').val()},
+                    function(id) {
+                        if (id * 1 > 0) {
+                            post = $('#form-prdct-stng').serializeArray();
+                            
+                            post.push({name: 'ProductOpeningSettings[application]', value: id}, {name: 'sbmt', value: ''});
+                            
+                            $.post('save-settings', post,
+                                function(saveds) {
+                                    saveds[0] ?
+                                        customSwal('Success', 'Application Settings Saved', '2500', 'success', false, true, 'ok', '#a5dc86', false, 'cancel') :
+                                        customSwal('Failed', 'Application Settings Were Not Saved<br\><br\>Please seek assistance from the system administrator', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
+                                }
+                            );
+                        } else
+                            customSwal('Declined', 'The Application Dates above must first be saved', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
+                    }
+                );
+            }
+            
+            function dynamicSettings() {
+                $.post('dynamic-settings', {'product': $('#products-id').val(), 'academic_year': $('#productopening-academic_year').val(), 'subsequent': $('#productopening-subsequent').val()},
+                    function (settings) {
+                        $.each(settings,
+                            function (attr, val) {
+                                if ($('#' + attr).length) {
+                                    $('#' + attr).val(val).blur();
+
+                                    attr === 'productopeningsettings-$subsequent_name-value' ? $('#' + attr).attr('disabled', $('#productopening-subsequent').val() === '$subsequent_value') : '';
+                                }
+                            }
+                        );
+                    }
+                );
+            }
+            
+            function advancedSettings() {
+                $.post('opening-i-d', {'product': $('#products-id').val(), 'academic_year': $('#productopening-academic_year').val(), 'subsequent': $('#productopening-subsequent').val()},
+                    function(id) {
+                        id * 1 > 0 ?
+                            yiiModal('Advanced Application Settings', 'access-checkers', {'application': id}, $('.gnrl-frm').width(), $('.gnrl-frm').height()) :
+                            customSwal('Declined', 'The Application Dates below must first be saved', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
+                    }
+                );
+            }
+            
+            function disableSubsequent() {
+                $('#productopeningsettings-$subsequent_name-value').attr('disabled', $('#productopening-subsequent').val() === '$subsequent_value');
+            }
+            
+            function highlightProduct() {
+                $('[prd-id=' + ($('#products-id').val() * 1 > 0 ? $('#products-id').val() : '\"\"') + ']').css('background-color', '#a5dc86');
             }
 
         "
@@ -87,14 +149,13 @@ $this->registerJs(
 <?php
 $this->registerJs(
         "
+            /* highlight active product */
+                highlightProduct();
+            /* highlight active product */
             
             /* load desired product */
                 $('.ld-prdct').click(
                     function (event) {
-                        event.preventDefault();
-                        
-                        event.stopPropagation();
-                        
                         loadProduct($(this).attr('prd-id'));
                     }
                 );
@@ -115,7 +176,60 @@ $this->registerJs(
                     }
                 );
             /* save product opening only */
-
+            
+            /* save product opening settings only */
+                $('#stngs-sv').click(
+                    function () {
+                        saveSettings();
+                    }
+                );
+            /* save product opening settings only */
+            
+            /* dynamic settings */
+                $('#productopening-academic_year, #productopening-subsequent').change(
+                    function () {
+                        dynamicSettings();
+                    }
+                );
+            /* dynamic settings */
+            
+            /* whether to disable subsequent setting */
+                disableSubsequent();
+            /* whether to disable subsequent setting */
+            
+            /* blurs for concurrent validation */
+                $('#productopening-consider_counts').change(
+                    function () {
+                        $('#productopening-grace, #productopening-min_apps, #productopening-max_apps').blur();
+                    }
+                );
+                
+                $('#productopening-min_apps, #productopening-max_apps').change(
+                    function () {
+                        $('#productopening-min_apps, #productopening-max_apps').blur();
+                    }
+                );
+                
+                $('#productopening-since, #productopening-till, #productopening-grace').change(
+                    function () {
+                        $('#productopening-since, #productopening-till, #productopening-grace').blur();
+                    }
+                );
+                
+                $('#productopening-since, #productopening-appeal_since, #productopening-appeal_till').change(
+                    function () {
+                        $('#productopening-appeal_since, #productopening-appeal_till').blur();
+                    }
+                );
+            /* blurs for concurrent validation */
+            
+            /* advanced settings */
+                $('#advnc-stngs').click(
+                    function () {
+                        advancedSettings();
+                    }
+                );
+            /* advanced settings */
         "
         , \yii\web\VIEW::POS_READY
 )
