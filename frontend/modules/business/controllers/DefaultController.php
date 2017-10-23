@@ -169,7 +169,7 @@ class DefaultController extends Controller {
             if (isset($_POST['sbmt'])) {
                 $models[$_POST['sbmt']]->modelSave() ? '' : $hasError[] = $models[$_POST['sbmt']]->property;
 
-                return [empty($hasError), $models[$_POST['sbmt']]->name];
+                return [empty($hasError), $models[$_POST['sbmt']]->name, $models[$_POST['sbmt']]->id];
             }
 
             return is_array($ajax) ? $ajax : [];
@@ -181,9 +181,9 @@ class DefaultController extends Controller {
      * @return array save applicant product access rules
      */
     public function actionSaveAccessPropertyItem() {
-        foreach ($_POST['ProductAccessPropertyItems'] as $property => $post) {
-            $models[$property] = ProductAccessPropertyItems::itemToLoad(empty($post['id']) ? '' : $post['id'], empty($post['application']) ? '' : $post['application'], $property);
-            $models[$property]->attributes = $post;
+        foreach ($_POST['ProductAccessPropertyItems'] as $key => $post) {
+            $models[$key] = ProductAccessPropertyItems::itemToLoad(empty($post['id']) ? '' : $post['id'], empty($post['application']) ? '' : $post['application'], empty($post['property']) ? '' : $post['property']);
+            $models[$key]->attributes = $post;
         }
 
         if (($ajax = $this->ajaxValidateMultiple($models)) === self::IS_AJAX || count($ajax) > 0) {

@@ -136,25 +136,27 @@ use frontend\modules\business\models\ProductAccessPropertyItems;
 
                                     <div class="pull-right" style="width: 70%; height: 92.5%; padding: 5px 5px 5px 0; overflow-x: hidden; border-bottom: 1px solid #ddd">
 
-                                        <?php $form = ActiveForm::begin(['id' => $form_id = "form-$section-$i", 'enableAjaxValidation' => true, 'action' => 'save-access-property-item', 'options' => ['property' => $model->property, 'parent' => $models[$section][$i]->property], 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
+                                        <?php $form = ActiveForm::begin(['id' => $form_id = "form-$section-$i", 'enableAjaxValidation' => true, 'action' => 'save-access-property-item', 'options' => ['property' => "$section$i", 'parent_property' => $models[$section][$i]->property], 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
 
-                                        <?= Html::activeHiddenInput($model, "[$model->property]application") ?>
+                                        <?= Html::activeHiddenInput($model, "[$section$i]application") ?>
+                                        
+                                        <?= Html::activeHiddenInput($model, "[$section$i]property") ?>
 
                                         <table>
 
                                             <tr>
-                                                <td class="td-pdg-lft"><?= $form->field($model, "[$model->property]min_value")->textInput(['maxlength' => true]) ?></td>
-                                                <td class="td-pdg-lft"><?= $form->field($model, "[$model->property]max_value")->textInput(['maxlength' => true]) ?></td>
+                                                <td class="td-pdg-lft"><?= $form->field($model, "[$section$i]min_value")->textInput(['maxlength' => true]) ?></td>
+                                                <td class="td-pdg-lft"><?= $form->field($model, "[$section$i]max_value")->textInput(['maxlength' => true]) ?></td>
                                             </tr>
 
                                             <tr>
-                                                <td class="td-pdg-lft"><?= $form->field($model, "[$model->property]active")->dropDownList(ProductAccessPropertyItems::actives()) ?></td>
-                                                <td class="td-pdg-lft"><?= $form->field($model, "[$model->property]required")->dropDownList(ProductAccessPropertyItems::requireds()) ?></td>
+                                                <td class="td-pdg-lft"><?= $form->field($model, "[$section$i]active")->dropDownList(ProductAccessPropertyItems::actives()) ?></td>
+                                                <td class="td-pdg-lft"><?= $form->field($model, "[$section$i]required")->dropDownList(ProductAccessPropertyItems::requireds()) ?></td>
                                             </tr>
 
-                                            <tr><td class="td-pdg-lft" colspan="2"><?= $form->field($model, "[$model->property]specific_values")->textarea(['rows' => 10, 'style' => 'resize: none']) ?></td></tr>
+                                            <tr><td class="td-pdg-lft" colspan="2"><?= $form->field($model, "[$section$i]remark")->textarea(['rows' => 1, 'style' => 'resize: none']) ?></td></tr>
 
-                                            <tr><td class="td-pdg-lft" colspan="2"><?= $form->field($model, "[$model->property]remark")->textarea(['rows' => 1, 'style' => 'resize: none']) ?></td></tr>
+                                            <tr><td class="td-pdg-lft" colspan="2"><?= $form->field($model, "[$section$i]specific_values")->textarea(['rows' => 22, 'style' => 'resize: none']) ?></td></tr>
 
                                         </table>
 
@@ -224,6 +226,37 @@ $this->registerJs(
 
             }
             
+            function beforeSavePropertyItem(frm) {
+                
+                form = $('#form-' + frm);
+                
+                prpty = form.find('#productaccesspropertyitems-' + $('#form-' + frm).attr('property') + '-property');
+                
+                if (prpty.val() * 1 > 0)
+                    saveAccessPropertyItem(frm);
+                else {
+                    field = $('#productaccessproperties-' + $('#form-' + frm).attr('parent_property') + '-name');
+                    
+                    post = $('#' + field.attr('form')).serializeArray();
+                
+                    post.push({name: 'sbmt', value: field.attr('property')});
+
+                    $.post('save-access-property', post,
+                        function(saved) {
+                            field.val(saved[1]).blur();
+
+                            if (saved[0] && saved[2] * 1 > 0) {
+                                prpty.val(saved[2]);
+                                saveAccessPropertyItem(frm);
+                                $('#sctn-itm-nm-' + field.attr('item') + ' > .gnrl-frm-divider').text(saved[1])
+                            } else
+                                customSwal('Failed', 'Property Name Was Not Saved<br\><br\>Please make any changes on the Property Name then retry', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
+                        }
+                    );
+
+                }
+            }
+            
             function selectedItem(field) {
                 $('#itms-lst > div').hide();
                 
@@ -261,7 +294,7 @@ $this->registerJs(
             /* save access item */
                 $('.prpty-itm-sv-btn').click(
                     function () {
-                        saveAccessPropertyItem($(this).attr('form'));
+                        beforeSavePropertyItem($(this).attr('form'));
                     }
                 );
             /* save access item */

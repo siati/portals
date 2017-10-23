@@ -11,7 +11,7 @@ use frontend\modules\business\models\ProductOpening;
 
 <?php $form = ActiveForm::begin(['id' => 'form-prdct-opng', 'enableAjaxValidation' => true, 'action' => 'save-opening']); ?>
 
-<div class="gnrl-frm-divider">Application Opening and Closing Dates<div class="btn btn-xs btn-warning pull-right" id="advnc-stngs"><small><i class="fa fa-gears"></i> Advanced Settings</small></div></div>
+<div class="gnrl-frm-divider">Application Opening and Closing Dates<div class="btn btn-xs btn-warning pull-right" id="advnc-stngs"><small><b><i class="fa fa-gears"></i> Advanced Access Controls</b></small></div></div>
 
 <table>
     <tr>

@@ -127,7 +127,7 @@ $this->registerJs(
                 $.post('opening-i-d', {'product': $('#products-id').val(), 'academic_year': $('#productopening-academic_year').val(), 'subsequent': $('#productopening-subsequent').val()},
                     function(id) {
                         id * 1 > 0 ?
-                            yiiModal('Advanced Application Settings', 'access-checkers', {'application': id}, $('.gnrl-frm').width(), $('.gnrl-frm').height()) :
+                            yiiModal('Advanced Access Controls', 'access-checkers', {'application': id}, $('.gnrl-frm').width(), $('.gnrl-frm').height()) :
                             customSwal('Declined', 'The Application Dates below must first be saved', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
                     }
                 );
