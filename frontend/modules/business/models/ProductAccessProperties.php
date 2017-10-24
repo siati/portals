@@ -42,7 +42,10 @@ class ProductAccessProperties extends \yii\db\ActiveRecord {
             [['operation', 'active'], 'string'],
             [['created_at', 'modified_at'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 20],
-            [['name', 'property'], 'string', 'max' => 40],
+            [['property'], 'string', 'max' => 40],
+            ['name', 'string', 'min' => 3, 'max' => 40],
+            ['name', 'sanitizeString'],
+            ['name', 'notNumerical'],
             [['table', 'column', 'attribute'], 'string', 'max' => 60],
             [['model_class'], 'string', 'max' => 200],
         ];

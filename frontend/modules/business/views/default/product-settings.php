@@ -155,7 +155,7 @@ $this->registerJs(
             
             /* load desired product */
                 $('.ld-prdct').click(
-                    function (event) {
+                    function () {
                         loadProduct($(this).attr('prd-id'));
                     }
                 );

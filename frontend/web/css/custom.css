@@ -177,3 +177,8 @@ table {
 .kasa-pointa {
     cursor: pointer;
 }
+
+.slctd-itm {
+    background-color: #31b0d5;
+    color: #fff;
+}
