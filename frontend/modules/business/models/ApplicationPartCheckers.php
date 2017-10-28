@@ -65,8 +65,8 @@ class ApplicationPartCheckers {
     public static function checkerParts() {
         return [
             self::part_personal => [self::title => 'Applicant\'s Personal Details', self::intro => false, self::order => 1, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_residence => [self::title => 'Applicants\'s Current Place of Residence', self::intro => false, self::order => 2, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_institution => [self::title => 'Applicants\'s Institutional Details', self::intro => 'You are required to attach a copy of your Admission Letter', self::order => 3, self::new_page => false, self::items => static::institutionItems(), self::order_elements => self::order_elements_no],
+            self::part_residence => [self::title => 'Applicant\'s Current Place of Residence', self::intro => false, self::order => 2, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_institution => [self::title => 'Applicant\'s Institutional Details', self::intro => 'You are required to attach a copy of your Admission Letter', self::order => 3, self::new_page => false, self::items => static::institutionItems(), self::order_elements => self::order_elements_no],
             self::part_next_of_kin => [self::title => 'Next of Kin', self::intro => false, self::order => 4, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_loan => [self::title => 'Loan Applied (Per Annum)', self::intro => false, self::order => 5, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_siblings => [self::title => 'Siblings applying for HELB Loan this year', self::intro => false, self::order => 6, self::new_page => false, self::order_elements => self::order_elements_no],

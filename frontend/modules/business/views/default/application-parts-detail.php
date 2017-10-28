@@ -16,7 +16,7 @@ use frontend\modules\business\models\ApplicationPartElements;
     <div class="prts-dtl prts-dtl-<?= $part ?> pull-right"<?php if ($part != $selectedPart): ?> hidden="hidden" <?php endif; ?>>
         <div class="prts-dtl-hdr">
             <?php $form = ActiveForm::begin(['id' => $uniq = uniqid(), 'enableAjaxValidation' => true, 'action' => 'save-application-part', 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
-            <?= $form->field($model = $models[$part], "[$uniq]title")->textInput(['fld-prt-stng' => 'part', 'part' => $part, 'maxlength' => true, 'style' => 'font-size: 16px; font-weight: bold; border: none; border-bottom: 3px solid #ddd; background-color: inherit'])->label(false)->error(['style' => 'text-align: right']) ?>
+            <?= $form->field($model = $models[$part], "[$uniq]title")->textInput(['fld-prt-stng' => 'part', 'fld-prt-stng-prt' => $part, 'part' => $part, 'maxlength' => true, 'style' => 'font-size: 16px; font-weight: bold; border: none; border-bottom: 3px solid #ddd; background-color: inherit'])->label(false)->error(['style' => 'text-align: right']) ?>
             <?php ActiveForm::end(); ?>
         </div>
 
@@ -56,7 +56,7 @@ use frontend\modules\business\models\ApplicationPartElements;
                                 }
                                 ?>
 
-                                <li class="ld-aplctn-prt-elmnt kasa-pointa"  prt-elmnt="<?= "$part-$element" ?>" style="padding: 0 3px; background-color: <?= $bcg ?>; color: <?= $clr ?>"><small><b>&bullet; <span><?= $sub_model->title ?></span></b></small></li>
+                                <li class="ld-aplctn-prt-elmnt kasa-pointa"  prt-elmnt="<?= "$part-$element" ?>" prtelmnt="<?= "$part$element" ?>" style="padding: 0 3px; background-color: <?= $bcg ?>; color: <?= $clr ?>"><small><b>&bullet; <span><?= $sub_model->title ?></span></b></small></li>
 
                             <?php endforeach; ?>
 
@@ -67,8 +67,8 @@ use frontend\modules\business\models\ApplicationPartElements;
                     <?php foreach ($elements = $detail[ApplicationPartCheckers::items] as $element => $sub_detail): ?>
                         <div class="prts-dtl-itms-fm-elm-fm ld-aplctn-prt-elmnt-<?= "$part-$element" ?> pull-right" prt-elmnt="<?= "$part$element" ?>"<?php if ($part != $selectedPart || $selectedElement != $element): ?> hidden="hidden" <?php endif; ?>>
                             <div class="prts-dtl-itms-fm-elm-hdr">
-                                <?php $form = ActiveForm::begin(['id' => uniqid(), 'enableAjaxValidation' => true, 'action' => 'save-application-part-element', 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
-                                <?= $form->field($sub_model = $sub_models["$part$element"], "[$part$element]title")->textInput(['part' => $part, 'elmnt' => $element, 'maxlength' => true, 'style' => 'font-size: 16px; font-weight: bold; border: none; border-bottom: 3px solid #ddd; background-color: inherit'])->label(false)->error(['style' => 'text-align: right']) ?>
+                                <?php $form = ActiveForm::begin(['id' => $uniq = uniqid(), 'enableAjaxValidation' => true, 'action' => 'save-application-part-element', 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
+                                <?= $form->field($sub_model = $sub_models["$part$element"], "[$uniq]title")->textInput(['fld-prt-elmnt-stng' => 'elmnt', 'fld-prt-elmnt-stng-elmnt' => "$part$element", 'part' => $part, 'elmnt' => $element, 'maxlength' => true, 'style' => 'font-size: 16px; font-weight: bold; border: none; border-bottom: 3px solid #ddd; background-color: inherit'])->label(false)->error(['style' => 'text-align: right']) ?>
                                 <?php ActiveForm::end(); ?>
                             </div>
 

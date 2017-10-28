@@ -39,7 +39,9 @@ class ApplicationPartElements extends \yii\db\ActiveRecord {
         return [
             [['part', 'element', 'title', 'created_by'], 'required'],
             [['part', 'order', 'active'], 'integer'],
+            [['part'], 'positiveValue'],
             [['title'], 'string', 'min' => 5, 'max' => 128],
+            [['title'], 'sanitizeString'],
             [['narration'], 'string'],
             [['created_at', 'modified_at'], 'safe'],
             [['element'], 'string', 'max' => 30],

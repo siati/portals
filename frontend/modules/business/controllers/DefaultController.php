@@ -28,12 +28,12 @@ class DefaultController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part'
+                    'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part', 'save-application-part-element'
                 ],
                 'rules' => [
                     [
                         'actions' => [
-                            'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part'
+                            'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part', 'save-application-part-element'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -224,7 +224,29 @@ class DefaultController extends Controller {
             if (isset($_POST['sbmt'])) {
                 $models[$_POST['sbmt']]->modelSave() ? '' : $hasError[] = $models[$_POST['sbmt']]->part;
 
-                return [empty($hasError), $models[$_POST['sbmt']]->id];
+                return [empty($hasError), $models[$_POST['sbmt']]->title, $models[$_POST['sbmt']]->id];
+            }
+
+            return is_array($ajax) ? $ajax : [];
+        }
+    }
+    
+    /**
+     * 
+     * @return array save application part element
+     */
+    public function actionSaveApplicationPartElement() {
+        foreach ($_POST['ApplicationPartElements'] as $key => $post) {
+            $models[$key] = ApplicationPartElements::elementToLoad(empty($post['id']) ? '' : $post['id'], empty($post['part']) ? '' : $post['part'], empty($post['element']) ? '' : $post['element']);
+            $models[$key]->attributes = $post;
+        }
+
+        if (($ajax = $this->ajaxValidateMultiple($models)) === self::IS_AJAX || count($ajax) > 0) {
+
+            if (isset($_POST['sbmt'])) {
+                $models[$_POST['sbmt']]->modelSave() ? '' : $hasError[] = $models[$_POST['sbmt']]->element;
+
+                return [empty($hasError), $models[$_POST['sbmt']]->title, $models[$_POST['sbmt']]->id];
             }
 
             return is_array($ajax) ? $ajax : [];

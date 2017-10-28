@@ -46,6 +46,7 @@ class ApplicationParts extends \yii\db\ActiveRecord {
             [['created_at', 'modified_at'], 'safe'],
             [['part'], 'string', 'max' => 30],
             [['title'], 'string', 'min' => 5, 'max' => 300],
+            [['title'], 'sanitizeString'],
             [['intro'], 'string'],
             [['created_by', 'modified_by'], 'string', 'max' => 20],
         ];
