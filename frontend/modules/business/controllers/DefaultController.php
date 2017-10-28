@@ -11,6 +11,9 @@ use frontend\modules\business\models\ProductOpeningSettings;
 use frontend\modules\business\models\ProductAccessProperties;
 use frontend\modules\business\models\ProductAccessPropertyItems;
 use frontend\modules\client\modules\student\models\ApplicantProductAccessCheckers;
+use frontend\modules\business\models\ApplicationParts;
+use frontend\modules\business\models\ApplicationPartElements;
+use frontend\modules\business\models\ApplicationPartCheckers;
 
 /**
  * Default controller for the `business` module
@@ -25,12 +28,12 @@ class DefaultController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item'
+                    'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part'
                 ],
                 'rules' => [
                     [
                         'actions' => [
-                            'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item'
+                            'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -148,7 +151,7 @@ class DefaultController extends Controller {
 
     /**
      * 
-     * @return string main interface for more product settings
+     * @return string main interface for advanced application opening settings
      */
     public function actionAccessCheckers() {
         return $this->renderAjax('advanced-settings', ['sections' => ApplicantProductAccessCheckers::checkerSections(), 'application' => $_POST['application']]);
@@ -192,6 +195,36 @@ class DefaultController extends Controller {
                 $models[$_POST['sbmt']]->modelSave() ? '' : $hasError[] = $models[$_POST['sbmt']]->property;
 
                 return [empty($hasError), $models[$_POST['sbmt']]->property];
+            }
+
+            return is_array($ajax) ? $ajax : [];
+        }
+    }
+    
+    /**
+     * 
+     * @return string main interface for application part settings
+     */
+    public function actionApplicationParts() {
+        return $this->renderAjax('application-parts', ['parts' => ApplicationPartCheckers::checkerParts(), 'application' => $_POST['application']]);
+    }
+    
+    /**
+     * 
+     * @return array save application part
+     */
+    public function actionSaveApplicationPart() {
+        foreach ($_POST['ApplicationParts'] as $key => $post) {
+            $models[$key] = ApplicationParts::partToLoad(empty($post['id']) ? '' : $post['id'], empty($post['application']) ? '' : $post['application'], empty($post['part']) ? '' : $post['part']);
+            $models[$key]->attributes = $post;
+        }
+
+        if (($ajax = $this->ajaxValidateMultiple($models)) === self::IS_AJAX || count($ajax) > 0) {
+
+            if (isset($_POST['sbmt'])) {
+                $models[$_POST['sbmt']]->modelSave() ? '' : $hasError[] = $models[$_POST['sbmt']]->part;
+
+                return [empty($hasError), $models[$_POST['sbmt']]->id];
             }
 
             return is_array($ajax) ? $ajax : [];

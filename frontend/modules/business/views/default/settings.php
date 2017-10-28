@@ -14,7 +14,7 @@ use kartik\form\ActiveForm;
 
     <?php $form = ActiveForm::begin(['id' => 'form-prdct-stng', 'enableAjaxValidation' => true, 'action' => 'save-settings']); ?>
 
-    <div class="gnrl-frm-divider">Application Default Settings</div>
+    <div class="gnrl-frm-divider">Application Basic Settings</div>
 
     <?php $i = 0 ?>
 

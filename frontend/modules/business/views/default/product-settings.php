@@ -123,11 +123,21 @@ $this->registerJs(
                 );
             }
             
-            function advancedSettings() {
+            function advancedAccessSettings() {
                 $.post('opening-i-d', {'product': $('#products-id').val(), 'academic_year': $('#productopening-academic_year').val(), 'subsequent': $('#productopening-subsequent').val()},
                     function(id) {
                         id * 1 > 0 ?
-                            yiiModal('Advanced Access Controls', 'access-checkers', {'application': id}, $('.gnrl-frm').width(), $('.gnrl-frm').height()) :
+                            yiiModal('Advanced Access Controls', 'access-checkers', {'application': id}, $(window).width() * 0.95, $('.gnrl-frm').height()) :
+                            customSwal('Declined', 'The Application Dates below must first be saved', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
+                    }
+                );
+            }
+            
+            function applicationParts() {
+                $.post('opening-i-d', {'product': $('#products-id').val(), 'academic_year': $('#productopening-academic_year').val(), 'subsequent': $('#productopening-subsequent').val()},
+                    function(id) {
+                        id * 1 > 0 ?
+                            yiiModal('Application Parts and Elements', 'application-parts', {'application': id}, $(window).width() * 0.95, $('.gnrl-frm').height()) :
                             customSwal('Declined', 'The Application Dates below must first be saved', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
                     }
                 );
@@ -223,13 +233,21 @@ $this->registerJs(
                 );
             /* blurs for concurrent validation */
             
-            /* advanced settings */
+            /* advanced access settings */
                 $('#advnc-stngs').click(
                     function () {
-                        advancedSettings();
+                        advancedAccessSettings();
                     }
                 );
-            /* advanced settings */
+            /* advanced access settings */
+            
+            /* the application parts */
+                $('#prntg-stngs').click(
+                    function () {
+                        applicationParts();
+                    }
+                );
+            /* the application parts */
         "
         , \yii\web\VIEW::POS_READY
 )

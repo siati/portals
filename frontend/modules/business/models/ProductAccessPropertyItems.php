@@ -44,6 +44,7 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
         return [
             [['application', 'property', 'created_by', 'created_at'], 'required'],
             [['application', 'property'], 'integer'],
+            [['application', 'property'], 'positiveValue'],
             [['specific_values', 'remark', 'required', 'active'], 'string'],
             [['active'], 'newRuleMustBeActive'],
             [['created_at', 'modified_at'], 'safe'],
@@ -68,7 +69,7 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
      * active rule must have values
      */
     public function activeRuleMustHaveValues() {
-        if ($this->active == self::active && empty($this->min_value) && empty($this->max_value) && (empty($this->specific_values) || str_replace(self::comma, '', $this->specific_values) == '')) {
+        if ($this->active == self::active && (is_null($this->min_value) || $this->min_value == '') && (is_null($this->max_value) || $this->max_value == '') && (is_null($this->specific_values) || $this->specific_values == '' || str_replace(self::comma, '', $this->specific_values) == '')) {
                 $this->addError('min_value', 'Either Minimum Value or Maximum Value or Specific Values is required');
                 $this->addError('max_value', 'Either Minimum Value or Maximum Value or Specific Values is required');
                 $this->addError('specific_values', 'Either Minimum Value or Maximum Value or Specific Values is required');
