@@ -21,6 +21,7 @@ use common\models\StaticMethods;
  * @property integer $score
  * @property integer $out_of
  * @property string $grade
+ * @property integer $sponsored
  * @property string $created_by
  * @property string $created_at
  * @property string $modified_by
@@ -47,6 +48,8 @@ class EducationBackground extends \yii\db\ActiveRecord {
     const study_level_degree = 4;
     const study_level_masters = 5;
     const study_level_phd = 6;
+    const sponsored_yes = 1;
+    const sponsored_no = 0;
     const primary_cert = 'Kenya Certificate of Primary Education';
     const secondary_cert = 'Kenya Certificate of Secondary Education';
 
@@ -63,7 +66,7 @@ class EducationBackground extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['applicant', 'institution_name', 'institution_type', 'study_level', 'course_name', 'since', 'till', 'exam_no', 'created_by'], 'required'],
-            [['applicant', 'institution_type', 'school_type', 'study_level', 'since', 'till', 'score', 'out_of'], 'integer'],
+            [['applicant', 'institution_type', 'school_type', 'study_level', 'since', 'till', 'score', 'out_of', 'sponsored'], 'integer'],
             [['institution_name'], 'string', 'min' => 10, 'max' => 35],
             [['institution_name', 'course_name'], 'notNumerical'],
             [['course_name'], 'string', 'min' => 15, 'max' => 60],
@@ -188,6 +191,7 @@ class EducationBackground extends \yii\db\ActiveRecord {
             'score' => Yii::t('app', 'Marks/Points'),
             'out_of' => Yii::t('app', 'Out Of'),
             'grade' => Yii::t('app', 'Grade/Merit'),
+            'sponsored' => Yii::t('app', 'Sponsored'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),
             'modified_by' => Yii::t('app', 'Modified By'),
@@ -248,6 +252,8 @@ class EducationBackground extends \yii\db\ActiveRecord {
         $model->since = $educationYears[0];
 
         $model->till = $educationYears[1];
+        
+        $model->sponsored = self::sponsored_no;
 
         $model->created_by = Yii::$app->user->identity->username;
 
@@ -470,6 +476,14 @@ class EducationBackground extends \yii\db\ActiveRecord {
             self::study_level_masters => 'Masters',
             self::study_level_phd => 'PHD'
         ];
+    }
+    
+    /**
+     * 
+     * @return array sponsoreds
+     */
+    public static function sponsoreds() {
+        return [self::sponsored_no => 'No', self::sponsored_yes => 'Yes'];
     }
 
     /**

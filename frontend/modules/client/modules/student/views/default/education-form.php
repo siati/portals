@@ -58,6 +58,9 @@ use frontend\modules\client\modules\student\models\EducationBackground;
         <td class="td-pdg-lft"><?= $form->field($model, 'score', ['addon' => ['prepend' => ['content' => '<i class="fa fa-percent"></i>']]])->textInput(['maxlength' => true, 'disabled' => !$isPriOrSec]) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'out_of', ['addon' => ['prepend' => ['content' => '<i class="fa fa-list-ol"></i>']]])->textInput(['maxlength' => true, 'disabled' => !$isPriOrSec]) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'grade', ['addon' => ['prepend' => ['content' => '<i class="fa fa-graduation-cap"></i>']]])->dropDownList(EducationBackground::merits($model->study_level), ['prompt' => '-- Grades --', 'disabled' => $isPriOrSec || in_array($model->study_level, [$mst, $phd])]) ?></td>
+        <?php if (in_array($model->study_level, [$pri, $sec])): ?>
+            <td class="td-pdg-lft"><?= $form->field($model, 'sponsored', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->dropDownList(EducationBackground::sponsoreds()) ?></td>
+        <?php endif; ?>
     </tr>
 </table>
 

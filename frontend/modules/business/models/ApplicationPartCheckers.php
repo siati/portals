@@ -38,6 +38,12 @@ class ApplicationPartCheckers {
     const part_declaration_county_officer = 'declaration_county_officer';
     const part_declaration_ward_admin = 'declaration_ward_admin';
     const part_declaration_fund_secretary = 'declaration_fund_secretary';
+    const part_check_list_applicant = 'check_list_applicant';
+    const part_check_list_parent = 'check_list_parent';
+    const part_check_list_guarantors = 'check_list_guarantors';
+    const part_check_list_attachment_confirm = 'check_list_attachment_confirm';
+    const part_check_list_signatures_stamps = 'check_list_signatures_stamps';
+    const part_check_list_signatures_stamps_confirm = 'check_list_signatures_stamps_confirm';
     const order = 'order';
     const title = 'title';
     const intro = 'intro';
@@ -81,7 +87,7 @@ class ApplicationPartCheckers {
             self::part_guarantors => [self::title => 'Guarantors', self::intro => static::guarantorStatement(), self::order => 15, self::new_page => false],
             self::part_bank => [self::title => 'Applicant\'s Personal Bank Details', self::intro => 'Attach a copy of bank account card', self::order => 16, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_terms_and_conditions => [self::title => 'Terms and Conditions', self::intro => static::termsAndConditionsStatement(), self::order => 17, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_check_list => [self::title => 'The Checklist', self::intro => null, self::order => 18, self::new_page => false, self::order_elements => self::order_elements_yes],
+            self::part_check_list => [self::title => 'The Checklist', self::intro => null, self::order => 18, self::new_page => false, self::items => static::checkListItems(), self::order_elements => self::order_elements_yes],
             self::part_submission => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => 19, self::new_page => false, self::order_elements => self::order_elements_no]
         ];
     }
@@ -110,16 +116,31 @@ class ApplicationPartCheckers {
      */
     public static function declarationsItems() {
         return [
-            self::part_declaration_applicant => [self::title => 'Applicant\'s Declaration', self::intro => static::applicantStatement(), self::active => self::active_yes, self::order => 1],
-            self::part_declaration_parent_guardian => [self::title => 'Parent / Guardian', self::intro => static::parentStatement(), self::active => self::active_yes, self::order => 2],
-            self::part_declaration_priest_kadhi => [self::title => 'Priest / Kadhi', self::intro => static::priestKadhiStatement(), self::active => self::active_yes, self::order => 3],
-            self::part_declaration_chief => [self::title => 'Chief/Assistant Chief', self::intro => static::chiefStatement(), self::active => self::active_yes, self::order => 4],
-            self::part_declaration_commissioner_of_oath => [self::title => 'Magistrate / Commissioner of Oaths', self::intro => static::commissionerOfOathStatement(), self::active => self::active_yes, self::order => 5],
-            self::part_declaration_institution => [self::title => 'Institution Certification', self::intro => static::institutionCertificationStatement(), self::active => self::active_yes, self::order => 6],
-            self::part_declaration_finance_officer => [self::title => 'Finance Officer', self::intro => static::financeOfficerStatement(), self::active => self::active_yes, self::order => 7],
-            self::part_declaration_county_officer => [self::title => 'County Chief Officer of Education', self::intro => static::countyOfficerStatement(), self::active => self::active_yes, self::order => 8],
-            self::part_declaration_ward_admin => [self::title => 'Ward Administrator', self::intro => static::wardAdministratorStatement(), self::active => self::active_yes, self::order => 9],
-            self::part_declaration_fund_secretary => [self::title => 'Constituency Education Revolving Fund Secretary', self::intro => static::fundAdministratorStatement(), self::active => self::active_yes, self::order => 10]
+            self::part_declaration_applicant => [self::title => 'Applicant\'s Declaration', self::narration => static::applicantStatement(), self::active => self::active_yes, self::order => 1],
+            self::part_declaration_parent_guardian => [self::title => 'Parent / Guardian', self::narration => static::parentStatement(), self::active => self::active_yes, self::order => 2],
+            self::part_declaration_priest_kadhi => [self::title => 'Priest / Kadhi', self::narration => static::priestKadhiStatement(), self::active => self::active_yes, self::order => 3],
+            self::part_declaration_chief => [self::title => 'Chief/Assistant Chief', self::narration => static::chiefStatement(), self::active => self::active_yes, self::order => 4],
+            self::part_declaration_commissioner_of_oath => [self::title => 'Magistrate / Commissioner of Oaths', self::narration => static::commissionerOfOathStatement(), self::active => self::active_yes, self::order => 5],
+            self::part_declaration_institution => [self::title => 'Institution Certification', self::narration => static::institutionCertificationStatement(), self::active => self::active_yes, self::order => 6],
+            self::part_declaration_finance_officer => [self::title => 'Finance Officer', self::narration => static::financeOfficerStatement(), self::active => self::active_yes, self::order => 7],
+            self::part_declaration_county_officer => [self::title => 'County Chief Officer of Education', self::narration => static::countyOfficerStatement(), self::active => self::active_yes, self::order => 8],
+            self::part_declaration_ward_admin => [self::title => 'Ward Administrator', self::narration => static::wardAdministratorStatement(), self::active => self::active_yes, self::order => 9],
+            self::part_declaration_fund_secretary => [self::title => 'Constituency Education Revolving Fund Secretary', self::narration => static::fundAdministratorStatement(), self::active => self::active_yes, self::order => 10]
+        ];
+    }
+
+    /**
+     * 
+     * @return array check list items
+     */
+    public static function checkListItems() {
+        return [
+            self::part_check_list_applicant => [self::title => 'Applicant must attach a copy of', self::narration => null, self::active => self::active_yes, self::order => 1],
+            self::part_check_list_parent => [self::title => 'From the parent(s), attach a copy of', self::narration => null, self::active => self::active_yes, self::order => 2],
+            self::part_check_list_guarantors => [self::title => 'From both referees, attach copies of', self::narration => null, self::active => self::active_yes, self::order => 3],
+            self::part_check_list_attachment_confirm => [self::title => 'Attachments confirmation', self::narration => static::attachmentConfirmationStatement(), self::active => self::active_yes, self::order => 4],
+            self::part_check_list_signatures_stamps => [self::title => 'Declarations, Signatures and stamps', self::narration => null, self::active => self::active_yes, self::order => 5],
+            self::part_check_list_signatures_stamps_confirm => [self::title => 'Declarations, Signatures and stamps confirmation', self::narration => static::signatureAndStampConfirmationStatement(), self::active => self::active_yes, self::order => 6],
         ];
     }
 
@@ -179,7 +200,7 @@ class ApplicationPartCheckers {
      */
     public static function deanRegistrarStatement() {
         return
-                'I certify that the applicant is a registered student in this University with Registration No <b>(please do not use a Ref. Number)</b>'
+                'I certify that the applicant is a registered student in this University with Registration No (please do not use a Ref. Number)'
                 . ' ...............................................................................................................'
                 . self::line_break
                 . self::line_break
@@ -345,6 +366,32 @@ class ApplicationPartCheckers {
                 . self::line_break
                 . self::line_break
                 . 'Signature ........................................................................ Official Stamp & Date: .......................................'
+        ;
+    }
+
+    /**
+     * 
+     * @return string attachment confirmation opening statement
+     */
+    public static function attachmentConfirmationStatement() {
+        return
+                'I confirm that the above attachments have been attached on the scholarship application form.'
+                . self::line_break
+                . self::line_break
+                . 'Signature ........................................................................ Date: .................................................'
+        ;
+    }
+
+    /**
+     * 
+     * @return string signatures and stamps confirmation opening statement
+     */
+    public static function signatureAndStampConfirmationStatement() {
+        return
+                'I confirm that the above Signatures and stamps have been effected on the scholarship application form.'
+                . self::line_break
+                . self::line_break
+                . 'Signature ........................................................................ Date: .................................................'
         ;
     }
 

@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use kartik\form\ActiveForm;
 ?>
 
-<div style="width: 100%; height: 92.5%; border-bottom: 1px solid #ddd;; overflow-x: hidden">
+<div class="prts-dtl-no-itms-fm-prnt">
 
     <?php $form = ActiveForm::begin(['id' => $form_id = "form-prt-$model->part", 'enableAjaxValidation' => true, 'action' => 'save-application-part', 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
 
@@ -30,7 +30,7 @@ use kartik\form\ActiveForm;
     <?php ActiveForm::end(); ?>
 </div>
 
-<div style="width: 100%; height: 7.5%; overflow: hidden; padding: 5px 10px 0 10px">
+<div class="prts-dtl-no-itms-fm-sv-btn">
     <div class="btn btn-sm btn-primary pull-<?= $has_items ? 'right' : 'left' ?> aplctn-prt-sv" prt="<?= $model->part ?>">Save</div>
     <?php if (!$has_items): ?>
         <div class="btn btn-sm btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>

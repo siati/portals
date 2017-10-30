@@ -44,10 +44,10 @@ class ApplicationParts extends \yii\db\ActiveRecord {
             [['application', 'order', 'new_page', 'order_elements'], 'integer'],
             [['application'], 'positiveValue'],
             [['created_at', 'modified_at'], 'safe'],
-            [['part'], 'string', 'max' => 30],
+            [['part'], 'string', 'max' => 60],
             [['title'], 'string', 'min' => 5, 'max' => 300],
-            [['title'], 'sanitizeString'],
             [['intro'], 'string'],
+            [['title', 'intro'], 'notNumerical'],
             [['created_by', 'modified_by'], 'string', 'max' => 20],
         ];
     }

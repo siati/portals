@@ -44,7 +44,7 @@ class ApplicationPartElements extends \yii\db\ActiveRecord {
             [['title'], 'sanitizeString'],
             [['narration'], 'string'],
             [['created_at', 'modified_at'], 'safe'],
-            [['element'], 'string', 'max' => 30],
+            [['element'], 'string', 'max' => 60],
             [['created_by', 'modified_by'], 'string', 'max' => 20],
         ];
     }

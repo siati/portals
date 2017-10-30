@@ -13,25 +13,35 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/models/ProductAccessPropertyItems.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/views/layouts/main.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/activeQueries/ApplicationPartsQuery.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/models/ApplicationPartElements.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/part-form.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/web/css/site.css</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/application-parts-detail.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/activeQueries/ProductAccessPropertyItemsQuery.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/advanced-settings.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/product-settings.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/property-item-form.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/models/ApplicationPartCheckers.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/web/css/custom.css</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/guarantor.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/product.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/models/ProductAccessProperties.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantSponsors.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/part-element-form.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/opening.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/activeQueries/ApplicationPartElementsQuery.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/property-form.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantsParents.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/sponsors.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/EducationBackground.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/activeQueries/ApplicantSponsorsQuery.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/education-form.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/part-form.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/application-parts-detail.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/activeQueries/ProductAccessPropertyItemsQuery.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/product-settings.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/sponsor.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/web/css/custom.css</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/controllers/DefaultController.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/models/ProductAccessProperties.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantProductAccessCheckers.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/application-parts.php</file>
-            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/property-form.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/controllers/DefaultController.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/models/ApplicationParts.php</file>
         </group>

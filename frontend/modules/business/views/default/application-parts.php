@@ -31,8 +31,9 @@ use frontend\modules\business\models\ApplicationParts;
                 }
                 ?>
 
-                <li class="ld-aplctn-prt kasa-pointa" prt="<?= $part ?>" style="padding: 0 3px; background-color: <?= $bcg ?>; color: <?= $clr ?>"><small><b>&bullet; <span><?= $model->title ?></span></b></small></li>
-                        <?php endforeach; ?>
+                <li class="ld-aplctn-prt kasa-pointa" prt="<?= $part ?>" style="background-color: <?= $bcg ?>; color: <?= $clr ?>"><small><b>&bullet; <span><?= $model->title ?></span></b></small></li>
+
+            <?php endforeach; ?>
         </ol>
     </div>
 

@@ -7,7 +7,6 @@
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
 use kartik\date\DatePicker;
-use common\models\StaticMethods;
 use common\models\LmBaseEnums;
 
 $this->title = 'Student Registration';

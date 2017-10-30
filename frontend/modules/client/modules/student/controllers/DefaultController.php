@@ -15,6 +15,7 @@ use frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses;
 use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
 use frontend\modules\client\modules\student\models\ApplicantsEmployment;
 use frontend\modules\client\modules\student\models\ApplicantsSpouse;
+use frontend\modules\client\modules\student\models\ApplicantSponsors;
 use common\models\User;
 use common\models\StaticMethods;
 use common\models\LmBankBranch;
@@ -39,14 +40,14 @@ class DefaultController extends Controller {
                 'only' => [
                     'index', 'register', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                     'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
-                    'expenses', 'spouse', 'bank-branches', 'dynamic-employers', 'employment-periods'
+                    'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'index', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                             'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
-                            'expenses', 'spouse', 'bank-branches', 'dynamic-employers', 'employment-periods'
+                            'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -330,6 +331,24 @@ class DefaultController extends Controller {
         }
 
         return $this->render('spouse', ['model' => $model]);
+    }
+
+    /**
+     * 
+     * @return string view to update sponsor's details
+     */
+    public function actionSponsors() {
+        $model = ApplicantSponsors::sponsorToLoad(empty($_POST['ApplicantSponsors']['id']) ? '' : $_POST['ApplicantSponsors']['id'], empty($_POST['ApplicantSponsors']['applicant']) ? '' : $_POST['ApplicantSponsors']['applicant']);
+
+        if (isset($_POST['ApplicantSponsors']['name']) && $model->load(Yii::$app->request->post())) {
+
+            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                return is_array($ajax) ? $ajax : [];
+
+            $model->modelSave();
+        }
+
+        return $this->render('sponsors', ['sponsors' => ApplicantSponsors::sponsorsToLoad($model->applicant), 'form_content' => $this->renderPartial('sponsor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant]);
     }
 
     /**

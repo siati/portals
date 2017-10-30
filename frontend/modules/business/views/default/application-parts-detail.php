@@ -55,9 +55,9 @@ use frontend\modules\business\models\ApplicationPartElements;
                                     $clr = '#333';
                                 }
                                 ?>
-
-                                <li class="ld-aplctn-prt-elmnt kasa-pointa"  prt-elmnt="<?= "$part-$element" ?>" prtelmnt="<?= "$part$element" ?>" style="padding: 0 3px; background-color: <?= $bcg ?>; color: <?= $clr ?>"><small><b>&bullet; <span><?= $sub_model->title ?></span></b></small></li>
-
+                                
+                                <li class="ld-aplctn-prt-elmnt kasa-pointa"  prt-elmnt="<?= "$part-$element" ?>" prtelmnt="<?= "$part$element" ?>" style="background-color: <?= $bcg ?>; color: <?= $clr ?>"><small><b>&bullet; <span><?= $sub_model->title ?></span></b></small></li>
+                                
                             <?php endforeach; ?>
 
                         </ol>
@@ -82,4 +82,5 @@ use frontend\modules\business\models\ApplicationPartElements;
             <?php endif; ?>
         </div>
     </div>
+
 <?php endforeach; ?>
