@@ -24,6 +24,7 @@ use common\models\LmInstitution;
 use common\models\LmInstitutionBranches;
 use common\models\LmCourses;
 use common\models\LmEmployers;
+use common\models\PDFGenerator;
 
 /**
  * Default controller for the `student` module
@@ -467,6 +468,25 @@ class DefaultController extends Controller {
      */
     public function actionEmploymentPeriods() {
         StaticMethods::populateDropDown(ApplicantsEmployment::employmentPeriod($_POST['terms']), 'Duration', $_POST['period']);
+    }
+
+    /**
+     * amateur application form
+     */
+    public function actionAmateurForm() {
+        PDFGenerator::go(
+                [
+            PDFGenerator::view => '../pdf/application_form/amateur-form',
+            PDFGenerator::view_params => [
+                'user' => User::returnUser($id = Yii::$app->user->identity->id),
+                'applicant' => Applicants::returnApplicant($id),
+                'residence' => ApplicantsResidence::forApplicant($id),
+                'institution' => ApplicantsInstitution::forApplicant($id)
+            ]
+                ], [
+                    PDFGenerator::css_file => '@vendor/custom/css/pdf/application-form.css'
+                ]
+        );
     }
 
 }

@@ -61,6 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <table>
                 <tr>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'town', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'nearest_primary', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->textInput(['maxlength' => true]) ?></td>
                 </tr>
             </table>

@@ -97,5 +97,15 @@ class LmCourses extends \yii\db\ActiveRecord {
     public static function courses($institution_code, $institution_branch_code, $level_of_study, $faculty, $course_type, $course_category, $active) {
         return StaticMethods::modelsToArray(static::searchCourses($institution_code, $institution_branch_code, $level_of_study, $faculty, $course_type, $course_category, $active), 'COURSECODE', 'COURSEDESCRIPTION', true);
     }
+    
+    /**
+     * 
+     * @param string $institution_code institution code
+     * @param string $course_code course code
+     * @return LmCourses model
+     */
+    public static function byInstitutionAndCourseCodes($institution_code, $course_code) {
+        return static::find()->byInstitutionAndCourseCodes($institution_code, $course_code);
+    }
 
 }

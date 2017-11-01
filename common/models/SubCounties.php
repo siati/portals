@@ -49,6 +49,15 @@ class SubCounties extends \yii\db\ActiveRecord {
     public static function find() {
         return new \common\activeQueries\SubCountiesQuery(get_called_class());
     }
+    
+    /**
+     * 
+     * @param integer $pk sub-county id
+     * @return SubCounties model
+     */
+    public static function returnSubcounty($pk) {
+        return static::find()->byPk($pk);
+    }
 
     /**
      * 

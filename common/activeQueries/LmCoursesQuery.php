@@ -53,5 +53,15 @@ class LmCoursesQuery extends \yii\db\ActiveQuery {
                         (is_numeric($active) ? " && ACTIVE = '$active'" : '')
                 )->orderBy('COURSEDESCRIPTION asc')->all();
     }
+    
+    /**
+     * 
+     * @param string $institution_code institution code
+     * @param string $course_code course code
+     * @return LmCourses ActiveRecord
+     */
+    public function byInstitutionAndCourseCodes($institution_code, $course_code) {
+        return $this->where("INSTITUTIONCODE = '$institution_code' && COURSECODE = '$course_code'")->one();
+    }
 
 }

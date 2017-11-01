@@ -56,7 +56,7 @@ class Constituencies extends \yii\db\ActiveRecord {
      * @return Constituencies model
      */
     public static function returnConstituency($pk) {
-        return static::findByPk($pk);
+        return static::find()->byPk($pk);
     }
 
     /**

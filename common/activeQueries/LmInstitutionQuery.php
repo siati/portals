@@ -48,5 +48,14 @@ class LmInstitutionQuery extends \yii\db\ActiveQuery {
                         (is_numeric($active) ? " && ACTIVE = '$active'" : '')
                 )->orderBy('INSTITUTIONNAME asc')->all();
     }
+    
+    /**
+     * 
+     * @param string $institution_code institution code
+     * @return LmInstitution ActiveRecord
+     */
+    public function byInstitutionCode($institution_code) {
+        return $this->where("INSTITUTIONCODE = '$institution_code'")->one();
+    }
 
 }

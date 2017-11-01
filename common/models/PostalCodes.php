@@ -56,7 +56,7 @@ class PostalCodes extends \yii\db\ActiveRecord {
      * @return PostalCodes model
      */
     public static function returnCode($pk) {
-        return static::findByPk($pk);
+        return static::find()->byPk($pk);
     }
     
     /**

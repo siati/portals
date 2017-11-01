@@ -75,5 +75,15 @@ class LmInstitutionBranches extends \yii\db\ActiveRecord {
     public static function branches($institution_code, $active) {
         return StaticMethods::modelsToArray(static::searchInstitutions($institution_code, $active), 'INSTITUTIONBRANCHCODE', 'INSTITUTIONBRANCHNAME', true);
     }
+    
+    /**
+     * 
+     * @param string $institution_code institution type
+     * @param string $branch_code branch type
+     * @return LmInstitutionBranches model
+     */
+    public static function byInstitutionAndBrachCode($institution_code, $branch_code) {
+        return static::find()->byInstitutionAndBrachCode($institution_code, $branch_code);
+    }
 
 }

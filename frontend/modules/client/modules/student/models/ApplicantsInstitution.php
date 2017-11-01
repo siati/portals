@@ -69,7 +69,8 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
             [['annual_fees', 'annual_upkeep', 'amount_can_raise', 'amount_applied'], 'positiveValue'],
             [['created_at', 'modified_at'], 'safe'],
             [['created_by', 'modified_by'], 'string', 'max' => 15],
-            ['amount_applied', 'amountApplied']
+            ['amount_applied', 'amountApplied'],
+            ['completion_month', 'completionYearAndMonth']
         ];
     }
     

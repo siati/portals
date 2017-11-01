@@ -14,6 +14,7 @@ use common\models\StaticMethods;
  * @property integer $sub_county
  * @property integer $constituency
  * @property integer $ward
+ * @property string $town
  * @property string $location
  * @property string $sub_location
  * @property string $village
@@ -42,10 +43,10 @@ class ApplicantsResidence extends \yii\db\ActiveRecord {
             [['applicant', 'county', 'sub_county', 'constituency', 'ward'], 'integer'],
             [['created_at', 'modified_at'], 'safe'],
             [['location', 'sub_location', 'village', 'created_by', 'modified_by'], 'string', 'min' => 3, 'max' => 20],
-            [['apartment'], 'string', 'min' => 8, 'max' => 30],
+            [['town', 'apartment'], 'string', 'min' => 3, 'max' => 30],
             [['nearest_primary'], 'string', 'min' => 10, 'max' => 40],
-            [['location', 'sub_location', 'village', 'apartment', 'nearest_primary'], 'notNumerical'],
-            [['location', 'sub_location', 'village', 'apartment', 'nearest_primary'], 'sanitizeString'],
+            [['location', 'sub_location', 'village', 'town', 'apartment', 'nearest_primary'], 'notNumerical'],
+            [['location', 'sub_location', 'village', 'town', 'apartment', 'nearest_primary'], 'sanitizeString'],
         ];
     }
 
@@ -60,6 +61,7 @@ class ApplicantsResidence extends \yii\db\ActiveRecord {
             'sub_county' => Yii::t('app', 'Sub County'),
             'constituency' => Yii::t('app', 'Constituency'),
             'ward' => Yii::t('app', 'Ward'),
+            'town' =>  Yii::t('app', 'Nearest Town'),
             'location' => Yii::t('app', 'Location'),
             'sub_location' => Yii::t('app', 'Sub Location'),
             'village' => Yii::t('app', 'Village / Estate'),

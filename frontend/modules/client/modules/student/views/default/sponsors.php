@@ -45,9 +45,9 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
         <div class="gnrl-frm-ftr">
+            <?= Html::button('Amateur Form', ['class' => 'btn btn-danger pull-left', 'onclick' => "popWindow('amateur-form', 'Amateur Form');"]) ?>
 
             <?= Html::button('Update', ['id' => 'spnsrs-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'sponsors-button']) ?>
-
         </div>
 
     </div>

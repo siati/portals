@@ -55,8 +55,8 @@ class Wards extends \yii\db\ActiveRecord {
      * @param integer $pk ward id
      * @return Wards model
      */
-    public static function returnConstituency($pk) {
-        return static::findByPk($pk);
+    public static function returnWard($pk) {
+        return static::find()->byPk($pk);
     }
 
     /**

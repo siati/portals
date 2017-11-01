@@ -83,5 +83,14 @@ class LmInstitution extends \yii\db\ActiveRecord {
     public static function institutions($country, $institution_type, $school_type, $active) {
         return StaticMethods::modelsToArray(static::searchInstitutions($country, $institution_type, $school_type, $active), 'INSTITUTIONCODE', 'INSTITUTIONNAME', true);
     }
+    
+    /**
+     * 
+     * @param string $institution_code institution code
+     * @return LmInstitution model
+     */
+    public static function byInstitutionCode($institution_code) {
+        return static::find()->byInstitutionCode($institution_code);
+    }
 
 }

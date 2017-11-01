@@ -52,7 +52,7 @@ class Counties extends \yii\db\ActiveRecord {
      * @return Counties model
      */
     public static function returnCounty($pk) {
-        return static::findByPk($pk);
+        return static::find()->byPk($pk);
     }
     
     /**
