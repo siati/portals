@@ -252,7 +252,7 @@ class EducationBackground extends \yii\db\ActiveRecord {
         $model->since = $educationYears[0];
 
         $model->till = $educationYears[1];
-        
+
         $model->sponsored = self::sponsored_no;
 
         $model->created_by = Yii::$app->user->identity->username;
@@ -477,7 +477,7 @@ class EducationBackground extends \yii\db\ActiveRecord {
             self::study_level_phd => 'PHD'
         ];
     }
-    
+
     /**
      * 
      * @return array sponsoreds
