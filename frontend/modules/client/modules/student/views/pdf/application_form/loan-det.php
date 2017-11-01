@@ -17,6 +17,7 @@ use common\models\LmBaseEnums;
                 <td class="part-table-label">Amount Applied</td>
                 <td class="part-table-label">Need Bursary</td>
             </tr>
+            
             <tr>
                 <td class="part-table-data"><?= $institution->annual_fees ?></td>
                 <td class="part-table-data"><?= $institution->annual_upkeep ?></td>

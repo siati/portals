@@ -185,7 +185,7 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
 
     /**
      * 
-     * @param intger $applicant applicant id
+     * @param integer $applicant applicant id
      * @return ApplicantsSiblingEducationExpenses models
      */
     public static function expensesForApplicant($applicant) {

@@ -481,7 +481,8 @@ class DefaultController extends Controller {
                 'user' => User::returnUser($id = Yii::$app->user->identity->id),
                 'applicant' => Applicants::returnApplicant($id),
                 'residence' => ApplicantsResidence::forApplicant($id),
-                'institution' => ApplicantsInstitution::forApplicant($id)
+                'institution' => ApplicantsInstitution::forApplicant($id),
+                'sibling_education' => ApplicantsSiblingEducationExpenses::forApplicant($id)
             ]
                 ], [
                     PDFGenerator::css_file => '@vendor/custom/css/pdf/application-form.css'
