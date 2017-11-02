@@ -483,7 +483,8 @@ class DefaultController extends Controller {
                 'residence' => ApplicantsResidence::forApplicant($id),
                 'institution' => ApplicantsInstitution::forApplicant($id),
                 'sibling_educations' => ApplicantsSiblingEducationExpenses::expensesForApplicant($id),
-                'education_backgrounds' => EducationBackground::searchEducations($id, null)
+                'education_backgrounds' => EducationBackground::searchEducations($id, null),
+                'parents' => ApplicantsParents::forApplicant($id)
             ]
                 ], [
                     PDFGenerator::css_file => '@vendor/custom/css/pdf/application-form.css'

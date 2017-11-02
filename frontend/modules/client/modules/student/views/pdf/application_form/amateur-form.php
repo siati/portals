@@ -6,6 +6,7 @@
 /* @var $institution \frontend\modules\client\modules\student\models\ApplicantsInstitution */
 /* @var $sibling_educations \frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses */
 /* @var $education_backgrounds \frontend\modules\client\modules\student\models\EducationBackground */
+/* @var $parents \frontend\modules\client\modules\student\models\ApplicantsParents */
 ?>
 
 <?= $this->render('../application_form/personal-det', ['user' => $user, 'applicant' => $applicant]) ?>
@@ -19,3 +20,5 @@
 <?= $this->render('../application_form/sibling-expenses', ['sibling_educations' => $sibling_educations]) ?>
 
 <?= $this->render('../application_form/education-backgrounds', ['education_backgrounds' => $education_backgrounds]) ?>
+
+<?= $this->render('../application_form/parents-det', ['applicant' => $applicant, 'parents' => $parents]) ?>

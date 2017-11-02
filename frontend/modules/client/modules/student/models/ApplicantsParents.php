@@ -427,6 +427,15 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     public static function searchParents($applicant, $relationship, $gender, $birth_cert_no, $id_no, $phone, $email, $kra_pin, $is_minor) {
         return static::find()->searchParents($applicant, $relationship, $gender, $birth_cert_no, $id_no, $phone, $email, $kra_pin, $is_minor);
     }
+    
+    /**
+     * 
+     * @param integer $applicant applicant id
+     * @return ApplicantsParents model
+     */
+    public static function forApplicant($applicant) {
+        return static::searchParents($applicant, null, null, null, null, null, null, null, null);
+    }
 
     /**
      * 

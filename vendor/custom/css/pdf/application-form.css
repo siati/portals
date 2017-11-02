@@ -6,11 +6,20 @@
 
 .part-legend {
     margin-top: -15px;
-    left: 60px;
     font-size: 16px;
     font-weight: bold;
-    border: 2px solid #ddd;
-    border-radius: 6px
+}
+
+.part-legend-2 {
+    margin-top: -12px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.part-legend-3 {
+    margin-top: -10px;
+    font-size: 13px;
+    font-weight: bold;
 }
 
 .part-table {
