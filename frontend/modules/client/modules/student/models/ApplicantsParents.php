@@ -268,13 +268,13 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     public function isFormallyEmployed() {
         return $this->employed == self::employed_yes;
     }
-    
+
     /**
      * occupation is required conditionally
      */
     public function occupationRequired() {
         if (empty($this->occupation) && is_object($this->isGuarantor()))
-            $this->addError ('occupation', 'Occupation is required, this parent being your guarantor too');
+            $this->addError('occupation', 'Occupation is required, this parent being your guarantor too');
     }
 
     /**
@@ -321,7 +321,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     public function notOwnJunior($attribute) {
         is_object(ApplicantsSiblingEducationExpenses::notOwnSenior($attribute, $this->$attribute, $this->applicant)) ? $this->addError($attribute, 'You\'ve already used this ' . $this->getAttributeLabel($attribute) . ' against your sibling') : '';
     }
-    
+
     /**
      * 
      * parent cannot be spouse too
@@ -427,7 +427,7 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
     public static function searchParents($applicant, $relationship, $gender, $birth_cert_no, $id_no, $phone, $email, $kra_pin, $is_minor) {
         return static::find()->searchParents($applicant, $relationship, $gender, $birth_cert_no, $id_no, $phone, $email, $kra_pin, $is_minor);
     }
-    
+
     /**
      * 
      * @param integer $applicant applicant id
@@ -584,6 +584,36 @@ class ApplicantsParents extends \yii\db\ActiveRecord {
         }
 
         empty($transaction) ? '' : $transaction->rollBack();
+    }
+
+    /**
+     * 
+     * @return boolean true - this is parent to the applicant in principle
+     */
+    public function isParentInPrinciple() {
+        $applicant = Applicants::returnApplicant($this->applicant);
+
+        $gender_male = LmBaseEnums::byNameAndValue(LmBaseEnums::gender, LmBaseEnums::gender_male)->VALUE;
+
+        $gender_female = LmBaseEnums::byNameAndValue(LmBaseEnums::gender, LmBaseEnums::gender_female)->VALUE;
+
+        return
+                ($this->relationship == self::relationship_father && (
+                (in_array($applicant->parents, [Applicants::parents_both_alive, Applicants::parents_father_alive])) ||
+                ($this->gender == $gender_male && in_array($applicant->parents, [Applicants::parents_abandoned, Applicants::parents_separated, Applicants::parents_single]))
+                )) ||
+                ($this->relationship == self::relationship_mother && (
+                (in_array($applicant->parents, [Applicants::parents_both_alive, Applicants::parents_mother_alive])) ||
+                ($this->gender == $gender_female && in_array($applicant->parents, [Applicants::parents_abandoned, Applicants::parents_separated, Applicants::parents_single]))
+                )) ||
+                ($this->relationship == self::relationship_guardian_to_father && is_object($father = static::byApplicantAndRelationship($this->applicant, self::relationship_father)) && $father->isMinor() && (
+                (in_array($father->parents, [Applicants::parents_both_alive, Applicants::parents_father_alive]))
+                )) ||
+                ($this->relationship == self::relationship_guardian_to_mother && is_object($mother = static::byApplicantAndRelationship($this->applicant, self::relationship_mother)) && $mother->isMinor() && (
+                (in_array($mother->parents, [Applicants::parents_both_alive, Applicants::parents_mother_alive]))
+                )) ||
+                ($this->relationship == self::relationship_guardian)
+        ;
     }
 
     /**
