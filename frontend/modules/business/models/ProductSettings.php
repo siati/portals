@@ -22,6 +22,7 @@ class ProductSettings {
     const employed = 'employed';
     const tuition_or_upkeep = 'tuition_or_upkeep';
     const has_financial_literacy = 'has_financial_literacy';
+    const has_society_narration = 'has_society_narration';
 
     /**
      * 
@@ -34,6 +35,7 @@ class ProductSettings {
             self::has_bursary => [self::name => 'Has Bursary', self::hint => 'Whether the product has bursary', self::values => static::yesNo(), self::default_value => self::no, self::active => self::yes],
             self::employed => [self::name => 'Employed', self::hint => 'Whether the only for employed', self::values => static::employeds(), self::default_value => self::both, self::active => self::yes],
             self::tuition_or_upkeep => [self::name => 'Tuition or Upkeep', self::hint => 'Whether the product considers tuition or upkeep', self::values => static::tuitionUpkeep(), self::default_value => self::both, self::active => self::yes],
+            self::has_society_narration => [self::name => 'Society Narration', self::hint => 'Whether applicant will narrate the contibution to society', self::values => static::yesNo(), self::default_value => self::no, self::active => self::yes],
             self::has_financial_literacy => [self::name => 'Has Financial Literacy', self::hint => 'Whether the product has Financial Literacy', self::values => static::yesNo(), self::default_value => self::no, self::active => self::yes],
         ];
     }

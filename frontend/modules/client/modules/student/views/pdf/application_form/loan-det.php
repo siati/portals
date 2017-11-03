@@ -19,10 +19,10 @@ use common\models\LmBaseEnums;
             </tr>
             
             <tr>
-                <td class="part-table-data"><?= $institution->annual_fees ?></td>
-                <td class="part-table-data"><?= $institution->annual_upkeep ?></td>
-                <td class="part-table-data"><?= $institution->amount_can_raise ?></td>
-                <td class="part-table-data"><?= $institution->amount_applied ?></td>
+                <td class="part-table-data"><?= number_format($institution->annual_fees) ?></td>
+                <td class="part-table-data"><?= number_format($institution->annual_upkeep) ?></td>
+                <td class="part-table-data"><?= number_format($institution->amount_can_raise) ?></td>
+                <td class="part-table-data"><?= number_format($institution->amount_applied) ?></td>
                 <td class="part-table-data"><?= LmBaseEnums::byNameAndValue(LmBaseEnums::yes_no, $institution->need_bursary)->LABEL ?></td>
             </tr>
         </tbody>

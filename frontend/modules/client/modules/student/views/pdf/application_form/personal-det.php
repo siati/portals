@@ -21,10 +21,10 @@ use common\models\Wards;
     <table class="part-table">
         <tbody>
             <tr>
-                <td class="part-table-label"><b>First Name</b></td>
-                <td class="part-table-label"><b>Middle Name</b></td>
-                <td class="part-table-label"><b>Last Name</b></td>
-                <td class="part-table-label"><b>Gender</b></td>
+                <td class="part-table-label">First Name</td>
+                <td class="part-table-label">Middle Name</td>
+                <td class="part-table-label">Last Name</td>
+                <td class="part-table-label">Gender</td>
             </tr>
             <tr>
                 <td class="part-table-data"><?= $applicant->fname ?></td>
@@ -36,10 +36,10 @@ use common\models\Wards;
             <tr><td class="part-table-divider"></td></tr>
 
             <tr>
-                <td class="part-table-label"><b>Birth Cert. No.</b></td>
-                <td class="part-table-label"><b>National. ID. No.</b></td>
-                <td class="part-table-label"><b>Date Of Birth</b></td>
-                <td class="part-table-label"><b>Married</b></td>
+                <td class="part-table-label">Birth Cert. No.</td>
+                <td class="part-table-label">National. ID. No.</td>
+                <td class="part-table-label">Date Of Birth</td>
+                <td class="part-table-label">Married</td>
             </tr>
             <tr>
                 <td class="part-table-data"><?= $user->birth_cert_no ?></td>
@@ -51,10 +51,10 @@ use common\models\Wards;
             <tr><td class="part-table-divider"></td></tr>
 
             <tr>
-                <td class="part-table-label"><b>Email Address</b></td>
-                <td class="part-table-label"><b>Mobile No.</b></td>
-                <td class="part-table-label"><b>Postal Address</b></td>
-                <td class="part-table-label"><b>KRA PIN</b></td>
+                <td class="part-table-label">Email Address</td>
+                <td class="part-table-label">Mobile No.</td>
+                <td class="part-table-label">Postal Address</td>
+                <td class="part-table-label">KRA PIN</td>
             </tr>
 
             <tr>
@@ -67,10 +67,10 @@ use common\models\Wards;
             <tr><td class="part-table-divider"></td></tr>
 
             <tr>
-                <td class="part-table-label"><b>County</b></td>
-                <td class="part-table-label"><b>Sub-County</b></td>
-                <td class="part-table-label"><b>Constituency</b></td>
-                <td class="part-table-label"><b>Ward</b></td>
+                <td class="part-table-label">County</td>
+                <td class="part-table-label">Sub-County</td>
+                <td class="part-table-label">Constituency</td>
+                <td class="part-table-label">Ward</td>
             </tr>
 
             <tr>
@@ -83,10 +83,10 @@ use common\models\Wards;
             <tr><td class="part-table-divider"></td></tr>
 
             <tr>
-                <td class="part-table-label"><b>Location</b></td>
-                <td class="part-table-label"><b>Sub-Location</b></td>
-                <td class="part-table-label"><b>Village / Estate</b></td>
-                <td class="part-table-label"><b>Employed</b></td>
+                <td class="part-table-label">Location</td>
+                <td class="part-table-label">Sub-Location</td>
+                <td class="part-table-label">Village / Estate</td>
+                <td class="part-table-label">Employed</td>
             </tr>
 
             <tr>
@@ -99,8 +99,8 @@ use common\models\Wards;
             <tr><td class="part-table-divider"></td></tr>
 
             <tr>
-                <td class="part-table-label"><b>Disability</b></td>
-                <td class="part-table-label" colspan="3"><b>Narration</b></td>
+                <td class="part-table-label">Disability</td>
+                <td class="part-table-label" colspan="3">Narration</td>
             </tr>
 
             <tr>

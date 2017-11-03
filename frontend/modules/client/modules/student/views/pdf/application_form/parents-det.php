@@ -14,6 +14,8 @@ use common\models\Wards;
 
 <div class="part-container">
     <legend class="part-legend">Parents' Details</legend>
+    
+    <?= $this->render('../application_form/parental-status', ['applicant' => $applicant]) ?>
 
     <?php foreach ($parents as $parent): ?>
 
@@ -77,10 +79,10 @@ use common\models\Wards;
                         <tr><td class="part-table-divider"></td></tr>
 
                         <tr>
-                            <td class="part-table-label"><b>County</b></td>
-                            <td class="part-table-label"><b>Sub-County</b></td>
-                            <td class="part-table-label"><b>Constituency</b></td>
-                            <td class="part-table-label"><b>Ward</b></td>
+                            <td class="part-table-label">County</td>
+                            <td class="part-table-label">Sub-County</td>
+                            <td class="part-table-label">Constituency</td>
+                            <td class="part-table-label">Ward</td>
                         </tr>
 
                         <tr>
@@ -93,10 +95,10 @@ use common\models\Wards;
                         <tr><td class="part-table-divider"></td></tr>
 
                         <tr>
-                            <td class="part-table-label"><b>Location</b></td>
-                            <td class="part-table-label"><b>Sub-Location</b></td>
-                            <td class="part-table-label"><b>Village / Estate</b></td>
-                            <td class="part-table-label"><b>Highest Education</b></td>
+                            <td class="part-table-label">Location</td>
+                            <td class="part-table-label">Sub-Location</td>
+                            <td class="part-table-label">Village / Estate</td>
+                            <td class="part-table-label">Highest Education</td>
                         </tr>
 
                         <tr>

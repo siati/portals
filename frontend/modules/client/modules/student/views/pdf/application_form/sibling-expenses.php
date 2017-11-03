@@ -6,7 +6,7 @@ use common\models\LmBaseEnums;
 ?>
 
 <div class="part-container">
-    <legend class="part-legend">Sibling Education Expenses</legend>
+    <legend class="part-legend">Sibling Education Expenses, KShs.</legend>
 
     <table class="part-table">
         <tbody>
@@ -27,7 +27,7 @@ use common\models\LmBaseEnums;
                     <td class="part-table-data"><small><?= $sibling_education->birth_cert_no ?></small></td>
                     <td class="part-table-data"><small><?= $sibling_education->institution_name ?></small></td>
                     <td class="part-table-data"><small><?= LmBaseEnums::byNameAndValue(LmBaseEnums::study_level, $sibling_education->study_level)->LABEL ?></small></td>
-                    <td class="part-table-data"><small><?= $sibling_education->annual_fees ?></small></td>
+                    <td class="part-table-data"><small><?= number_format($sibling_education->annual_fees) ?></small></td>
                     <td class="part-table-data"><small><?= LmBaseEnums::byNameAndValue(LmBaseEnums::yes_no, $sibling_education->helb_beneficiary)->LABEL ?></small></td>
                 </tr>
             <?php endforeach; ?>
