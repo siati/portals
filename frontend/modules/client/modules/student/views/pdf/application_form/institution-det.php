@@ -98,6 +98,16 @@ use common\models\StaticMethods;
                 <td class="part-table-data"><?= $institution->year_of_completion ?></td>
                 <td class="part-table-data"><?= StaticMethods::months()[$institution->completion_month] ?></td>
             </tr>
+            
+            <tr><td class="part-table-divider"></td></tr>
+
+            <tr>
+                <td class="part-table-label" colspan="4">Society</td>
+            </tr>
+
+            <tr>
+                <td class="part-table-data" colspan="4" style="text-align: justify"><?= $institution->narration ?></td>
+            </tr>
         </tbody>
     </table>
 </div>

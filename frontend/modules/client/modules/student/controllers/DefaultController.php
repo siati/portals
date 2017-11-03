@@ -487,7 +487,9 @@ class DefaultController extends Controller {
                 'parents' => ApplicantsParents::forApplicant($id),
                 'sponsors' => ApplicantSponsors::sponsorsForApplicant($id),
                 'family_expenses' => ApplicantsFamilyExpenses::expensesForApplicant($id),
-                'spouse' => ApplicantsSpouse::forApplicant($id)
+                'spouse' => ApplicantsSpouse::forApplicant($id),
+                'employment' => ApplicantsEmployment::forApplicant($id),
+                'guarantors' => ApplicantsGuarantors::searchGuarantors($id, null, null, null, null, null)
             ]
                 ], [
                     PDFGenerator::css_file => '@vendor/custom/css/pdf/application-form.css'
