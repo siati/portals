@@ -106,8 +106,8 @@ class Applications extends \yii\db\ActiveRecord {
      * @param string $oneOrAll one or all
      * @return Applications model(s)
      */
-    public static function searchApplications($applicant, $application, $serial_no, $prints, $printed_at, $appeal_prints, $appeal_printed_at, $appeal_origin, $oneOrAll) {
-        return static::find()->searchApplications($applicant, $application, $serial_no, $prints, $printed_at, $appeal_prints, $appeal_printed_at, $appeal_origin, $oneOrAll);
+    public static function searchApplications($applicant, $application, $serial_no, $prints, $printed_at_since, $printed_at_till, $appeal_prints, $appeal_printed_at_since, $appeal_printed_at_till, $appeal_origin, $oneOrAll) {
+        return static::find()->searchApplications($applicant, $application, $serial_no, $prints, $printed_at_since, $printed_at_till, $appeal_prints, $appeal_printed_at_since, $appeal_printed_at_till, $appeal_origin, $oneOrAll);
     }
 
     /**
