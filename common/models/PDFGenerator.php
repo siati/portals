@@ -40,6 +40,7 @@ class PDFGenerator {
     const css_file = 'css_file';
     const css_inline = 'css_inline';
     const title = 'title';
+    const html_header = 'html_header';
     const footer = 'footer';
 
     /**
@@ -70,7 +71,7 @@ class PDFGenerator {
             'SetHeader' => [$title],
             'SetFooter' => [empty($pdf_params[self::footer]) ? '{PAGENO}' : $pdf_params[self::footer]]
         ];
-
+        
         $pdf = new Pdf($pdf_config);
 
         empty($location) ? '' : $pdf->output($content, $location, $destination == self::DEST_DOWNLOAD ? $destination : self::DEST_FILE);

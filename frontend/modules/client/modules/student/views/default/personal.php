@@ -22,6 +22,16 @@ $this->title = 'Personal Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?php $parents_both_alive = Applicants::parents_both_alive ?>
+<?php $parents_father_alive = Applicants::parents_father_alive ?>
+<?php $parents_mother_alive = Applicants::parents_mother_alive ?>
+<?php $parents_neither_alive = Applicants::parents_neither_alive ?>
+<?php $parents_divorced = Applicants::parents_divorced ?>
+<?php $parents_separated = Applicants::parents_separated ?>
+<?php $parents_single = Applicants::parents_single ?>
+<?php $parents_abandoned = Applicants::parents_abandoned ?>
+<?php $parents_not_applicable = Applicants::parents_not_applicable ?>
+
 <div class="gnrl-frm stdt-psnl">
 
     <div class="gnrl-frm-cont">
@@ -112,6 +122,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 </tr>
             </table>
 
+
+            <div class="gnrl-frm-divider">Parental Status</div>
+
+            <table>
+                <tr>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'parents', ['addon' => ['prepend' => ['content' => '<i class="fa fa-group"></i>']]])->dropDownList(Applicants::parentalStatuses()) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'father_death_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-file-text"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'mother_death_cert_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-file-text"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                </tr>
+            </table>
+
+
             <div class="gnrl-frm-divider">Bank Details <small>This section is optional</small></div>
 
             <table>
@@ -139,6 +161,27 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $this->registerJs(
         "
+            function parentalStatusFields(stts) {
+                $('#applicants-father_death_cert_no, #applicants-mother_death_cert_no').blur();
+                
+                if (stts === '$parents_not_applicable' || stts === '$parents_abandoned' || stts === '$parents_divorced' || stts === '$parents_separated' || stts === '$parents_single')
+                    $('#applicants-father_death_cert_no, #applicants-mother_death_cert_no').parent().parent().hide();
+                else
+                if (stts === '$parents_neither_alive')
+                    $('#applicants-father_death_cert_no, #applicants-mother_death_cert_no').parent().parent().show();
+                else
+                if (stts === '$parents_mother_alive') {
+                    $('#applicants-mother_death_cert_no').val(null).parent().parent().hide();
+                    $('#applicants-father_death_cert_no').parent().parent().show();
+                } else
+                if (stts === '$parents_father_alive') {
+                    $('#applicants-father_death_cert_no').val(null).parent().parent().hide();
+                    $('#applicants-mother_death_cert_no').parent().parent().show();
+                } else
+                if (stts === '$parents_both_alive')
+                    $('#applicants-father_death_cert_no, #applicants-mother_death_cert_no').val(null).parent().parent().hide();
+            }
+            
             function bankBranches() {
                 $.post('bank-branches', {'bank': $('#applicants-bank').val(), 'branch': $('#applicants-bank_branch').val()},
                     function (branches) {
@@ -147,5 +190,23 @@ $this->registerJs(
                 );
             }
         ", yii\web\View::POS_HEAD
+)
+?>
+
+
+<?php
+$this->registerJs(
+        "
+            /* show or hide parents death cert fields */
+                $('#applicants-parents').change(
+                    function () {
+                        parentalStatusFields($(this).val())
+                    }
+                );
+                
+                $('#applicants-parents').change();
+            /* show or hide parents death cert fields */
+
+        ", yii\web\View::POS_READY
 )
 ?>

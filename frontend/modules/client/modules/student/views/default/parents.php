@@ -100,6 +100,8 @@ $this->registerJs(
             }
             
             function parentalStatusFields(stts) {
+                $('#applicants-father_death_cert_no, #applicants-mother_death_cert_no').blur();
+                
                 if (stts === '$parents_not_applicable' || stts === '$parents_abandoned' || stts === '$parents_divorced' || stts === '$parents_separated' || stts === '$parents_single')
                     $('#applicants-father_death_cert_no, #applicants-mother_death_cert_no').parent().parent().hide();
                 else

@@ -490,9 +490,11 @@ class DefaultController extends Controller {
                 'spouse' => ApplicantsSpouse::forApplicant($id),
                 'employment' => ApplicantsEmployment::forApplicant($id),
                 'guarantors' => ApplicantsGuarantors::searchGuarantors($id, null, null, null, null, null)
+                
             ]
                 ], [
-                    PDFGenerator::css_file => '@vendor/custom/css/pdf/application-form.css'
+                    PDFGenerator::css_file => '@vendor/custom/css/pdf/application-form.css',
+                    PDFGenerator::html_header => '<div><img src="' . Yii::$app->homeUrl . '../../common/assets/icons/johnrays.png"></div>'
                 ]
         );
     }
