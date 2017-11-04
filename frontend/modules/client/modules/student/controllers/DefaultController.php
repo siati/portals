@@ -493,8 +493,9 @@ class DefaultController extends Controller {
                 
             ]
                 ], [
-                    PDFGenerator::css_file => '@vendor/custom/css/pdf/application-form.css',
-                    PDFGenerator::html_header => '<div><img src="' . Yii::$app->homeUrl . '../../common/assets/icons/johnrays.png"></div>'
+                    PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
+                    PDFGenerator::html_header => '<img src="' . Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg" height="90" style="margin-top: -20">',
+                    PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg'
                 ]
         );
     }

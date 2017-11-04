@@ -169,11 +169,19 @@ class Applications extends \yii\db\ActiveRecord {
         return is_object($model = static::returnApplication($id)) || (!empty($applicant) && !empty($application) && is_object($model = static::byApplicantAndApplication($applicant, $application))) || (!empty($serial_no) && is_object($model = static::bySerialNo($serial_no))) ? $model : static::newApplication($applicant, $application);
     }
 
+    /**
+     * 
+     * @param boolean $is_appeal true - application is appeal
+     */
     public function modelSave($is_appeal) {
         if ($this->isNewRecord) {
             $this->created_at = StaticMethods::now();
         } else
             $is_appeal ? $this->printAppealForm() : $this->printApplicationForm();
+    }
+    
+    public function printApplicationForm() {
+        
     }
 
 }
