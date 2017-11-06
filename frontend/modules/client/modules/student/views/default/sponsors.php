@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
         <div class="gnrl-frm-ftr">
-            <?= Html::button('Amateur Form', ['class' => 'btn btn-danger pull-left', 'onclick' => "popWindow('amateur-form', 'Amateur Form');"]) ?>
+            <?= Html::button('Amateur Form', ['class' => 'btn btn-danger pull-left', 'onclick' => "amateurForm();"]) ?>
 
             <?= Html::button('Update', ['id' => 'spnsrs-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'sponsors-button']) ?>
         </div>
@@ -56,6 +56,14 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $this->registerJs(
         "
+            function amateurForm() {
+                $.post('amateur-form', {},
+                    function (res) {
+                        fileDownload('../../../', res[0], res[1], 'Amateur Form');
+                    }
+                );
+            }
+            
             function highlightActiveSponsorTab() {
                 btn = (id = $('#applicantsponsors-id').val()) * 1 > 0 ? $('.spnsr-' + id) : $('.spnsr-new');
                 

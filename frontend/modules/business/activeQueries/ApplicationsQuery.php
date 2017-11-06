@@ -49,7 +49,7 @@ class ApplicationsQuery extends \yii\db\ActiveQuery {
     public function searchApplications($applicant, $application, $serial_no, $prints, $printed_at_since, $printed_at_till, $appeal_prints, $appeal_printed_at_since, $appeal_printed_at_till, $appeal_origin, $oneOrAll) {
         return $this->where(
                         'id > 0' .
-                        (empty($applicant) ? '' : "applicant = '$applicant'") .
+                        (empty($applicant) ? '' : " && applicant = '$applicant'") .
                         (empty($application) ? '' : " && application = '$application'") .
                         (empty($serial_no) ? '' : " && serial_no = '$serial_no'") .
                         (is_numeric($prints) ? " && prints = '$prints'" : '') .
@@ -60,6 +60,15 @@ class ApplicationsQuery extends \yii\db\ActiveQuery {
                         (empty($appeal_printed_at_till) ? '' : " && appeal_printed_at <= '$appeal_printed_at_till'") .
                         (is_numeric($appeal_origin) ? " && appeal_origin = '$appeal_origin'" : '')
                 )->orderBy('id desc')->$oneOrAll();
+    }
+    
+    /**
+     * 
+     * @param integer $application application id
+     * @return integer|string max serial number for $application
+     */
+    public function maxSerial($application) {
+        return $this->where("application = '$application'")->max('serial_no');
     }
 
 }

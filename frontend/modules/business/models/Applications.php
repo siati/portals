@@ -3,7 +3,21 @@
 namespace frontend\modules\business\models;
 
 use Yii;
+use common\models\User;
+use frontend\modules\client\modules\student\models\Applicants;
+use frontend\modules\client\modules\student\models\ApplicantsResidence;
+use frontend\modules\client\modules\student\models\ApplicantsParents;
+use frontend\modules\client\modules\student\models\EducationBackground;
+use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
+use frontend\modules\client\modules\student\models\ApplicantsInstitution;
+use frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses;
+use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
+use frontend\modules\client\modules\student\models\ApplicantsEmployment;
+use frontend\modules\client\modules\student\models\ApplicantsSpouse;
+use frontend\modules\client\modules\student\models\ApplicantSponsors;
 use common\models\StaticMethods;
+use common\models\PDFGenerator;
+use common\models\Docs;
 
 /**
  * This is the model class for table "{{%applications}}".
@@ -28,6 +42,9 @@ class Applications extends \yii\db\ActiveRecord {
 
     const appeal_origin_system = 0;
     const appeal_origin_applicant = 1;
+    const print_modified = 'print_modified';
+    const print_unmodified = 'print_unmodified';
+    const error_incurred = 'error_incurred';
 
     /**
      * @inheritdoc
@@ -116,7 +133,7 @@ class Applications extends \yii\db\ActiveRecord {
      * @return Applications models
      */
     public static function forApplicant($applicant) {
-        return static::searchApplications($applicant, null, null, null, null, null, null, null, self::all);
+        return static::searchApplications($applicant, null, null, null, null, null, null, null, null, null, self::all);
     }
 
     /**
@@ -126,7 +143,7 @@ class Applications extends \yii\db\ActiveRecord {
      * @return Applications model
      */
     public static function byApplicantAndApplication($applicant, $application) {
-        return static::searchApplications($applicant, $application, null, null, null, null, null, null, self::one);
+        return static::searchApplications($applicant, $application, null, null, null, null, null, null, null, null, self::one);
     }
 
     /**
@@ -135,7 +152,16 @@ class Applications extends \yii\db\ActiveRecord {
      * @return Applications model
      */
     public static function bySerialNo($serial_no) {
-        return static::searchApplications(null, null, $serial_no, null, null, null, null, null, self::one);
+        return static::searchApplications(null, null, $serial_no, null, null, null, null, null, null, null, self::one);
+    }
+
+    /**
+     * 
+     * @param integer $application application id
+     * @return integer|string max serial number for $application
+     */
+    public static function maxSerial($application) {
+        return static::find()->maxSerial($application);
     }
 
     /**
@@ -172,16 +198,142 @@ class Applications extends \yii\db\ActiveRecord {
     /**
      * 
      * @param boolean $is_appeal true - application is appeal
+     * @return boolean true - model saved
      */
     public function modelSave($is_appeal) {
         if ($this->isNewRecord) {
             $this->created_at = StaticMethods::now();
-        } else
-            $is_appeal ? $this->printAppealForm() : $this->printApplicationForm();
+            $this->applicationSerial();
+            $wasNew = true;
+        }
+
+        $print = $is_appeal ? $this->printAppealForm() : $this->printApplicationForm();
+
+        if ($print == self::print_modified)
+            if ($this->save(false) || (!empty($wasNew) && !$this->hasErrors()))
+                ApplicationViews::newView($this->id, $is_appeal ? ApplicationViews::appeal_yes : ApplicationViews::appeal_no, ApplicationViews::new_print_yes);
+            else {
+                Docs::deleteFile(PDFGenerator::category_laf, $is_appeal ? $this->appeal_print_out : $this->print_out);
+                $print = false;
+            } else
+        if ($print == self::print_unmodified)
+            ApplicationViews::newView($this->id, $is_appeal ? ApplicationViews::appeal_yes : ApplicationViews::appeal_no, ApplicationViews::new_print_no);
+
+        return $print;
     }
-    
+
+    /**
+     * assign application serial number
+     */
+    public function applicationSerial() {
+        if (is_numeric($count = static::maxSerial($this->application)) && $count > 0)
+            $this->serial_no = $count + 1;
+        else {
+            $application = ProductOpening::returnOpening($this->application);
+            $this->serial_no = substr($application->academic_year, 2, 2) . substr($application->academic_year, 7, 2) . $application->subsequent . '000001';
+        }
+    }
+
+    /**
+     * 
+     * @return boolean|string true - form printout available
+     */
     public function printApplicationForm() {
-        
+        if ($this->printOutExists())
+            return self::print_unmodified;
+
+        if ($filename = static::applicationFormPrinter($this)) {
+
+            $this->print_out = $filename;
+
+            $this->prints++;
+
+            $this->printed_by = Yii::$app->user->identity->username;
+
+            $this->printed_at = StaticMethods::now();
+
+            return self::print_modified;
+        }
+
+        return false;
+    }
+
+    /**
+     * 
+     * @return boolean true - form printout available
+     */
+    public function printAppealForm() {
+        if ($this->appealPrintOutExists())
+            return self::print_unmodified;
+
+        if ($filename = static::applicationFormPrinter($this)) {
+
+            $this->appeal_print_out = $filename;
+
+            $this->appeal_prints++;
+
+            $this->appeal_printed_by = Yii::$app->user->identity->username;
+
+            $this->appeal_printed_at = StaticMethods::now();
+
+            return self::print_modified;
+        }
+
+        return false;
+    }
+
+    /**
+     * 
+     * @return boolean true - application print out exists
+     */
+    public function printOutExists() {
+        return !empty($this->print_out) && Docs::fileExists(Docs::category_laf, $this->print_out, Docs::location);
+    }
+
+    /**
+     * 
+     * @return boolean true - application appeal print out exists
+     */
+    public function appealPrintOutExists() {
+        return !empty($this->appeal_print_out) && Docs::fileExists(Docs::category_laf, $this->appeal_print_out, Docs::location);
+    }
+
+    /**
+     * 
+     * @param Applications $application model
+     * @return boolean true - application form printed and saved
+     */
+    public static function applicationFormPrinter($application) {
+        try {
+            $form = PDFGenerator::go(
+                            [
+                        PDFGenerator::view => '../pdf/application_form/amateur-form',
+                        PDFGenerator::view_params => [
+                            'user' => User::returnUser($application->applicant),
+                            'applicant' => Applicants::returnApplicant($application->applicant),
+                            'residence' => ApplicantsResidence::forApplicant($application->applicant),
+                            'institution' => ApplicantsInstitution::forApplicant($application->applicant),
+                            'sibling_educations' => ApplicantsSiblingEducationExpenses::expensesForApplicant($application->applicant),
+                            'education_backgrounds' => EducationBackground::searchEducations($application->applicant, null),
+                            'parents' => ApplicantsParents::forApplicant($application->applicant),
+                            'sponsors' => ApplicantSponsors::sponsorsForApplicant($application->applicant),
+                            'family_expenses' => ApplicantsFamilyExpenses::expensesForApplicant($application->applicant),
+                            'spouse' => ApplicantsSpouse::forApplicant($application->applicant),
+                            'employment' => ApplicantsEmployment::forApplicant($application->applicant),
+                            'guarantors' => ApplicantsGuarantors::searchGuarantors($application->applicant, null, null, null, null, null)
+                        ]
+                            ], [
+                        PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
+                        PDFGenerator::html_header => '<img src="' . Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg" height="90" style="margin-top: -20">',
+                        PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg',
+                        PDFGenerator::category => PDFGenerator::category_laf
+                            ]
+            );
+
+            return $form[PDFGenerator::filename];
+        } catch (Exception $ex) {
+            return false;
+        }
     }
 
 }

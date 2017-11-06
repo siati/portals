@@ -2,6 +2,20 @@ function popWindow(url, windowName) {
     window.open(url, windowName, "width=300, height=500, scrollbars=yes, toolbar=0, location=0, directories=0, status=0, menubar=0");
 }
 
+function fileDownload(pre, cat, nm, ttl) {
+    $.post(pre + 'site/check-file', {'cat': cat, 'nm': nm},
+            function (url) {
+                if (url === false)
+                    customSwal('Well...', 'The file seems to have been removed<br/><br/>Please close this pop up window and retry', '2500', 'info', false, true, 'ok', '#f27474', false, 'cancel');
+                else {
+                    popWindow(url, ttl);
+                    $.post(pre + 'site/expire-resource', {'nm': url}, function () {});
+                    swal.close();
+                }
+            }
+    );
+}
+
 function yiiModal(heading, url, post, width, height) {
 
     $('.modal-dialog').removeClass('modal-lg').removeClass('modal-sm').css('margin', '0 auto').width(width + 'px');

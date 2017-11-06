@@ -16,6 +16,7 @@ use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExp
 use frontend\modules\client\modules\student\models\ApplicantsEmployment;
 use frontend\modules\client\modules\student\models\ApplicantsSpouse;
 use frontend\modules\client\modules\student\models\ApplicantSponsors;
+use frontend\modules\business\models\Applications;
 use common\models\User;
 use common\models\StaticMethods;
 use common\models\LmBankBranch;
@@ -25,6 +26,7 @@ use common\models\LmInstitutionBranches;
 use common\models\LmCourses;
 use common\models\LmEmployers;
 use common\models\PDFGenerator;
+use common\models\Docs;
 
 /**
  * Default controller for the `student` module
@@ -474,30 +476,11 @@ class DefaultController extends Controller {
      * amateur application form
      */
     public function actionAmateurForm() {
-        PDFGenerator::go(
-                [
-            PDFGenerator::view => '../pdf/application_form/amateur-form',
-            PDFGenerator::view_params => [
-                'user' => User::returnUser($id = Yii::$app->user->identity->id),
-                'applicant' => Applicants::returnApplicant($id),
-                'residence' => ApplicantsResidence::forApplicant($id),
-                'institution' => ApplicantsInstitution::forApplicant($id),
-                'sibling_educations' => ApplicantsSiblingEducationExpenses::expensesForApplicant($id),
-                'education_backgrounds' => EducationBackground::searchEducations($id, null),
-                'parents' => ApplicantsParents::forApplicant($id),
-                'sponsors' => ApplicantSponsors::sponsorsForApplicant($id),
-                'family_expenses' => ApplicantsFamilyExpenses::expensesForApplicant($id),
-                'spouse' => ApplicantsSpouse::forApplicant($id),
-                'employment' => ApplicantsEmployment::forApplicant($id),
-                'guarantors' => ApplicantsGuarantors::searchGuarantors($id, null, null, null, null, null)
-                
-            ]
-                ], [
-                    PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
-                    PDFGenerator::html_header => '<img src="' . Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg" height="90" style="margin-top: -20">',
-                    PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg'
-                ]
-        );
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+        $application = Applications::applicationToLoad(null, Yii::$app->user->identity->id, 2, null);
+        
+        return [PDFGenerator::category_client, basename(Docs::fileLocate(PDFGenerator::category_laf, $application->modelSave(false) ? $application->print_out : 'nope', Docs::locator))];
     }
 
 }

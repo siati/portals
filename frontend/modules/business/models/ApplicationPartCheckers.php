@@ -7,6 +7,7 @@ namespace frontend\modules\business\models;
  */
 class ApplicationPartCheckers {
 
+    const part_caution = 'caution';
     const part_personal = 'personal';
     const part_residence = 'residence';
     const part_institution = 'institution';
@@ -15,7 +16,6 @@ class ApplicationPartCheckers {
     const part_siblings = 'siblings';
     const part_education = 'education';
     const part_employment = 'employment';
-    const part_parents_marital = 'parents_marital';
     const part_parents = 'parents';
     const part_guardians = 'guardians';
     const part_expenses = 'expenses';
@@ -28,6 +28,8 @@ class ApplicationPartCheckers {
     const part_submission = 'submission';
     const part_institution_dean_registrar = 'institution_dean_registrar';
     const part_employment_hr_cert = 'employment_hr_cert';
+    const part_parents_marital = 'parents_marital';
+    const part_parents_parent = 'parents_parent';
     const part_declaration_applicant = 'declaration_applicant';
     const part_declaration_parent_guardian = 'declaration_parent_guardian';
     const part_declaration_priest_kadhi = 'declaration_priest_kadhi';
@@ -70,25 +72,25 @@ class ApplicationPartCheckers {
      */
     public static function checkerParts() {
         return [
-            self::part_personal => [self::title => 'Applicant\'s Personal Details', self::intro => false, self::order => 1, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_residence => [self::title => 'Applicant\'s Current Place of Residence', self::intro => false, self::order => 2, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_institution => [self::title => 'Applicant\'s Institutional Details', self::intro => 'You are required to attach a copy of your Admission Letter', self::order => 3, self::new_page => false, self::items => static::institutionItems(), self::order_elements => self::order_elements_no],
-            self::part_next_of_kin => [self::title => 'Next of Kin', self::intro => false, self::order => 4, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_loan => [self::title => 'Loan Applied (Per Annum)', self::intro => false, self::order => 5, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_siblings => [self::title => 'Siblings applying for HELB Loan this year', self::intro => false, self::order => 6, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_education => [self::title => 'Education Background', self::intro => 'Attach certificate in each case', self::order => 7, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_employment => [self::title => 'Employment Details', self::intro => false, self::order => 8, self::new_page => false, self::items => static::employmentItems(), self::order_elements => self::order_elements_no],
-            self::part_parents_marital => [self::title => 'Parents\' Marital Status', self::intro => null, self::order => 9, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_parents => [self::title => 'Parents\' Details', self::intro => 'Attach a copy of payslip or payment voucher for salary or pension income respectively', self::order => 10, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_guardians => [self::title => 'Guardian / Sponsor / Public Trustee', self::intro => 'Attach letter from school or sponsor in each case', self::order => 11, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_expenses => [self::title => 'Estimated Family Monthly Expenses, Kshs', self::intro => null, self::order => 12, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_education_expenses => [self::title => 'Gross Education Expenses, Kshs', self::intro => 'Siblings in Secondary, Tertiary or University, who are not beneficiaries of HELB Loan', self::order => 13, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_declaration => [self::title => 'Declarations', self::intro => null, self::order => 14, self::new_page => false, self::items => static::declarationsItems(), self::order_elements => self::order_elements_yes],
-            self::part_guarantors => [self::title => 'Guarantors', self::intro => static::guarantorStatement(), self::order => 15, self::new_page => false],
-            self::part_bank => [self::title => 'Applicant\'s Personal Bank Details', self::intro => 'Attach a copy of bank account card', self::order => 16, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_terms_and_conditions => [self::title => 'Terms and Conditions', self::intro => static::termsAndConditionsStatement(), self::order => 17, self::new_page => false, self::order_elements => self::order_elements_no],
-            self::part_check_list => [self::title => 'The Checklist', self::intro => null, self::order => 18, self::new_page => false, self::items => static::checkListItems(), self::order_elements => self::order_elements_yes],
-            self::part_submission => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => 19, self::new_page => false, self::order_elements => self::order_elements_no]
+            self::part_caution => [self::title => 'CAUTION', self::intro => static::cautionStatement(), self::order => $order = 1, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_personal => [self::title => 'Applicant\'s Personal Details', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_residence => [self::title => 'Applicant\'s Current Place of Residence', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_institution => [self::title => 'Applicant\'s Institutional Details', self::intro => 'You are required to attach a copy of your Admission Letter', self::order => ++$order, self::new_page => false, self::items => static::institutionItems(), self::order_elements => self::order_elements_no],
+            self::part_next_of_kin => [self::title => 'Next of Kin', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_loan => [self::title => 'Loan Applied (Per Annum)', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_siblings => [self::title => 'Siblings applying for HELB Loan this year', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_education => [self::title => 'Education Background', self::intro => 'Attach certificate in each case', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_employment => [self::title => 'Employment Details', self::intro => false, self::order => ++$order, self::new_page => false, self::items => static::employmentItems(), self::order_elements => self::order_elements_no],
+            self::part_parents => [self::title => 'Parents\' Details', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::parentsItems(), self::order_elements => self::order_elements_no],
+            self::part_guardians => [self::title => 'Guardian / Sponsor / Public Trustee', self::intro => 'Attach letter from school or sponsor in each case', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_expenses => [self::title => 'Estimated Family Monthly Expenses, Kshs', self::intro => null, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_education_expenses => [self::title => 'Gross Education Expenses, Kshs', self::intro => 'Siblings in Secondary, Tertiary or University, who are not beneficiaries of HELB Loan', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_declaration => [self::title => 'Declarations', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::declarationsItems(), self::order_elements => self::order_elements_yes],
+            self::part_guarantors => [self::title => 'Guarantors', self::intro => static::guarantorStatement(), self::order => ++$order, self::new_page => false],
+            self::part_bank => [self::title => 'Applicant\'s Personal Bank Details', self::intro => 'Attach a copy of bank account card', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_terms_and_conditions => [self::title => 'Terms and Conditions', self::intro => static::termsAndConditionsStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_check_list => [self::title => 'The Checklist', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::checkListItems(), self::order_elements => self::order_elements_yes],
+            self::part_submission => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no]
         ];
     }
 
@@ -107,6 +109,17 @@ class ApplicationPartCheckers {
     public static function employmentItems() {
         return [
             self::part_employment_hr_cert => [self::title => 'Employer Certification(To be done by the HR manager)', self::intro => static::hrCertificationStatement(), self::active => self::active_no], # borrowed from ddd1
+        ];
+    }
+
+    /**
+     * 
+     * @return array parents items
+     */
+    public static function parentsItems() {
+        return [
+            self::part_parents_marital => [self::title => 'Parents\' Marital Status', self::narration => null, self::active => self::active_yes, self::order => 1],
+            self::part_parents_parent => [self::title => 'Parents\' Details', self::narration => 'Attach a copy of payslip or payment voucher for salary or pension income respectively', self::active => self::active_yes, self::order => 2]
         ];
     }
 
@@ -142,6 +155,18 @@ class ApplicationPartCheckers {
             self::part_check_list_signatures_stamps => [self::title => 'Declarations, Signatures and stamps', self::narration => null, self::active => self::active_yes, self::order => 5],
             self::part_check_list_signatures_stamps_confirm => [self::title => 'Declarations, Signatures and stamps confirmation', self::narration => static::signatureAndStampConfirmationStatement(), self::active => self::active_yes, self::order => 6],
         ];
+    }
+
+    /**
+     * 
+     * @return string caution opening statement
+     */
+    public static function cautionStatement() {
+        return
+                'Any person or student who when filling a scholarship application form, knowingly makes a false statement whether orally or in writing relating to any matter affecting the'
+                . ' request for a scholarship shall be guilty of an offence and shall be liable to a fine of not less than Kenya Shillings Thirty thousand (Ksh. 30,000) or to imprisonment for a'
+                . 'term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).'
+        ;
     }
 
     /**

@@ -16,6 +16,7 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use common\models\StaticMethods;
+use common\models\Docs;
 
 /**
  * Site controller
@@ -29,7 +30,7 @@ class SiteController extends Controller {
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['signup', 'logout'],
+                'only' => ['signup', 'logout', 'check-file', 'expire-resource'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -38,7 +39,7 @@ class SiteController extends Controller {
                         'verbs' => ['post']
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['check-file', 'expire-resource', 'logout'],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
                         'verbs' => ['post']
@@ -205,6 +206,20 @@ class SiteController extends Controller {
         return $this->render('resetPassword', [
                     'model' => $model,
         ]);
+    }
+    
+    /**
+     * check if resource is available on the server and return response to client
+     */
+    public function actionCheckFile() {
+        echo Docs::fileLocate($_POST['cat'], $_POST['nm'], Docs::locator);
+    }
+    
+    /**
+     * drop file
+     */
+    public function actionExpireResource() {
+        Docs::deleteFile(Docs::category_client, basename($_POST['nm']));
     }
 
     /**
