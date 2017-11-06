@@ -59,6 +59,7 @@ class ApplicationPartCheckers {
     const active_yes = 1;
     const order_elements_no = 0;
     const order_elements_yes = 1;
+    const no_order = 0;
 
     /**
      * this is a line break and must not be modified in any way.
