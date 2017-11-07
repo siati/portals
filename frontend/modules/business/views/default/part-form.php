@@ -20,7 +20,7 @@ use kartik\form\ActiveForm;
     <?= Html::activeHiddenInput($model, "[$model->part]order_elements") ?>
 
     <table>
-        <tr><td class="td-pdg-bth"><?= $form->field($model, "[$model->part]order")->dropDownList([frontend\modules\business\models\ApplicationPartCheckers::no_order => 'Exempted'] + \common\models\StaticMethods::ranges(1, $count, 1, false)) ?></td></tr>
+        <tr><td class="td-pdg-bth"><?= $form->field($model, "[$model->part]order")->dropDownList(frontend\modules\business\models\ApplicationPartCheckers::partOrders($count)) ?></td></tr>
 
         <tr><td class="td-pdg-bth"><?= $form->field($model, "[$model->part]new_page")->dropDownList(frontend\modules\business\models\ApplicationParts::newPage()) ?></td></tr>
 

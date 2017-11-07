@@ -38,12 +38,13 @@ class ApplicationPartsQuery extends \yii\db\ActiveQuery {
      * @param string $oneOrAll one or all
      * @return ApplicationParts ActiveRecord(s)
      */
-    public function searchParts($application, $part, $oneOrAll) {
+    public function searchParts($application, $part, $order, $oneOrAll) {
         return
                 $this->where(
                         'id > 0' .
                         (empty($application) ? '' : " && application = '$application'") .
-                        (empty($part) ? '' : " && part = '$part'")
+                        (empty($part) ? '' : " && part = '$part'") .
+                        (is_numeric($order) ? (empty($order) ? " && `order` * 1 < 1" : " && `order` * 1 > 0") : (''))
                 )->orderBy('`order` asc')->$oneOrAll()
         ;
     }

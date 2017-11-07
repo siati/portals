@@ -1,6 +1,7 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $guarantors \frontend\modules\client\modules\student\models\ApplicantsGuarantors */
+/* @var $part \frontend\modules\business\models\ApplicationParts */
 
 use common\models\LmBaseEnums;
 use common\models\PostalCodes;
@@ -8,18 +9,20 @@ use common\models\Counties;
 use common\models\SubCounties;
 use common\models\Constituencies;
 use common\models\Wards;
+use frontend\modules\business\models\ApplicationParts;
+use frontend\modules\business\models\ApplicationPartElements;
 ?>
 
-<?php $i = 0 ?>
+<?php $elements = ApplicationPartElements::forPart($part->id, ApplicationPartElements::active_yes) ?>
 
-<div class="part-container">
-    <legend class="part-legend">Guarantors' Details</legend>
+<div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
+    <legend class="part-legend"><?= $part->title ?></legend>
 
     <?php foreach ($guarantors as $guarantor): ?>
 
         <div class="part-container">
 
-            <legend class="part-legend-2">Guarantor <?= ++$i ?></legend>
+            <legend class="part-legend-2"><?= "$guarantor->fname $guarantor->mname $guarantor->lname" ?></legend>
 
             <table class="part-table">
                 <tbody>
@@ -145,6 +148,10 @@ use common\models\Wards;
 
                 </tbody>
             </table>
+
+            <br/>
+
+            <?= $part->intro ?>
 
         </div>
 

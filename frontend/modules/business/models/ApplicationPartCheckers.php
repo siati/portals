@@ -16,6 +16,7 @@ class ApplicationPartCheckers {
     const part_siblings = 'siblings';
     const part_education = 'education';
     const part_employment = 'employment';
+    const part_spouse = 'spouse';
     const part_parents = 'parents';
     const part_guardians = 'guardians';
     const part_expenses = 'expenses';
@@ -60,6 +61,7 @@ class ApplicationPartCheckers {
     const order_elements_no = 0;
     const order_elements_yes = 1;
     const no_order = 0;
+    const min_order = 1;
 
     /**
      * this is a line break and must not be modified in any way.
@@ -73,7 +75,7 @@ class ApplicationPartCheckers {
      */
     public static function checkerParts() {
         return [
-            self::part_caution => [self::title => 'CAUTION', self::intro => static::cautionStatement(), self::order => $order = 1, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_caution => [self::title => 'CAUTION', self::intro => static::cautionStatement(), self::order => $order = self::min_order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_personal => [self::title => 'Applicant\'s Personal Details', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_residence => [self::title => 'Applicant\'s Current Place of Residence', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_institution => [self::title => 'Applicant\'s Institutional Details', self::intro => 'You are required to attach a copy of your Admission Letter', self::order => ++$order, self::new_page => false, self::items => static::institutionItems(), self::order_elements => self::order_elements_no],
@@ -81,6 +83,7 @@ class ApplicationPartCheckers {
             self::part_loan => [self::title => 'Loan Applied (Per Annum)', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_siblings => [self::title => 'Siblings applying for HELB Loan this year', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_education => [self::title => 'Education Background', self::intro => 'Attach certificate in each case', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_spouse => [self::title => 'Spouse Details', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_employment => [self::title => 'Employment Details', self::intro => false, self::order => ++$order, self::new_page => false, self::items => static::employmentItems(), self::order_elements => self::order_elements_no],
             self::part_parents => [self::title => 'Parents\' Details', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::parentsItems(), self::order_elements => self::order_elements_no],
             self::part_guardians => [self::title => 'Guardian / Sponsor / Public Trustee', self::intro => 'Attach letter from school or sponsor in each case', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
@@ -93,6 +96,15 @@ class ApplicationPartCheckers {
             self::part_check_list => [self::title => 'The Checklist', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::checkListItems(), self::order_elements => self::order_elements_yes],
             self::part_submission => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no]
         ];
+    }
+    
+    /**
+     * 
+     * @param integer $max_order max order
+     * @return array orders
+     */
+    public static function partOrders($max_order) {
+        return [self::no_order => 'Exempted'] + \common\models\StaticMethods::ranges(self::min_order, $max_order, 1, false);
     }
 
     /**

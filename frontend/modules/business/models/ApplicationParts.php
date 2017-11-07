@@ -93,11 +93,22 @@ class ApplicationParts extends \yii\db\ActiveRecord {
      * 
      * @param integer $application application id
      * @param string $part application part
+     * @param integer $order part order
      * @param string $oneOrAll one or all
      * @return ApplicationParts model(s)
      */
-    public static function searchParts($application, $part, $oneOrAll) {
-        return static::find()->searchParts($application, $part, $oneOrAll);
+    public static function searchParts($application, $part, $order, $oneOrAll) {
+        return static::find()->searchParts($application, $part, $order, $oneOrAll);
+    }
+    
+    /**
+     * 
+     * @param integer $application application id
+     * @param integer $order part order
+     * @return ApplicationParts models
+     */
+    public static function forApplication($application, $order) {
+        return static::searchParts($application, null, $order, self::all);
     }
     
     /**
@@ -107,7 +118,7 @@ class ApplicationParts extends \yii\db\ActiveRecord {
      * @return ApplicationParts model
      */
     public static function byApplicationAndPart($application, $part) {
-        return static::searchParts($application, $part, self::one);
+        return static::searchParts($application, $part, null, self::one);
     }
     
     /**

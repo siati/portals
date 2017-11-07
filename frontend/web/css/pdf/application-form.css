@@ -43,3 +43,7 @@
 .part-table-divider {
     height: 5px
 }
+
+.page-break {
+    page-break-before: always
+}

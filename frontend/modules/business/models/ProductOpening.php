@@ -5,6 +5,7 @@ namespace frontend\modules\business\models;
 use Yii;
 use common\models\StaticMethods;
 use common\models\LmBaseEnums;
+use common\models\PDFGenerator;
 
 /**
  * This is the model class for table "{{%product_opening}}".
@@ -52,7 +53,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
                 'when' => function () {
                     return $this->consider_counts != self::consider_counts_no;
                 },
-                'whenClient' =>  "
+                'whenClient' => "
                     function (attribute, value) {
                         return $('#productopening-consider_counts').val() !== '" . self::consider_counts_no . "';
                     } 
@@ -77,7 +78,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
         StaticMethods::timeEmpty($this->grace) ? (empty($this->till) ? $this->grace = null : $this->grace = $this->till) : ('');
         StaticMethods::timeEmpty($this->appeal_since) ? $this->appeal_since = null : '';
         StaticMethods::timeEmpty($this->appeal_till) ? $this->appeal_till = null : '';
-        
+
         $this->till < $this->since ? $this->addError('till', 'Closing Date cannot be earlier than Opening Date') : '';
         $this->grace < $this->till ? $this->addError('grace', 'Grace Period Date cannot be earlier than Closing Date') : '';
         $this->consider_counts == self::consider_counts_no && $this->grace != $this->till ? $this->addError('grace', 'Not considering Application Counts, Grace Period Date must equal Closing Date') : '';
@@ -263,6 +264,31 @@ class ProductOpening extends \yii\db\ActiveRecord {
      */
     public static function considerCounts() {
         return [self::consider_counts_no => 'No', self::consider_min_counts => 'Minimum', self::consider_max_counts => 'Maximum'];
+    }
+
+    /**
+     * 
+     * @param Applications $application model
+     * @return boolean true - application form printed and saved
+     */
+    public static function applicationFormPrinter($application) {
+        try {
+            $form = PDFGenerator::go(
+                            [
+                        PDFGenerator::view => '../pdf/application_form/amateur-form',
+                        PDFGenerator::view_params => ['application' => $application]
+                            ], [
+                        PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
+                        PDFGenerator::html_header => '<img src="' . Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg" height="90" style="margin-top: -20">',
+                        PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg',
+                        PDFGenerator::category => PDFGenerator::category_laf
+                            ]
+            );
+
+            return $form[PDFGenerator::filename];
+        } catch (Exception $ex) {
+            return false;
+        }
     }
 
 }

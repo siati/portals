@@ -3,18 +3,6 @@
 namespace frontend\modules\business\models;
 
 use Yii;
-use common\models\User;
-use frontend\modules\client\modules\student\models\Applicants;
-use frontend\modules\client\modules\student\models\ApplicantsResidence;
-use frontend\modules\client\modules\student\models\ApplicantsParents;
-use frontend\modules\client\modules\student\models\EducationBackground;
-use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
-use frontend\modules\client\modules\student\models\ApplicantsInstitution;
-use frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses;
-use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses;
-use frontend\modules\client\modules\student\models\ApplicantsEmployment;
-use frontend\modules\client\modules\student\models\ApplicantsSpouse;
-use frontend\modules\client\modules\student\models\ApplicantSponsors;
 use common\models\StaticMethods;
 use common\models\PDFGenerator;
 use common\models\Docs;
@@ -242,7 +230,7 @@ class Applications extends \yii\db\ActiveRecord {
         if ($this->printOutExists())
             return self::print_unmodified;
 
-        if ($filename = static::applicationFormPrinter($this)) {
+        if ($filename = ProductOpening::applicationFormPrinter($this)) {
 
             $this->print_out = $filename;
 
@@ -266,7 +254,7 @@ class Applications extends \yii\db\ActiveRecord {
         if ($this->appealPrintOutExists())
             return self::print_unmodified;
 
-        if ($filename = static::applicationFormPrinter($this)) {
+        if ($filename = ProductOpening::applicationFormPrinter($this)) {
 
             $this->appeal_print_out = $filename;
 
@@ -296,44 +284,6 @@ class Applications extends \yii\db\ActiveRecord {
      */
     public function appealPrintOutExists() {
         return !empty($this->appeal_print_out) && Docs::fileExists(Docs::category_laf, $this->appeal_print_out, Docs::location);
-    }
-
-    /**
-     * 
-     * @param Applications $application model
-     * @return boolean true - application form printed and saved
-     */
-    public static function applicationFormPrinter($application) {
-        try {
-            $form = PDFGenerator::go(
-                            [
-                        PDFGenerator::view => '../pdf/application_form/amateur-form',
-                        PDFGenerator::view_params => [
-                            'user' => User::returnUser($application->applicant),
-                            'applicant' => Applicants::returnApplicant($application->applicant),
-                            'residence' => ApplicantsResidence::forApplicant($application->applicant),
-                            'institution' => ApplicantsInstitution::forApplicant($application->applicant),
-                            'sibling_educations' => ApplicantsSiblingEducationExpenses::expensesForApplicant($application->applicant),
-                            'education_backgrounds' => EducationBackground::searchEducations($application->applicant, null),
-                            'parents' => ApplicantsParents::forApplicant($application->applicant),
-                            'sponsors' => ApplicantSponsors::sponsorsForApplicant($application->applicant),
-                            'family_expenses' => ApplicantsFamilyExpenses::expensesForApplicant($application->applicant),
-                            'spouse' => ApplicantsSpouse::forApplicant($application->applicant),
-                            'employment' => ApplicantsEmployment::forApplicant($application->applicant),
-                            'guarantors' => ApplicantsGuarantors::searchGuarantors($application->applicant, null, null, null, null, null)
-                        ]
-                            ], [
-                        PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
-                        PDFGenerator::html_header => '<img src="' . Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg" height="90" style="margin-top: -20">',
-                        PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg',
-                        PDFGenerator::category => PDFGenerator::category_laf
-                            ]
-            );
-
-            return $form[PDFGenerator::filename];
-        } catch (Exception $ex) {
-            return false;
-        }
     }
 
 }

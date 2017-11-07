@@ -101,6 +101,16 @@ class ApplicationPartElements extends \yii\db\ActiveRecord {
     /**
      * 
      * @param integer $part part id
+     * @param integer $active active: 1 - yes, 0 - no
+     * @return ApplicationPartElements model
+     */
+    public static function forPart($part, $active) {
+        return static::searchElements($part, null, null, $active, self::all);
+    }
+    
+    /**
+     * 
+     * @param integer $part part id
      * @param string $element element
      * @return ApplicationPartElements model
      */

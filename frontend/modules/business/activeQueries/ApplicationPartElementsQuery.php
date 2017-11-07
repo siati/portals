@@ -48,7 +48,7 @@ class ApplicationPartElementsQuery extends \yii\db\ActiveQuery {
                         (empty($element) ? '' : " && element = '$element'") .
                         (empty($narration) ? '' : " && narration like '%$narration%'") .
                         (is_numeric($active) ? " && active = '$active'" : '')
-                )->$oneOrAll()
+                )->orderBy('`order` asc')->$oneOrAll()
         ;
     }
 
