@@ -10,10 +10,7 @@ use common\models\SubCounties;
 use common\models\Constituencies;
 use common\models\Wards;
 use frontend\modules\business\models\ApplicationParts;
-use frontend\modules\business\models\ApplicationPartElements;
 ?>
-
-<?php $elements = ApplicationPartElements::forPart($part->id, ApplicationPartElements::active_yes) ?>
 
 <div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
     <legend class="part-legend"><?= $part->title ?></legend>
@@ -151,7 +148,9 @@ use frontend\modules\business\models\ApplicationPartElements;
 
             <br/>
 
-            <?= $part->intro ?>
+            <?php if (!empty($part->intro)): ?>
+                <div class="part-element-narration"><?= $part->intro ?></div>
+            <?php endif; ?>
 
         </div>
 

@@ -31,6 +31,8 @@ class ApplicationPartCheckers {
     const part_employment_hr_cert = 'employment_hr_cert';
     const part_parents_marital = 'parents_marital';
     const part_parents_parent = 'parents_parent';
+    const part_bank_checklist = 'bank_checklist';
+    const part_bank_confirm = 'bank_confirm';
     const part_declaration_applicant = 'declaration_applicant';
     const part_declaration_parent_guardian = 'declaration_parent_guardian';
     const part_declaration_priest_kadhi = 'declaration_priest_kadhi';
@@ -91,7 +93,7 @@ class ApplicationPartCheckers {
             self::part_education_expenses => [self::title => 'Gross Education Expenses, Kshs', self::intro => 'Siblings in Secondary, Tertiary or University, who are not beneficiaries of HELB Loan', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_declaration => [self::title => 'Declarations', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::declarationsItems(), self::order_elements => self::order_elements_yes],
             self::part_guarantors => [self::title => 'Guarantors', self::intro => static::guarantorStatement(), self::order => ++$order, self::new_page => false],
-            self::part_bank => [self::title => 'Applicant\'s Personal Bank Details', self::intro => 'Attach a copy of bank account card', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_bank => [self::title => 'Applicant\'s Bank Details', self::intro => 'Attach a copy of bank account card and smart card, where necessary', self::order => ++$order, self::new_page => false, self::items => static::bankItems(), self::order_elements => self::order_elements_yes],
             self::part_terms_and_conditions => [self::title => 'Terms and Conditions', self::intro => static::termsAndConditionsStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_check_list => [self::title => 'The Checklist', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::checkListItems(), self::order_elements => self::order_elements_yes],
             self::part_submission => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no]
@@ -133,6 +135,17 @@ class ApplicationPartCheckers {
         return [
             self::part_parents_marital => [self::title => 'Parents\' Marital Status', self::narration => null, self::active => self::active_yes, self::order => 1],
             self::part_parents_parent => [self::title => 'Parents\' Details', self::narration => 'Attach a copy of payslip or payment voucher for salary or pension income respectively', self::active => self::active_yes, self::order => 2]
+        ];
+    }
+
+    /**
+     * 
+     * @return array bank items
+     */
+    public static function bankItems() {
+        return [
+            self::part_bank_checklist => [self::title => 'Bank\'s Checklist (For Bank Use Only)', self::narration => null, self::active => self::active_yes, self::order => 1],
+            self::part_bank_confirm => [self::title => 'Bank\'s Official Confirmation', self::narration => null, self::active => self::active_yes, self::order => 2]
         ];
     }
 

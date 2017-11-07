@@ -74,5 +74,14 @@ class LmBanks extends \yii\db\ActiveRecord {
     public static function searchBanks($BANKCODE, $DISPLAYONLINE, $oneOrAll) {
         return static::find()->searchBanks($BANKCODE, $DISPLAYONLINE, $oneOrAll);
     }
+    
+    /**
+     * 
+     * @param integer $BANKCODE bank code
+     * @return LmBanks model
+     */
+    public static function byBankCode($BANKCODE) {
+        return static::searchBanks($BANKCODE, null, self::one);
+    }
 
 }

@@ -1,15 +1,21 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $spouse \frontend\modules\client\modules\student\models\ApplicantsSpouse */
+/* @var $part \frontend\modules\business\models\ApplicationParts */
 
 use frontend\modules\client\modules\student\models\ApplicantsSpouse;
 use common\models\LmBaseEnums;
+use frontend\modules\business\models\ApplicationParts;
 ?>
 
 <?php if (is_object($spouse)): ?>
 
-    <div class="part-container">
-        <legend class="part-legend">Spouse Details (<?= ApplicantsSpouse::relatioships()[$spouse->relationship] ?>)</legend>
+    <div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
+        <legend class="part-legend"><?= $part->title ?> (<?= ApplicantsSpouse::relatioships()[$spouse->relationship] ?>)</legend>
+
+        <?php if (!empty($part->intro)): ?>
+            <div class="part-element-narration"><?= $part->intro ?></div>
+        <?php endif; ?>
 
         <table class="part-table">
             <tbody>

@@ -42,7 +42,7 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
         <?= $this->render('../application_form/loan-det', ['institution' => empty($institution) ? $institution = ApplicantsInstitution::forApplicant($application->applicant) : $institution, 'part' => $part]) ?>
 
-    <?php elseif ($part->part == ApplicationPartCheckers::part_education_expenses): ?>
+    <?php elseif ($part->part == ApplicationPartCheckers::part_siblings): ?>
 
         <?= $this->render('../application_form/sibling-expenses', ['sibling_educations' => ApplicantsSiblingEducationExpenses::expensesForApplicant($application->applicant), 'part' => $part]) ?>
 
@@ -73,6 +73,10 @@ use frontend\modules\business\models\ApplicationPartCheckers;
     <?php elseif ($part->part == ApplicationPartCheckers::part_guarantors): ?>
 
         <?= $this->render('../application_form/guarantors-det', ['guarantors' => ApplicantsGuarantors::searchGuarantors($application->applicant, null, null, null, null, null), 'part' => $part]) ?>
+
+    <?php elseif ($part->part == ApplicationPartCheckers::part_bank): ?>
+
+        <?= $this->render('../application_form/bank-det', ['applicant' => $applicant, 'part' => $part]) ?>
 
     <?php endif; ?>
 

@@ -1,23 +1,28 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $sponsors \frontend\modules\client\modules\student\models\ApplicantSponsors */
+/* @var $part \frontend\modules\business\models\ApplicationParts */
 
 use frontend\modules\client\modules\student\models\ApplicantSponsors;
 use common\models\PostalCodes;
+use frontend\modules\business\models\ApplicationParts;
 ?>
 
 <?php if (!empty($sponsors)): ?>
-    <?php $i = 0 ?>
 
-    <div class="part-container">
-        <legend class="part-legend">Sponsor Details</legend>
+    <div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
+        <legend class="part-legend"><?= $part->title ?></legend>
+
+        <?php if (!empty($part->intro)): ?>
+            <div class="part-element-narration"><?= $part->intro ?></div>
+        <?php endif; ?>
 
         <?php foreach ($sponsors as $sponsor): ?>
 
             <?php $postal_code = PostalCodes::returnCode($sponsor->postal_code) ?>
 
             <div class="part-container">
-                <legend class="part-legend-2">Sponsor <?= ++$i ?></legend>
+                <legend class="part-legend-2"><?= $sponsor->name ?></legend>
 
                 <table class="part-table">
                     <tbody>

@@ -2,6 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $employed string */
 /* @var $employment \frontend\modules\client\modules\student\models\ApplicantsEmployment */
+/* @var $part \frontend\modules\business\models\ApplicationParts */
 
 use frontend\modules\client\modules\student\models\ApplicantsEmployment;
 use common\models\LmBaseEnums;
@@ -9,14 +10,19 @@ use common\models\LmEmployers;
 use common\models\PostalCodes;
 use common\models\Counties;
 use common\models\StaticMethods;
+use frontend\modules\business\models\ApplicationParts;
 ?>
 
 <?php if (is_object($employment) && LmBaseEnums::byNameAndElement(LmBaseEnums::yes_no, LmBaseEnums::yes)->VALUE == $employed): ?>
 
     <?php $postal_code = PostalCodes::returnCode($employment->postal_code) ?>
 
-    <div class="part-container">
-        <legend class="part-legend">Employment Details</legend>
+    <div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
+        <legend class="part-legend"><?= $part->title ?></legend>
+
+        <?php if (!empty($part->intro)): ?>
+            <div class="part-element-narration"><?= $part->intro ?></div>
+        <?php endif; ?>
 
         <table class="part-table">
             <tbody>
@@ -90,6 +96,21 @@ use common\models\StaticMethods;
                 </tr>
             </tbody>
         </table>
+
+        <?php foreach (ApplicationPartElements::forPart($part->id, ApplicationPartElements::active_yes) as $element): ?>
+
+            <br/>
+
+            <div class="part-container">
+                <legend class="part-legend-2"><?= $element->title ?></legend>
+
+                <?php if (!empty($element->narration)): ?>
+                    <div class="part-element-narration"><?= $element->narration ?></div>
+                <?php endif; ?>
+
+            </div>
+        <?php endforeach; ?>
+
     </div>
 
 <?php endif; ?>

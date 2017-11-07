@@ -1,12 +1,18 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $sibling_educations \frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses */
+/* @var $part \frontend\modules\business\models\ApplicationParts */
 
 use common\models\LmBaseEnums;
+use frontend\modules\business\models\ApplicationParts;
 ?>
 
-<div class="part-container">
-    <legend class="part-legend">Sibling Education Expenses, KShs.</legend>
+<div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
+    <legend class="part-legend"><?= $part->title ?></legend>
+    
+    <?php if (!empty($part->intro)): ?>
+        <div class="part-element-narration"><?= $part->intro ?></div>
+    <?php endif; ?>
 
     <table class="part-table">
         <tbody>

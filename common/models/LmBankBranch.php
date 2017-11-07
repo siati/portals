@@ -66,5 +66,15 @@ class LmBankBranch extends \yii\db\ActiveRecord {
     public static function searchBranches($BANKCODE, $BRANCHCODE, $oneOrAll) {
         return static::find()->searchBranches($BANKCODE, $BRANCHCODE, $oneOrAll);
     }
+    
+    /**
+     * 
+     * @param integer $BANKCODE bank code
+     * @param integer $BRANCHCODE branch code
+     * @return LmBankBranch model
+     */
+    public static function byBankAndBranchCode($BANKCODE, $BRANCHCODE) {
+        return static::find()->searchBranches($BANKCODE, $BRANCHCODE, self::one);
+    }
 
 }

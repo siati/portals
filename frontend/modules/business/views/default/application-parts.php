@@ -7,6 +7,8 @@
 use frontend\modules\business\models\ApplicationParts;
 ?>
 
+<?php $order_elements_yes = ApplicationParts::order_elements_yes ?>
+
 <div class="full-dim-vtcl-scrl" style="border-bottom: 3px solid #ddd">
 
     <div class="prts-lst pull-left">
@@ -201,6 +203,14 @@ $this->registerJs(
                     }
                 );
             /* rename element */
+            
+            /* whether to order part elements */
+                $('[chg_prt=yeap]').change(
+                    function() {
+                        $(this).val() === '$order_elements_yes' ? $('[chg-prt=' + $(this).attr('prt') + ']').show() : $('[chg-prt=' + $(this).attr('prt') + ']').hide();
+                    }
+                );
+            /* whether to order part elements */
             
             /* save application part element */
                 $('.aplctn-prt-elmnt-sv').click(

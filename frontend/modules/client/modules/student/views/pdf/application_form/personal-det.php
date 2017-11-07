@@ -2,6 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $user \common\models\User */
 /* @var $applicant \frontend\modules\client\modules\student\models\Applicants */
+/* @var $part \frontend\modules\business\models\ApplicationParts */
 
 use frontend\modules\client\modules\student\models\Applicants;
 use common\models\StaticMethods;
@@ -11,12 +12,17 @@ use common\models\Counties;
 use common\models\SubCounties;
 use common\models\Constituencies;
 use common\models\Wards;
+use frontend\modules\business\models\ApplicationParts;
 ?>
 
 <?php $postal_code = PostalCodes::returnCode($applicant->postal_code) ?>
 
-<div class="part-container">
-    <legend class="part-legend">Personal Details</legend>
+<div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
+    <legend class="part-legend"><?= $part->title ?></legend>
+    
+    <?php if (!empty($part->intro)): ?>
+        <div class="part-element-narration"><?= $part->intro ?></div>
+    <?php endif; ?>
     
     <table class="part-table">
         <tbody>

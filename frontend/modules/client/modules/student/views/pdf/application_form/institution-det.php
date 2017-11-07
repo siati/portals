@@ -1,16 +1,23 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $institution \frontend\modules\client\modules\student\models\ApplicantsInstitution */
+/* @var $part \frontend\modules\business\models\ApplicationParts */
 
 use common\models\LmInstitution;
 use common\models\LmInstitutionBranches;
 use common\models\LmCourses;
 use common\models\LmBaseEnums;
 use common\models\StaticMethods;
+use frontend\modules\business\models\ApplicationParts;
+use frontend\modules\business\models\ApplicationPartElements;
 ?>
 
-<div class="part-container">
-    <legend class="part-legend">Institution Details</legend>
+<div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
+    <legend class="part-legend"><?= $part->title ?></legend>
+
+    <?php if (!empty($part->intro)): ?>
+        <div class="part-element-narration"><?= $part->intro ?></div>
+    <?php endif; ?>
 
     <table class="part-table">
         <tbody>
@@ -82,7 +89,7 @@ use common\models\StaticMethods;
                 <td class="part-table-data"><?= $institution->year_of_admission ?></td>
                 <td class="part-table-data"><?= StaticMethods::months()[$institution->admission_month] ?></td>
             </tr>
-            
+
             <tr><td class="part-table-divider"></td></tr>
 
             <tr>
@@ -98,7 +105,7 @@ use common\models\StaticMethods;
                 <td class="part-table-data"><?= $institution->year_of_completion ?></td>
                 <td class="part-table-data"><?= StaticMethods::months()[$institution->completion_month] ?></td>
             </tr>
-            
+
             <tr><td class="part-table-divider"></td></tr>
 
             <tr>
@@ -110,4 +117,18 @@ use common\models\StaticMethods;
             </tr>
         </tbody>
     </table>
+
+    <?php foreach (ApplicationPartElements::forPart($part->id, ApplicationPartElements::active_yes) as $element): ?>
+
+        <br/>
+
+        <div class="part-container">
+            <legend class="part-legend-2"><?= $element->title ?></legend>
+
+            <?php if (!empty($element->narration)): ?>
+                <div class="part-element-narration"><?= $element->narration ?></div>
+            <?php endif; ?>
+
+        </div>
+    <?php endforeach; ?>
 </div>

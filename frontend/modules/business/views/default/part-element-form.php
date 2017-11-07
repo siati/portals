@@ -22,12 +22,10 @@ use kartik\form\ActiveForm;
     <table>
         <tr>
             <td class="td-pdg-bth"><?= $form->field($model, "[$part$model->element]active")->dropDownList(frontend\modules\business\models\ApplicationPartElements::actives()) ?></td>
-            <?php if ($order): ?>
-                <td class="td-pdg-bth"><?= $form->field($model, "[$part$model->element]order")->dropDownList(\common\models\StaticMethods::ranges(1, $count, 1, false)) ?></td>
-            <?php endif; ?>
+            <td class="td-pdg-bth" chg-prt="<?= $part ?>" <?php if (!$order): ?> hidden="hidden" <?php endif; ?>><?= $form->field($model, "[$part$model->element]order")->dropDownList(\common\models\StaticMethods::ranges(1, $count, 1, false)) ?></td>
         </tr>
 
-        <tr><td class="td-pdg-bth"<?php if ($order): ?> colspan="2"><?php endif; ?><?= $form->field($model, "[$part$model->element]narration")->textArea(['rows' => 23, 'style' => 'text-align: justify; resize: none']) ?></td></tr>
+        <tr><td class="td-pdg-bth" colspan="2"><?= $form->field($model, "[$part$model->element]narration")->textArea(['rows' => 23, 'style' => 'text-align: justify; resize: none']) ?></td></tr>
     </table>
 
     <?php ActiveForm::end(); ?>

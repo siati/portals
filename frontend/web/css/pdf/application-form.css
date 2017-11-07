@@ -47,3 +47,7 @@
 .page-break {
     page-break-before: always
 }
+
+.part-element-narration {
+    font-size: 12px
+}

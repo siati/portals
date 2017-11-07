@@ -79,7 +79,7 @@ class ApplicationParts extends \yii\db\ActiveRecord {
     public static function find() {
         return new \frontend\modules\business\activeQueries\ApplicationPartsQuery(get_called_class());
     }
-    
+
     /**
      * 
      * @param integer $pk part id
@@ -88,7 +88,7 @@ class ApplicationParts extends \yii\db\ActiveRecord {
     public static function returnPart($pk) {
         return static::find()->byPk($pk);
     }
-    
+
     /**
      * 
      * @param integer $application application id
@@ -100,7 +100,7 @@ class ApplicationParts extends \yii\db\ActiveRecord {
     public static function searchParts($application, $part, $order, $oneOrAll) {
         return static::find()->searchParts($application, $part, $order, $oneOrAll);
     }
-    
+
     /**
      * 
      * @param integer $application application id
@@ -110,7 +110,7 @@ class ApplicationParts extends \yii\db\ActiveRecord {
     public static function forApplication($application, $order) {
         return static::searchParts($application, null, $order, self::all);
     }
-    
+
     /**
      * 
      * @param integer $application application id
@@ -120,7 +120,7 @@ class ApplicationParts extends \yii\db\ActiveRecord {
     public static function byApplicationAndPart($application, $part) {
         return static::searchParts($application, $part, null, self::one);
     }
-    
+
     /**
      * 
      * @param integer $application application id
@@ -129,17 +129,17 @@ class ApplicationParts extends \yii\db\ActiveRecord {
      */
     public static function newPart($application, $part) {
         $model = new ApplicationParts;
-        
+
         $model->application = $application;
         $model->part = $part;
         $model->new_page = self::new_page_no;
         $model->order_elements = self::order_elements_no;
-        
+
         $model->created_by = Yii::$app->user->identity->username;
-        
+
         return $model;
     }
-    
+
     /**
      * 
      * @param integer $id part id
@@ -165,13 +165,21 @@ class ApplicationParts extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
-    
+
     /**
      * 
      * @return array new page yes, no
      */
     public static function newPage() {
         return [self::new_page_no => 'No', self::new_page_yes => 'Yes'];
+    }
+
+    /**
+     * 
+     * @return array order elements yes, no
+     */
+    public static function orderElements() {
+        return [self::order_elements_no => 'No', self::order_elements_yes => 'Yes'];
     }
 
 }

@@ -17,7 +17,6 @@ use kartik\form\ActiveForm;
     <?= Html::activeHiddenInput($model, "[$model->part]application") ?>
     <?= Html::activeHiddenInput($model, "[$model->part]part") ?>
     <?= Html::activeHiddenInput($model, "[$model->part]title") ?>
-    <?= Html::activeHiddenInput($model, "[$model->part]order_elements") ?>
 
     <table>
         <tr><td class="td-pdg-bth"><?= $form->field($model, "[$model->part]order")->dropDownList(frontend\modules\business\models\ApplicationPartCheckers::partOrders($count)) ?></td></tr>
@@ -25,6 +24,8 @@ use kartik\form\ActiveForm;
         <tr><td class="td-pdg-bth"><?= $form->field($model, "[$model->part]new_page")->dropDownList(frontend\modules\business\models\ApplicationParts::newPage()) ?></td></tr>
 
         <tr><td class="td-pdg-bth"><?= $form->field($model, "[$model->part]intro")->textArea(['rows' => 25, 'style' => 'text-align: justify; resize: none']) ?></td></tr>
+
+        <tr><td class="td-pdg-bth"><?= $form->field($model, "[$model->part]order_elements")->dropDownList(frontend\modules\business\models\ApplicationParts::orderElements(), ['chg_prt' => 'yeap', 'prt' => $model->part]) ?></td></tr>
     </table>
 
     <?php ActiveForm::end(); ?>

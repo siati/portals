@@ -1,8 +1,10 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $family_expenses \frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses */
+/* @var $part \frontend\modules\business\models\ApplicationParts */
 
 use common\models\LmBaseEnums;
+use frontend\modules\business\models\ApplicationParts;
 ?>
 
 <?php $columns = 4 ?>
@@ -11,8 +13,12 @@ use common\models\LmBaseEnums;
 
 <?php if (!empty($family_expenses)): ?>
 
-    <div class="part-container">
-        <legend class="part-legend">Family Monthly Expenses, KShs.</legend>
+    <div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
+        <legend class="part-legend"><?= $part->title ?></legend>
+
+        <?php if (!empty($part->intro)): ?>
+            <div class="part-element-narration"><?= $part->intro ?></div>
+        <?php endif; ?>
 
         <table class="part-table">
             <tbody>
