@@ -90,6 +90,14 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
         <?= $this->render('../application_form/terms-conditions', ['part' => $part]) ?>
 
+    <?php elseif ($part->part == ApplicationPartCheckers::part_check_list): ?>
+
+        <?= $this->render('../application_form/check-list', ['part' => $part]) ?>
+
+    <?php elseif ($part->part == ApplicationPartCheckers::part_submission): ?>
+
+        <?= $this->render('../application_form/submission', ['part' => $part]) ?>
+
     <?php endif; ?>
 
 <?php endforeach; ?>

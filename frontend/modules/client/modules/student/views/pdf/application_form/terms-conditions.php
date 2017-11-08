@@ -39,6 +39,12 @@ use frontend\modules\business\models\ApplicationPartElements;
 
         <div class="part-element-narration">
             Applicant`s Signature: ................................       ID No: .......................       Date: <?= date('d/m/Y') ?>
+            
+            <br/>
+            
+            <br/>
+            
+            <span class="part-element-narration-sm"><b>PLEASE NOTE THAT IF YOU DO NOT SIGN THIS AGREEMENT FORM, YOUR APPLICATION SHALL NOT BE PROCESSED</b></span>
         </div>
     </div>
 
