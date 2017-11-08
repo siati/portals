@@ -10,7 +10,7 @@ use frontend\modules\business\models\ApplicationParts;
     <legend class="part-legend"><?= $part->title ?></legend>
 
     <?php if (!empty($part->intro)): ?>
-        <div class="part-element-narration-xs"><?= $part->intro ?></div>
+        <pre class="part-element-narration-xs"><?= $part->intro ?></pre>
     <?php endif; ?>
 
 </div>

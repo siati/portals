@@ -14,7 +14,7 @@ use frontend\modules\business\models\ApplicationPartCheckers;
         <legend class="part-legend-2"><?= $parental_status_element->title ?></legend>
 
         <?php if (!empty($parental_status_element->narration)): ?>
-            <div class="part-element-narration"><?= $parental_status_element->narration ?></div>
+            <pre class="part-element-narration"><?= $parental_status_element->narration ?></pre>
         <?php endif; ?>
 
         <table class="part-table">

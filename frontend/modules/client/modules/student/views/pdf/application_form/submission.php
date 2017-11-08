@@ -6,9 +6,9 @@ use frontend\modules\business\models\ApplicationParts;
 ?>
 
 <div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
-    <legend class="part-legend"><?= $part->title ?></legend>
+    <legend class="part-legend-2"><?= $part->title ?></legend>
 
     <?php if (!empty($part->intro)): ?>
-        <div class="part-element-narration"><?= $part->intro ?></div>
+        <pre class="part-element-narration"><?= $part->intro ?></pre>
     <?php endif; ?>
 </div>

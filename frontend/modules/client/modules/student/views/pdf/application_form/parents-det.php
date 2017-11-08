@@ -21,7 +21,7 @@ use frontend\modules\business\models\ApplicationPartCheckers;
     <legend class="part-legend"><?= $part->title ?></legend>
 
     <?php if (!empty($part->intro)): ?>
-        <div class="part-element-narration"><?= $part->intro ?></div>
+        <pre class="part-element-narration"><?= $part->intro ?></pre>
     <?php endif; ?>
 
     <?= $this->render('../application_form/parental-status', ['applicant' => $applicant, part => $part]) ?>
@@ -39,7 +39,7 @@ use frontend\modules\business\models\ApplicationPartCheckers;
                     <legend class="part-legend-2"><?= ApplicantsParents::relationships()[$parent->relationship] ?>'s Details</legend>
 
                     <?php if (!empty($parent_element->narration)): ?>
-                        <div class="part-element-narration"><?= $parent_element->narration ?></div>
+                        <pre class="part-element-narration"><?= $parent_element->narration ?></pre>
                     <?php endif; ?>
 
                     <table class="part-table">

@@ -94,7 +94,7 @@
 }
 
 .stamp-height {
-    height: 75px
+    height: 100px
 }
 
 .border-less {
@@ -104,4 +104,16 @@
 .text-top {
     vertical-align: top;
     text-align: justify
+}
+
+pre {
+    font-size: 12px;
+    text-align: justify;
+    font-family: calibri;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    margin: 0
 }

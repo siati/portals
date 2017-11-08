@@ -21,10 +21,10 @@ use frontend\modules\business\models\ApplicationPartElements;
             <legend class="part-legend-2"><?= $element->title ?></legend>
 
             <?php if (!empty($element->narration)): ?>
-                <div class="part-element-narration"><?= $element->narration ?></div>
+                <pre class="part-element-narration"><?= $element->narration ?></pre>
             <?php endif; ?>
 
         </div>
-        
+
     <?php endforeach; ?>
 </div>

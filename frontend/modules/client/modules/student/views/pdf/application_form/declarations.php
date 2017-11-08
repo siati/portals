@@ -12,7 +12,7 @@ use frontend\modules\business\models\ApplicationPartCheckers;
     <legend class="part-legend"><?= $part->title ?></legend>
 
     <?php if (!empty($part->intro)): ?>
-        <div class="part-element-narration"><?= $part->intro ?></div>
+        <pre class="part-element-narration"><?= $part->intro ?></pre>
     <?php endif; ?>
 
     <?php foreach (ApplicationPartElements::forPart($part->id, ApplicationPartElements::active_yes) as $element): ?>
@@ -26,8 +26,8 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
                 <div class="part-container">
                     <legend class="part-legend-2"><?= $element->title ?></legend>
-
-                    <div class="part-element-narration border-less<?php if (!$parent_or_student): ?> left-half-width pull-left-pdf<?php endif; ?>"><?= $element->narration ?></div>
+                    
+                    <pre class="part-element-narration border-less<?php if (!$parent_or_student): ?> left-half-width pull-left-pdf<?php endif; ?>"><?= $element->narration ?></pre>
 
                     <?php if (!$parent_or_student): ?>
 

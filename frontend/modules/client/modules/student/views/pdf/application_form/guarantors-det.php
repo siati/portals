@@ -149,7 +149,7 @@ use frontend\modules\business\models\ApplicationParts;
             <br/>
 
             <?php if (!empty($part->intro)): ?>
-                <div class="part-element-narration"><?= $part->intro ?></div>
+                <pre class="part-element-narration"><?= $part->intro ?></pre>
             <?php endif; ?>
 
         </div>
