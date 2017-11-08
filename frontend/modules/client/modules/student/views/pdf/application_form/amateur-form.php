@@ -26,7 +26,11 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
 <?php foreach (ApplicationParts::forApplication($application->application, 1) as $part): ?>
 
-    <?php if ($part->part == ApplicationPartCheckers::part_personal): ?>
+    <?php if ($part->part == ApplicationPartCheckers::part_caution): ?>
+
+        <?= $this->render('../application_form/caution', ['part' => $part]) ?>
+
+    <?php elseif ($part->part == ApplicationPartCheckers::part_personal): ?>
 
         <?= $this->render('../application_form/personal-det', ['user' => $user, 'applicant' => $applicant, 'part' => $part]) ?>
 
@@ -70,6 +74,10 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
         <?= $this->render('../application_form/employment-det', ['employed' => $applicant->employed, 'employment' => ApplicantsEmployment::forApplicant($application->applicant), 'part' => $part]) ?>
 
+    <?php elseif ($part->part == ApplicationPartCheckers::part_declaration): ?>
+
+        <?= $this->render('../application_form/declarations', ['part' => $part]) ?>
+
     <?php elseif ($part->part == ApplicationPartCheckers::part_guarantors): ?>
 
         <?= $this->render('../application_form/guarantors-det', ['guarantors' => ApplicantsGuarantors::searchGuarantors($application->applicant, null, null, null, null, null), 'part' => $part]) ?>
@@ -77,6 +85,10 @@ use frontend\modules\business\models\ApplicationPartCheckers;
     <?php elseif ($part->part == ApplicationPartCheckers::part_bank): ?>
 
         <?= $this->render('../application_form/bank-det', ['applicant' => $applicant, 'part' => $part]) ?>
+
+    <?php elseif ($part->part == ApplicationPartCheckers::part_terms_and_conditions): ?>
+
+        <?= $this->render('../application_form/terms-conditions', ['part' => $part]) ?>
 
     <?php endif; ?>
 

@@ -94,12 +94,12 @@ class ApplicationPartCheckers {
             self::part_declaration => [self::title => 'Declarations', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::declarationsItems(), self::order_elements => self::order_elements_yes],
             self::part_guarantors => [self::title => 'Guarantors', self::intro => static::guarantorStatement(), self::order => ++$order, self::new_page => false],
             self::part_bank => [self::title => 'Applicant\'s Bank Details', self::intro => 'Attach a copy of bank account card and smart card, where necessary', self::order => ++$order, self::new_page => false, self::items => static::bankItems(), self::order_elements => self::order_elements_yes],
-            self::part_terms_and_conditions => [self::title => 'Terms and Conditions', self::intro => static::termsAndConditionsStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_terms_and_conditions => [self::title => 'Terms and Conditions', self::intro => static::termsAndConditionsStatement(), self::order => ++$order, self::new_page => false, self::items => static::termsAndConditionsItems(), self::order_elements => self::order_elements_yes],
             self::part_check_list => [self::title => 'The Checklist', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::checkListItems(), self::order_elements => self::order_elements_yes],
             self::part_submission => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no]
         ];
     }
-    
+
     /**
      * 
      * @param integer $max_order max order
@@ -165,6 +165,50 @@ class ApplicationPartCheckers {
             self::part_declaration_county_officer => [self::title => 'County Chief Officer of Education', self::narration => static::countyOfficerStatement(), self::active => self::active_yes, self::order => 8],
             self::part_declaration_ward_admin => [self::title => 'Ward Administrator', self::narration => static::wardAdministratorStatement(), self::active => self::active_yes, self::order => 9],
             self::part_declaration_fund_secretary => [self::title => 'Constituency Education Revolving Fund Secretary', self::narration => static::fundAdministratorStatement(), self::active => self::active_yes, self::order => 10]
+        ];
+    }
+
+    /**
+     * 
+     * @return array terms and conditions items
+     */
+    public static function termsAndConditionsItems() {
+        return [
+            $i = 1 => [self::title => "Rule $i", self::narration => "The rate of interest applicable shall be 4.00% p.a. the Board shall have the sole discretion of varying the interest rate as circumstances shall demand.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The Board shall charge administrative fees of Kshs.500 per annum on all un-matured accounts. All mature loan accounts shall be subject to administrative fee as shall be determined by the Board from time to time.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "In the event that the loanee discontinues studies for whichever reason before full disbursement is made, the Board shall not disburse the remaining allocation and shall recall the loan so far advanced in full together with the interest thereon", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "Loan amounts awarded shall be inclusive of practicum/field attachment where applicable", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The Board shall electronically, through the website, send to each loanee annual statement indicating the amount disbursed per each academic year or the outstanding balance as the case may be. The sums of the amount indicated in the statements shall form the principal loan to be recovered from the loanee. The contents of the statements shall be deemed to be correct unless a written complaint to the contrary is received by the Board within three (3) months from the date of the statement whereupon the Board shall either confirm the complaint or advise as the case may be. A statement may be furnished at any time on request but at the loanee’s expense", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "Where it is discovered that the loan was granted due to false information furnished by the loanee, the Board shall withhold release of the amount yet to be disbursed if any, besides subjecting the loanee to prosecution", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The Board shall engage agents (Banks) who shall be responsible for the disbursement of the loans as shall be advised by the Board from time to time", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The loanee shall keep the guarantor appraised of the principal loan awarded and in the event that there is a conflict, the amount as held by the Board will prevail", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The loan shall be due for repayment one year after completion of the course studied or within such period as the Board may decide to recall the loan whichever is earlier", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The loan shall be repaid by monthly installments or by any other convenient mode of repayment as shall be directed by the Board but subject to the provisions of the Higher Education Loans Board Act", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "If the loanee defaults in the repayment of the loan when the loan is due, the whole amount shall be due and payable and the loanee shall be bound to pay other charges that may arise as a result of the default including but not limited to the Advocates fees and penalties.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The Board shall charge a penalty of Kshs.5,000 per month on any account that is in default.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "Non demand for loan repayment and the accruing charges shall not in any way signify waiver of any amount rightfully due under the terms and conditions of the loan", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The applicant hereby consents that the Board shall share information pertaining to the loan account with credit reference bureaus or any other parties as deemed necessary", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The Board shall effect credit protection arrangement of the loan at the expense of the loanee.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "In the event that the applicant receives additional financial assistance from any other source and the need to refund by the institution arises such refund shall be made to the Board and the same shall be utilized towards reducing or offsetting the loan", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "An application whose defectivity is not corrected within 90 days after submission will be declared invalid and the applicant shall be required to apply afresh in the subsequent year.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "A loan award that is not claimed for disbursment by the close of the financial year of the application period i.e. June 30th, either personally by the beneficiary or through the institution, shall be withdrawn and an automatic reversal effected in the records.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "No loan shall be disbursed unless this agreement form is signed.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The loanee/applicant is obligated at all times to confirm with his institution receipt of loan disbursed on his account.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "It shall be the obligation of the loanee/applicant to follow up on any un-utilized funds and ensure that such funds are returned to HELB", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "Any amount disbursed on account of the loanee/applicant, whether utilised or not, shall be deemed to be a loan which must be repaid in full.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "It shall be the obligation of the loanee to inform HELB of any transfers or failure to take up the admission offer", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "There shall be no replacement of a guarantor, unless the loanee furnishes certified/commissioned details of the new guarantor. HELB reserves the right to authenticate the details.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "The signature of the loanee shall certify the reading, understanding and being in agreement with the terms and conditions herein including certification.", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => "Any dispute arising out of the relationship between HELB and the applicant/loanee shall in the first instance be referred to Alternative Dispute Resolution (ADR) mechanism as determined by HELB", self::active => self::active_yes, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i],
+            ++$i => [self::title => "Rule $i", self::narration => null, self::active => self::active_no, self::order => $i]
         ];
     }
 

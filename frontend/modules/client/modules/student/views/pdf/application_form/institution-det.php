@@ -130,5 +130,6 @@ use frontend\modules\business\models\ApplicationPartElements;
             <?php endif; ?>
 
         </div>
+        
     <?php endforeach; ?>
 </div>

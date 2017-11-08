@@ -49,5 +49,59 @@
 }
 
 .part-element-narration {
-    font-size: 12px
+    font-size: 12px;
+    text-align: justify
+}
+
+.part-element-narration-sm {
+    font-size: 10px;
+    text-align: justify
+}
+
+.part-element-narration-xs {
+    font-size: 9px;
+    text-align: justify
+}
+
+.part-element-narration-xxs {
+    font-size: 8px;
+    text-align: justify
+}
+
+.part-element-narration-xxx {
+    font-size: 7px;
+    text-align: justify
+}
+
+.pull-left-pdf {
+    float: left
+}
+
+.pull-right-pdf {
+    float: right
+}
+
+.left-half-width {
+    width: 39%
+}
+
+.right-half-width {
+    width: 59%
+}
+
+.half-width-sm {
+    width: 42.5%
+}
+
+.stamp-height {
+    height: 75px
+}
+
+.border-less {
+    border: none
+}
+
+.text-top {
+    vertical-align: top;
+    text-align: justify
 }
