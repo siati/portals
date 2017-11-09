@@ -358,14 +358,14 @@ class DefaultController extends Controller {
      * load employers dynamically
      */
     public function actionDynamicEmployers() {
-        StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmEmployers::searchEmployers(null, $_POST['search_name'], \yii\db\ActiveRecord::all), 'ACCOUNTNUM', 'NAME', true), 'Select Employer', $_POST['selected']);
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmEmployers::searchEmployers(null, $_POST['search_name'], LmEmployers::all), 'ACCOUNTNUM', 'NAME', true), 'Select Employer', $_POST['selected']);
     }
 
     /**
      * load bank branches dynamically
      */
     public function actionBankBranches() {
-        StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmBankBranch::searchBranches($_POST['bank'], null, \yii\db\ActiveRecord::all), 'BRANCHCODE', 'BRANCHNAME', true), 'Bank Branch', $_POST['branch']);
+        StaticMethods::populateDropDown(StaticMethods::modelsToArray(LmBankBranch::searchBranches($_POST['bank'], null, LmBankBranch::all), 'BRANCHCODE', 'BRANCHNAME', true), 'Bank Branch', $_POST['branch']);
     }
 
     /**

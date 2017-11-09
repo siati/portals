@@ -16,7 +16,7 @@ $this->title = 'Employent Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php $initial_employer = LmEmployers::searchEmployers($model->employer_name, null, yii\db\ActiveRecord::one) ?>
+<?php $initial_employer = LmEmployers::searchEmployers($model->employer_name, null, LmEmployers::one) ?>
 
 <div class="gnrl-frm stdt-eplmt">
 

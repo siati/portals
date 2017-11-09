@@ -122,6 +122,74 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
     public static function searchSettings($application, $setting, $name, $value, $active, $remark, $oneOrAll) {
         return static::find()->searchSettings($application, $setting, $name, $value, $active, $remark, $oneOrAll);
     }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - has subsequent
+     */
+    public static function hasSubsequent($application) {
+        return is_object(static::searchSettings($application, ProductSettings::has_subsequent, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - has appeal
+     */
+    public static function hasAppeal($application) {
+        return is_object(static::searchSettings($application, ProductSettings::has_appeal, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - has bursary
+     */
+    public static function hasBursary($application) {
+        return is_object(static::searchSettings($application, ProductSettings::has_bursary, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return ProductOpeningSettings model
+     */
+    public static function employed($application) {
+        return static::searchSettings($application, ProductSettings::employed, null, null, self::active, null, self::one);
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return array tuition, upkeep - true, false
+     */
+    public static function tuitionOrUpkeep($application) {
+        $tuition_or_upkeep = static::searchSettings($application, ProductSettings::tuition_or_upkeep, null, null, self::active, null, self::one);
+        
+        return [
+            ProductSettings::yes => is_object($tuition_or_upkeep) && in_array($tuition_or_upkeep->value, [ProductSettings::yes, ProductSettings::both]),
+            ProductSettings::no => is_object($tuition_or_upkeep) && in_array($tuition_or_upkeep->value, [ProductSettings::no, ProductSettings::both])
+        ];
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - has society narration
+     */
+    public static function hasSocietyNarration($application) {
+        return is_object(static::searchSettings($application, ProductSettings::has_society_narration, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - has financial literacy
+     */
+    public static function hasFInancialLiteracy($application) {
+        return is_object(static::searchSettings($application, ProductSettings::has_financial_literacy, null, ProductSettings::yes, self::active, null, self::one));
+    }
 
     /**
      * 

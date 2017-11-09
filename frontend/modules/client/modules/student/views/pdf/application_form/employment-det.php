@@ -31,7 +31,7 @@ use frontend\modules\business\models\ApplicationParts;
                     <td class="part-table-label" colspan="2">Department</td>
                 </tr>
                 <tr>
-                    <td class="part-table-data" colspan="2"><?= LmEmployers::searchEmployers($employment->employer_name, null, yii\db\ActiveRecord::one)->NAME ?></td>
+                    <td class="part-table-data" colspan="2"><?= LmEmployers::searchEmployers($employment->employer_name, null, LmEmployers::one)->NAME ?></td>
                     <td class="part-table-data" colspan="2"><?= $employment->department ?></td>
                 </tr>
 

@@ -337,7 +337,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
      * @return ApplicantsSpouse model
      */
     public static function guarantorIsSpouse($applicant, $id_no) {
-        return !empty($id_no) && is_object($spouse = ApplicantsSpouse::searchSpouses($applicant, null, $id_no, null, null, null, \yii\db\ActiveRecord::one)) > 0 ? $spouse : false;
+        return !empty($id_no) && is_object($spouse = ApplicantsSpouse::searchSpouses($applicant, null, $id_no, null, null, null, ApplicantsSpouse::one)) > 0 ? $spouse : false;
     }
 
     /**

@@ -8,9 +8,12 @@ use common\models\LmInstitutionBranches;
 use common\models\LmCourses;
 use common\models\LmBaseEnums;
 use common\models\StaticMethods;
+use frontend\modules\business\models\ProductOpeningSettings;
 use frontend\modules\business\models\ApplicationParts;
 use frontend\modules\business\models\ApplicationPartElements;
 ?>
+
+<?php $product_setting = ProductOpeningSettings::hasSocietyNarration($part->application) ?>
 
 <div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
     <legend class="part-legend"><?= $part->title ?></legend>
@@ -103,18 +106,23 @@ use frontend\modules\business\models\ApplicationPartElements;
                 <td class="part-table-data"><?= LmBaseEnums::courseDurations(LmBaseEnums::studyLevel(LmBaseEnums::study_level_degree)->VALUE)[$institution->duration] ?></td>
                 <td class="part-table-data"><?= LmBaseEnums::studyYears(LmBaseEnums::studyLevel(LmBaseEnums::study_level_degree)->VALUE)[$institution->year_of_study] ?></td>
                 <td class="part-table-data"><?= $institution->year_of_completion ?></td>
-                <td class="part-table-data"><?= StaticMethods::months()[$institution->completion_month] ?></td>
+                <td class="part-table-data"><?= StaticMethods::months()[$institution->completion_month] . ' ' . $product_setting->id ?></td>
             </tr>
 
-            <tr><td class="part-table-divider"></td></tr>
+            <?php if ($product_setting): ?>
 
-            <tr>
-                <td class="part-table-label" colspan="4">Society</td>
-            </tr>
+                <tr><td class="part-table-divider"></td></tr>
 
-            <tr>
-                <td class="part-table-data" colspan="4" style="text-align: justify"><?= $institution->narration ?></td>
-            </tr>
+                <tr>
+                    <td class="part-table-label" colspan="4">Society</td>
+                </tr>
+
+                <tr>
+                    <td class="part-table-data" colspan="4" style="text-align: justify"><?= $institution->narration ?></td>
+                </tr>
+
+            <?php endif; ?>
+
         </tbody>
     </table>
 
@@ -130,6 +138,6 @@ use frontend\modules\business\models\ApplicationPartElements;
             <?php endif; ?>
 
         </div>
-        
+
     <?php endforeach; ?>
 </div>
