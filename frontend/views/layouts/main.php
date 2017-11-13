@@ -37,9 +37,9 @@ AppAsset::register($this);
         <div id="yii-modal-cnt"></div>
 
         <?php Modal::end() ?>
-        
+
         <?php $user_id = Yii::$app->user->isGuest ? '' : Yii::$app->user->identity->id; ?>
-        
+
         <?php $applicant = Yii::$app->user->isGuest ? '' : \frontend\modules\client\modules\student\models\Applicants::returnApplicant($user_id); ?>
 
         <div class="wrap">
@@ -82,8 +82,12 @@ AppAsset::register($this);
                         </div>
 
                         <div class="menu-div">
-                            
-                            <?= $this->render('applicant-menu') ?>
+
+                            <?=
+                            Yii::$app->user->isGuest ?
+                                    $this->render('guest') :
+                                    $this->render('applicant-menu');
+                            ?>
                         </div>
 
                     </div>

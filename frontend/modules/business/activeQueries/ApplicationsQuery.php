@@ -70,5 +70,14 @@ class ApplicationsQuery extends \yii\db\ActiveQuery {
     public function maxSerial($application) {
         return $this->where("application = '$application'")->max('serial_no');
     }
+    
+    /**
+     * 
+     * @param integer $application application id
+     * @return integer number of applications
+     */
+    public function countApplications($application) {
+        return $this->where("application = '$application'")->count('distinct applicant');
+    }
 
 }

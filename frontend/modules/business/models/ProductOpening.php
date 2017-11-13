@@ -250,6 +250,85 @@ class ProductOpening extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @return boolean true - minimum application setting considered
+     */
+    public function minimumConsidered() {
+        return $this->consider_counts == self::consider_min_counts && is_numeric($this->min_apps) && $this->min_apps > 0;
+    }
+
+    /**
+     * 
+     * @return boolean true - maximum application setting considered
+     */
+    public function maximumConsidered() {
+        return $this->consider_counts == self::consider_max_counts && is_numeric($this->max_apps) && $this->max_apps > 0;
+    }
+
+    /**
+     * 
+     * @return integer number of applications
+     */
+    public function countApplications() {
+        return Applications::countApplications($this->id);
+    }
+
+    /**
+     * 
+     * @param boolean $is_appeal true = is appeal, otherwise is not appeal
+     * @param string $datetime datetime
+     * @return boolean true - is open by respective opening and closing dates
+     */
+    public function openByOpeningDates($is_appeal, $datetime) {
+        return $is_appeal ?
+                (StaticMethods::timeEmpty($this->appeal_since) || $this->appeal_since <= $datetime) && !StaticMethods::timeEmpty($this->appeal_till) && "$this->appeal_till 23:59:59" >= $datetime :
+                (StaticMethods::timeEmpty($this->since) || $this->since <= $datetime) && !StaticMethods::timeEmpty($this->till) && "$this->till 23:59:59" >= $datetime;
+    }
+
+    /**
+     * 
+     * @param string $datetime datetime
+     * @return boolean true - is open by respective opening and closing dates
+     */
+    public function openByGraceDates($datetime) {
+        return (StaticMethods::timeEmpty($this->since) || $this->since <= $datetime) && !StaticMethods::timeEmpty($this->till) && !StaticMethods::timeEmpty($this->grace) && $this->grace >= $this->till && "$this->grace 23:59:59" >= $datetime;
+    }
+
+    /**
+     * 
+     * @param string $datetime datetime
+     * @return boolean true - closed by minimum numbers
+     */
+    public function closedByMinimumNumbers($datetime) {
+        return ((($dontConsiderMinimum = !$this->minimumConsidered()) || ($count = $this->countApplications()) >= $this->min_apps) && !$this->openByOpeningDates(false, $datetime)) ||
+                ($dontConsiderMinimum && (isset($count) ? $count : $this->countApplications()) < $this->min_apps && $this->openByGraceDates($datetime));
+    }
+
+    /**
+     * 
+     * @param string $datetime datetime
+     * @return boolean true - opened by maximum numbers
+     */
+    public function openedByMaximumNumbers($datetime) {
+        return (($dontConsiderMaximum = !$this->maximumConsidered()) || (($count = $this->countApplications()) < $this->max_apps) && ($this->openByOpeningDates(false, $datetime) || $this->openByGraceDates($datetime))) ||
+                (!$dontConsiderMaximum && (isset($count) ? $count : $this->countApplications()) < $this->max_apps && !$this->openByGraceDates($datetime));
+    }
+
+    /**
+     * 
+     * @param boolean $is_appeal true - is appeal
+     * @param string $datetime datetime
+     * @return array rationale against which application is open
+     */
+    public function applicationIsOpen($is_appeal, $datetime) {
+        return [
+            self::consider_counts_no => $this->openByOpeningDates($is_appeal, $datetime),
+            self::consider_min_counts => $is_appeal ? false : !$this->closedByMinimumNumbers($datetime),
+            self::consider_max_counts => $is_appeal ? false : $this->openedByMaximumNumbers($datetime)
+        ];
+    }
+
+    /**
+     * 
      * @return array academic years
      */
     public static function academicYears() {

@@ -146,7 +146,16 @@ class Applications extends \yii\db\ActiveRecord {
     /**
      * 
      * @param integer $application application id
-     * @return integer|string max serial number for $application
+     * @return integer number of applications
+     */
+    public static function countApplications($application) {
+        return static::find()->countApplications($application);
+    }
+
+    /**
+     * 
+     * @param integer $application application id
+     * @return integer|string max serial number for [[$application]]
      */
     public static function maxSerial($application) {
         return static::find()->maxSerial($application);
