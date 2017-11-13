@@ -326,6 +326,18 @@ class ProductOpening extends \yii\db\ActiveRecord {
             self::consider_max_counts => $is_appeal ? false : $this->openedByMaximumNumbers($datetime)
         ];
     }
+    
+    /**
+     * 
+     * @return array descriptions for various application open reasons
+     */
+    public static function applicationOpenDescriptions() {
+        return [
+            self::consider_counts_no => 'Application Window Open',
+            self::consider_min_counts => 'Targeting Minimum Application Numbers',
+            self::consider_max_counts => 'Awaiting Maximum Application Numbers'
+        ];
+    }
 
     /**
      * 
