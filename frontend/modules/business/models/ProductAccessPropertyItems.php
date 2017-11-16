@@ -4,6 +4,7 @@ namespace frontend\modules\business\models;
 
 use Yii;
 use common\models\StaticMethods;
+use frontend\modules\client\modules\student\models\ApplicantProductAccessCheckers;
 
 /**
  * This is the model class for table "{{%product_access_property_items}}".
@@ -55,7 +56,7 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
             ['remark', 'string', 'min' => 10],
         ];
     }
-    
+
     /**
      * 
      * new rules must be active
@@ -63,16 +64,16 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
     public function newRuleMustBeActive() {
         $this->isNewRecord && $this->active != self::active ? $this->addError('active', 'New rule must be active so as to be honored') : $this->activeRuleMustHaveValues();
     }
-    
+
     /**
      * 
      * active rule must have values
      */
     public function activeRuleMustHaveValues() {
         if ($this->active == self::active && (is_null($this->min_value) || $this->min_value == '') && (is_null($this->max_value) || $this->max_value == '') && (is_null($this->specific_values) || $this->specific_values == '' || str_replace(self::comma, '', $this->specific_values) == '')) {
-                $this->addError('min_value', 'Either Minimum Value or Maximum Value or Specific Values is required');
-                $this->addError('max_value', 'Either Minimum Value or Maximum Value or Specific Values is required');
-                $this->addError('specific_values', 'Either Minimum Value or Maximum Value or Specific Values is required');
+            $this->addError('min_value', 'Either Minimum Value or Maximum Value or Specific Values is required');
+            $this->addError('max_value', 'Either Minimum Value or Maximum Value or Specific Values is required');
+            $this->addError('specific_values', 'Either Minimum Value or Maximum Value or Specific Values is required');
         }
     }
 
@@ -128,6 +129,16 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
      */
     public static function searchItems($application, $property, $min_value, $max_value, $specific_values, $required, $active, $oneOrAll) {
         return static::find()->searchItems($application, $property, $min_value, $max_value, $specific_values, $required, $active, $oneOrAll);
+    }
+
+    /**
+     * 
+     * @param integer $application application id
+     * @param integer $active active: 1 - yes, 0 - no
+     * @return ProductAccessPropertyItems model(s)
+     */
+    public static function forApplication($application, $active) {
+        return static::searchItems($application, null, null, null, null, null, $active, self::all);
     }
 
     /**
@@ -198,7 +209,7 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
-    
+
     /**
      * 
      * @param string $value value being evaluated
@@ -218,28 +229,53 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
      */
     public static function valueIsContained($min_value, $max_value, $value_array, $value) {
         $start = $value . self::comma;
-        
+
         $middle = self::comma . $value . self::comma;
-        
+
         $end = self::comma . $value;
-        
-        return  
-                $value != null && $value != '' && 
-                
+
+        return
+                $value != null && $value != '' &&
                 (
-                    ($min_value != null && $min_value != '' && $max_value != null && $max_value != '' && $value >= $min_value && $value <= $max_value) ||
-                    ($min_value != null && $min_value != '' && ($max_value == null || $max_value == '') && $value >= $min_value) ||
-                    ($max_value != null && $max_value != '' && ($min_value == null || $min_value == '') && $value <= $max_value) ||
-                    (
-                        $value_array != null && $value_array != '' && str_replace(self::comma, '', $value_array) != '' &&
-                        (
-                            $value == $value_array ||
-                            (is_numeric($left = stripos($value_array, $start)) && $left == 0) ||
-                            stripos($value_array, $middle) !== false ||
-                            (strlen($value_array) >= strlen($end) && is_numeric($right = stripos($value_array, $end)) && $right == strlen($value_array) - strlen($end))
-                        )
-                    )
+                ($min_value != null && $min_value != '' && $max_value != null && $max_value != '' && $value >= $min_value && $value <= $max_value) ||
+                ($min_value != null && $min_value != '' && ($max_value == null || $max_value == '') && $value >= $min_value) ||
+                ($max_value != null && $max_value != '' && ($min_value == null || $min_value == '') && $value <= $max_value) ||
+                (
+                $value_array != null && $value_array != '' && str_replace(self::comma, '', $value_array) != '' &&
+                (
+                $value == $value_array ||
+                (is_numeric($left = stripos($value_array, $start)) && $left == 0) ||
+                stripos($value_array, $middle) !== false ||
+                (strlen($value_array) >= strlen($end) && is_numeric($right = stripos($value_array, $end)) && $right == strlen($value_array) - strlen($end))
+                )
+                )
                 );
+    }
+
+    /**
+     * 
+     * @param integer $application application id
+     * @param integer $applicant applicant id
+     * @return boolean true - applicant can access product for application
+     */
+    public function applicantCanAccessProduct($application, $applicant) {
+        foreach (static::forApplication($application, self::active) as $item)
+            if (is_object($property = ProductAccessProperties::returnProperty($item->property))) {
+                $model_class = '\\' . $property->model_class;
+
+                $min_max = $item->min_value != '' && $item->min_value != null && $item->max_value != '' && $item->max_value != null ? ("$property->column >= '$item->min_value' && $property->column <= '$item->max_value'") : (
+                        $item->min_value != '' && $item->min_value != null && ($item->max_value = '' || $item->max_value == null) ? ("$property->column >= '$item->min_value'") : (
+                        $item->max_value != '' && $item->max_value != null && ($item->min_value = '' || $item->min_value == null) ? ("$property->column <= '$item->max_value'") : ('id > 0')));
+
+                $valueModel = $model_class::find()->where(static::applicantIDColumn($property->property) . " = '$applicant' && $property->column != '' && $property->column is not null && (($min_max) || $property->column in ($item->specific_values))");
+
+                if (!is_object($valueModel) && $item->required == self::required)
+                    return false;
+                else
+                    $access = true;
+            }
+
+        return isset($access);
     }
 
     /**

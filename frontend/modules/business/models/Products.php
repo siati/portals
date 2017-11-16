@@ -12,6 +12,7 @@ use common\models\StaticMethods;
  * @property string $code
  * @property string $name
  * @property string $helb_code
+ * @property string $description
  * @property integer $active
  * @property string $created_by
  * @property string $created_at
@@ -39,10 +40,11 @@ class Products extends \yii\db\ActiveRecord {
             [['created_at', 'modified_at'], 'safe'],
             [['code'], 'string', 'min' => 2, 'max' => 3],
             [['name'], 'string', 'min' => 10, 'max' => 60],
+            [['description'], 'string', 'min' => 20, 'max' => 250],
             [['helb_code'], 'string', 'max' => 15],
             [['created_by', 'modified_by'], 'string', 'max' => 20],
-            [['name', 'code'], 'sanitizeString'],
-            [['name', 'code'], 'notNumerical'],
+            [['name', 'code', 'description'], 'sanitizeString'],
+            [['name', 'code', 'description'], 'notNumerical'],
             [['code'], 'toUpperCase'],
             [['name', 'code'], 'unique']
         ];
@@ -57,6 +59,7 @@ class Products extends \yii\db\ActiveRecord {
             'code' => Yii::t('app', 'Product Code'),
             'name' => Yii::t('app', 'Product Name'),
             'helb_code' => Yii::t('app', 'HELB Code'),
+            'description' => Yii::t('app', 'Description'),
             'active' => Yii::t('app', 'Active'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),

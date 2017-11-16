@@ -1,3 +1,18 @@
+pre {
+    font-family: calibri;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    background-color: inherit;
+    color: inherit;
+    border: none;
+    word-wrap: normal;
+    word-break: normal;
+    overflow-wrap: normal;
+}
+
 .mn-hglght {
     width: 100%;
     text-align: justify;
@@ -255,6 +270,10 @@ table {
     padding-right: 5px
 }
 
+.td-pdg-rnd {
+    padding: 5px
+}
+
 .kasa-pointa {
     cursor: pointer;
 }
@@ -366,11 +385,9 @@ table {
 }
 
 .my-loans-tile-cvr {
-    width: 22.5%;
     border-radius: 6px;
     padding: 10px;
-    display: table;
-    
+    display: table
 }
 
 .my-loans-tile {
@@ -379,8 +396,10 @@ table {
     border-radius: 6px;;
     display: table-cell;
     padding: 5px;
-    word-wrap: break-word;
-    word-break: break-all;
-    overflow-wrap: break-word;
-    background-color: #ff6600
+    text-align: center;
+    vertical-align: middle;
+    color: #fff;
+    font-weight: bold;
+    background-color: #2ecc71;
+    cursor: pointer
 }

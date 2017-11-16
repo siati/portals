@@ -12,7 +12,7 @@ use common\models\StaticMethods;
  * @property string $name
  * @property string $table
  * @property string $column
- * @property string $model_class
+ * @property \yii\db\ActiveRecord $model_class
  * @property string $attribute
  * @property string $operation
  * @property string $active

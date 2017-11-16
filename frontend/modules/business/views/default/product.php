@@ -23,6 +23,9 @@ use kartik\form\ActiveForm;
         <td class="td-pdg-lft"><?= $form->field($product, 'helb_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textInput(['maxlength' => true]) ?></td>
         <td class="td-pdg-lft"><?= $form->field($product, 'active', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->dropDownList(\frontend\modules\business\models\Products::actives()) ?></td>
     </tr>
+    <tr>
+        <td class="td-pdg-lft" colspan="4"><?= $form->field($product, 'description', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-pin"></i>']]])->textarea(['maxlength' => true, 'rows' => 1, 'style' => 'resize: none']) ?></td>
+    </tr>
 </table>
 
 <?= Html::submitButton('Save', ['id' => 'prdct-sv-btn', 'class' => 'btn btn-sm btn-success pull-right', 'name' => 'product-button', 'style' => 'display: none']) ?>
