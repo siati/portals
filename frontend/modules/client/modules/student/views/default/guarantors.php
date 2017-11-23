@@ -4,6 +4,7 @@
 /* @var $applicant integer */
 /* @var $guarantors \frontend\modules\client\modules\student\models\ApplicantsGuarantors */
 /* @var $form_content string */
+/* @var $saved boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -149,6 +150,10 @@ $this->registerJs(
                     }
                 );
             /* the real submit button is hidden */
+            
+            /* is saved */
+               '$saved' ? dataSaved('Success', 'Guarantors Details Saved', 'success') : '';
+            /* is saved */
 
         "
         , \yii\web\VIEW::POS_READY

@@ -57,7 +57,7 @@ class ApplicantsInstitution extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['applicant', 'country', 'level_of_study', 'institution_type', 'admission_category', 'institution_code', 'institution_branch_code', 'registration_no', 'course_category', 'course_type', 'course_code', 'year_of_admission', 'duration', 'year_of_completion', 'year_of_study'], 'required'],
+            [['applicant', 'country', 'level_of_study', 'institution_type', 'admission_category', 'institution_code', 'institution_branch_code', 'registration_no', 'course_category', 'course_type', 'course_code', 'year_of_admission', 'duration', 'year_of_completion', 'year_of_study', 'need_bursary'], 'required'],
             [['applicant', 'level_of_study', 'institution_type', 'admission_category', 'course_category', 'course_type', 'year_of_admission', 'admission_month', 'year_of_completion', 'completion_month', 'annual_fees', 'annual_upkeep', 'amount_can_raise', 'amount_applied', 'need_bursary'], 'integer'],
             [['country', 'duration', 'year_of_study', 'narration'], 'string'],
             [['institution_code', 'institution_branch_code', 'course_code'], 'string', 'max' => 20],

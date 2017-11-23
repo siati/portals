@@ -2,6 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $form \kartik\form\ActiveForm */
 /* @var $model \frontend\modules\client\modules\student\models\ApplicantsInstitution */
+/* @var $saved boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -57,6 +58,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'faculty', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'department', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                </tr>
+            </table>
+
+            <table><tr><td>&nbsp;</td></tr></table>
+
+            <table>
+                <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'course_code', ['addon' => ['prepend' => ['content' => '<i class="fa fa-book"></i>']]])->dropDownList(LmCourses::courses($model->institution_code, null, $model->level_of_study, null, null, $model->course_category, $active), ['prompt' => '-- Course --']) ?></td>
                 </tr>
             </table>
@@ -68,29 +76,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     <td class="td-pdg-lft"><?= $form->field($model, 'year_of_admission', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar-o"></i>']]])->dropDownList(StaticMethods::ranges($yr = date('Y'), $yr - 6, 1, true), ['prompt' => '-- Year --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'admission_month', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar-o"></i>']]])->dropDownList(StaticMethods::months(), ['prompt' => '-- Month --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'registration_no', ['addon' => ['prepend' => ['content' => '<i class="fa fa-id-badge"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                </tr>
+            </table>
+
+            <table><tr><td>&nbsp;</td></tr></table>
+
+            <table>
+                <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'duration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-clock-o"></i>']]])->dropDownList(LmBaseEnums::courseDurations($model->level_of_study), ['prompt' => '-- Duration --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'year_of_completion', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar-o"></i>']]])->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?></td>
-                </tr>
-            </table>
-
-            <table><tr><td>&nbsp;</td></tr></table>
-
-            <table>
-                <tr>
                     <td class="td-pdg-lft"><?= $form->field($model, 'year_of_study', ['addon' => ['prepend' => ['content' => '<i class="fa fa-hourglass-half"></i>']]])->dropDownList(LmBaseEnums::studyYears($model->level_of_study), ['prompt' => '-- Study Year --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'annual_fees', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true]) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'annual_upkeep', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true]) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'amount_can_raise', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true]) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'amount_applied', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'need_bursary', ['addon' => ['prepend' => ['content' => '<i class="fa fa-question"></i>']]])->dropDownList(LmBaseEnums::yesNo(), ['prompt' => '-- Bursary --']) ?></td>
-                </tr>
-            </table>
-
-            <table><tr><td>&nbsp;</td></tr></table>
-
-            <table>
-                <tr>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'narration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-align-justify"></i>']]])->textarea(['rows' => 4, 'maxlength' => true, 'style' => 'resize: none']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'year_of_completion', ['addon' => ['prepend' => ['content' => '<i class="fa fa-calendar-o"></i>']]])->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?></td>
                 </tr>
             </table>
 
@@ -173,11 +168,10 @@ $this->registerJs(
                     }
                 );
             }
-
-            function amountApplied() {
-                $('#applicantsinstitution-amount_applied').val((val = $('#applicantsinstitution-annual_fees').val() * 1 + ($('#applicantsinstitution-annual_upkeep').length ? $('#applicantsinstitution-annual_upkeep').val() * 1 : 0) - $('#applicantsinstitution-amount_can_raise').val() * 1) > 0 ? val : null).blur();
+            
+            function dataSaved() {
+                customSwal('Success', 'Institution Details Saved', '2500', 'success', false, true, 'ok', '#a5dc86', false, 'cancel');
             }
-
         "
         , \yii\web\VIEW::POS_HEAD
 )
@@ -228,14 +222,10 @@ $this->registerJs(
                     }
                 );
             /* completion years vary on a number of circumstances */
-
-            /* auto compute amount applied */
-                $('#applicantsinstitution-annual_fees, #applicantsinstitution-annual_upkeep, #applicantsinstitution-amount_can_raise').change(
-                    function () {
-                        amountApplied();
-                    }
-                );
-            /* auto compute amount applied */
+            
+            /* is saved */
+               '$saved' ? dataSaved('Success', 'Institution Details Saved', 'success') : '';
+            /* is saved */
         "
         , \yii\web\VIEW::POS_READY
 )

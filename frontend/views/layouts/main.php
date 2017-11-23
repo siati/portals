@@ -22,7 +22,7 @@ AppAsset::register($this);
         <?php $this->head() ?>
 
         <!-- sweet alerts begin -->
-        <script type="text/javascript"><?php require Yii::$app->basePath . '\..\vendor\bower\sweetalerts\dist\sweetalert.min.js' ?></script>
+        <script type="text/javascript"><?php require Yii::$app->basePath . '/../vendor/bower/sweetalerts/dist/sweetalert.min.js' ?></script>
         <link rel="stylesheet" type="text/css" href="<?= Yii::$app->homeUrl ?>../../vendor/bower/sweetalerts/dist/sweetalert.css">
         <!-- sweet alerts end -->
 

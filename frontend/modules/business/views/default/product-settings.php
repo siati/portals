@@ -62,9 +62,11 @@ $this->registerJs(
                 $.post('save-product', post,
                     function (saved) {
                         if (saved[0]) {
+                            customSwal('Success', 'Product Saved', '2500', 'success', false, true, 'ok', '#a5dc86', false, 'cancel');
                             $('#products-id').val() * 1 === saved[1] * 1 ? '' : $('#products-id').val(saved[1]);
                             $('#prdct-sv-btn').click();
-                        }
+                        } else
+                            customSwal('Failed', 'Product Was Not Saved<br\><br\>Make any corrections and retry', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
                     }
                 );
             }

@@ -5,6 +5,7 @@
 /* @var $relations array */
 /* @var $relationships array */
 /* @var $form_content string */
+/* @var $saved boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -224,6 +225,10 @@ $this->registerJs(
                     }
                 );
             /* the real submit button is hidden */
+            
+            /* is saved */
+               '$saved' ? dataSaved('Success', 'Parents Details Saved', 'success') : '';
+            /* is saved */
 
         "
         , \yii\web\VIEW::POS_READY

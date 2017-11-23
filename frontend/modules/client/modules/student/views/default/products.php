@@ -1,6 +1,5 @@
 <?php
 /* @var $this yii\web\View */
-/* @var $form \kartik\form\ActiveForm */
 /* @var $user \common\models\User */
 /* @var $applicant \frontend\modules\client\modules\student\models\Applicants */
 
@@ -46,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                             <td style="width: <?= $td_width ?>px; padding: 7.5px">
                                 <div class="my-loans-tile-cvr">
-                                    <div class="my-loans-tile my-ln-sqr-tl">
+                                    <div class="my-loans-tile my-ln-sqr-tl" prdct-id="<?= $product->id ?>" prdct-nm="<?= $product->name ?>">
 
                                         <?= $product->name ?>
 
@@ -85,6 +84,17 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $this->registerJs(
         "
+            function productTimelineForApplicant(prdct_nm, prdct_id, aplcnt) {
+                yiiModal(prdct_nm, 'application-timeline', {'product': prdct_id, 'applicant': aplcnt}, $(window).width() * 0.85, $('.gnrl-frm').height());
+            }
+        "
+        , \yii\web\VIEW::POS_HEAD
+)
+?>
+
+<?php
+$this->registerJs(
+        "
             /* the tiles should be square */
                 $('.my-ln-sqr-tl').bind('centerTiles', 
                     function () {
@@ -98,6 +108,14 @@ $this->registerJs(
                 
                 $('.my-ln-sqr-tl').trigger('centerTiles');
             /* the tiles should be square */
+            
+            /* load product timeline for applicant */
+                $('.my-loans-tile').click(
+                    function () {
+                        productTimelineForApplicant($(this).attr('prdct-nm'), $(this).attr('prdct-id'), $applicant->id);
+                    }
+                );
+            /* load product timeline for applicant */
         "
         , \yii\web\VIEW::POS_READY
 )

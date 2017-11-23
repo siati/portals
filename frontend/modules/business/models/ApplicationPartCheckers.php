@@ -235,7 +235,7 @@ class ApplicationPartCheckers {
         return
                 'Any person or student who when filling a scholarship application form, knowingly makes a false statement whether orally or in writing relating to any matter affecting the'
                 . ' request for a scholarship shall be guilty of an offence and shall be liable to a fine of not less than Kenya Shillings Thirty thousand (Ksh. 30,000) or to imprisonment for a'
-                . 'term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).'
+                . ' term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).'
         ;
     }
 

@@ -324,7 +324,7 @@ class LmBaseEnums extends \yii\db\ActiveRecord {
      * @param string $level_of_study level of study element
      * @return LmBaseEnums models
      */
-    public function admissionCategoriesForLevelOfStudy($admissionCategories, $level_of_study) {
+    public static function admissionCategoriesForLevelOfStudy($admissionCategories, $level_of_study) {
         if (!empty($level_of_study))
             foreach ($admissionCategories as $i => $admissionCategory)
                 if ((!in_array($level_of_study, [self::study_level_degree, self::study_level_diploma]) && in_array($admissionCategory->ELEMENT, [self::admission_category_private_govt_sponsored, self::admission_category_public_govt_sponsored])))

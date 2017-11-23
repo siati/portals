@@ -55,7 +55,7 @@ class ProductOpeningQuery extends \yii\db\ActiveQuery {
                         (empty($grace) ? '' : " && grace <= '$grace'") .
                         (empty($min_apps) ? '' : " && min_apps = '$min_apps'") .
                         (empty($max_apps) ? '' : " && max_apps = '$max_apps'")
-                )->$oneOrAll();
+                )->orderBy('product asc, academic_year desc')->$oneOrAll();
     }
 
 }

@@ -2,6 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $form \kartik\form\ActiveForm */
 /* @var $model \frontend\modules\client\modules\student\models\ApplicantsEmployment */
+/* @var $saved boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -199,6 +200,10 @@ $this->registerJs(
                     }
                 );
             /* employment terms affect employment preiods */
+            
+            /* is saved */
+               '$saved' ? dataSaved('Success', 'Employment Details Saved', 'success') : '';
+            /* is saved */
         "
         , \yii\web\VIEW::POS_READY
 )

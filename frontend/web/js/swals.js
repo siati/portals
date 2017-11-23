@@ -1,3 +1,7 @@
+function dataSaved(title, message, type) {
+    customSwal(title, message, '2500', type, false, true, 'ok', '#a5dc86', false, 'cancel');
+}
+
 function customSwal(title, message, timer, type, modal, showConfirmButton, confirmButtonText, confirmButtonColor, showCancelButton, cancelButtonText) {
     timer * 1 > 0 ? timedSwal (title, message, timer, type, !modal, showConfirmButton, confirmButtonText, confirmButtonColor, showCancelButton, cancelButtonText) : untimedSwal (title, message, type, !modal, showConfirmButton, confirmButtonText, confirmButtonColor, showCancelButton, cancelButtonText);
 }

@@ -4,6 +4,7 @@
 /* @var $applicant integer */
 /* @var $backgrounds array */
 /* @var $form_content string */
+/* @var $saved boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -172,6 +173,10 @@ $this->registerJs(
                     }
                 );
             /* the submit button is actually hidden */
+            
+            /* is saved */
+               '$saved' ? dataSaved('Success', 'Education Background Saved', 'success') : '';
+            /* is saved */
         "
         , yii\web\View::POS_READY
 )

@@ -2,6 +2,7 @@
 /* @var $this yii\web\View */
 /* @var $form \kartik\form\ActiveForm */
 /* @var $model \frontend\modules\client\modules\student\models\ApplicantsResidence */
+/* @var $saved boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -78,3 +79,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
+
+
+<?php $this->registerJs("'$saved' ? dataSaved('Success', 'Residence Details Saved', 'success') : '';", yii\web\View::POS_READY) ?>

@@ -31,7 +31,7 @@ if ($applicant->employed != $yes && $applicant->parents != Applicants::parents_n
 
 $applicant->married == $yes ? $profile_items[] = ['label' => SideNav::linkHelper($route = '/client/student/default/spouse', 'post', ['ApplicantsSpouse[applicant]' => $user_id], 'Spouse Details', 'sd-nav-sps'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))] : '';
 $profile_items[] = ['label' => SideNav::linkHelper($route = '/client/student/default/guarantors', 'post', ['ApplicantsGuarantors[applicant]' => $user_id], 'Guarantors\' Details', 'sd-nav-grntrs'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))];
-$profile_items[] = ['label' => SideNav::linkHelper($route = '/client/student/default/loans', 'post', ['Applications[applicant]' => $user_id], 'Our Products', 'sd-nav-my-lns'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))];
+$profile_items[] = ['label' => SideNav::linkHelper($route = '/client/student/default/application', 'post', ['Applications[applicant]' => $user_id], 'Our Products', 'sd-nav-my-lns'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))];
 
 $profile_items[] = ['label' => SideNav::linkHelper($route = '/business/default/products', 'post', ['Products[id]' => ''], 'Product Settings', 'sd-nav-prdcts'), 'url' => '#', 'active' => ($requested_route == substr($route, 1))];
 

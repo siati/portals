@@ -3,6 +3,7 @@
 /* @var $form \kartik\form\ActiveForm */
 /* @var $applicant \frontend\modules\client\modules\student\models\Applicants */
 /* @var $user \frontend\models\User */
+/* @var $saved boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -206,6 +207,10 @@ $this->registerJs(
                 
                 $('#applicants-parents').change();
             /* show or hide parents death cert fields */
+            
+            /* is saved */
+               '$saved' ? dataSaved('Success', 'Personal Details Saved', 'success') : '';
+            /* is saved */
 
         ", yii\web\View::POS_READY
 )

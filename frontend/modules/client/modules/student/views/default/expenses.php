@@ -4,6 +4,7 @@
 /* @var $applicant integer */
 /* @var $family_expenses \frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses */
 /* @var $sibling_expenses \frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses */
+/* @var $saved boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -93,6 +94,10 @@ $this->registerJs(
             /* well, just some css here */
                 $('.sbln-exps-lft').css('max-height', '350px').css('overflow-x', 'hidden');
             /* well, just some css here */
+            
+            /* is saved */
+               '$saved' ? dataSaved('Success', 'Family Expenses Saved', 'success') : '';
+            /* is saved */
         "
         , \yii\web\VIEW::POS_READY
 )

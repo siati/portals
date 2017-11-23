@@ -16,6 +16,8 @@ use frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExp
 use frontend\modules\client\modules\student\models\ApplicantsEmployment;
 use frontend\modules\client\modules\student\models\ApplicantsSpouse;
 use frontend\modules\client\modules\student\models\ApplicantSponsors;
+use frontend\modules\business\models\ProductOpening;
+use frontend\modules\business\models\ProductOpeningSettings;
 use frontend\modules\business\models\Applications;
 use common\models\User;
 use common\models\StaticMethods;
@@ -43,14 +45,14 @@ class DefaultController extends Controller {
                 'only' => [
                     'index', 'register', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                     'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
-                    'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'loans'
+                    'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'index', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                             'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
-                            'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'loans'
+                            'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -95,12 +97,12 @@ class DefaultController extends Controller {
 
             $wasNew = $user->isNewRecord;
 
-            $user->validate() && $applicant->validate() && $applicant->theTransaction($user);
+            $saved = $user->validate() && $applicant->validate() && $applicant->theTransaction($user);
 
             $wasNew && !$user->isNewRecord && Yii::$app->getResponse()->redirect(Yii::$app->getUser()->loginUrl);
         }
 
-        return $this->render($user->isNewRecord ? 'register' : 'personal', ['applicant' => $applicant, 'user' => $user]);
+        return $this->render($user->isNewRecord ? 'register' : 'personal', ['applicant' => $applicant, 'user' => $user, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -115,10 +117,10 @@ class DefaultController extends Controller {
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
 
-            $model->modelSave();
+            $saved = $model->modelSave();
         }
 
-        return $this->render('residence', ['model' => $model]);
+        return $this->render('residence', ['model' => $model, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -150,13 +152,13 @@ class DefaultController extends Controller {
                 if (($ajax = $this->ajaxValidate($parent)) === self::IS_AJAX || count($ajax) > 0)
                     return is_array($ajax) ? $ajax : [];
 
-                $parent->modelSave();
+                $saved = $parent->modelSave();
             }
 
             $form_content = $this->renderPartial('parent', ['parent' => isset($relations[$parent->relationship]) ? $parent : $parent = ApplicantsParents::parentToLoad(null, $parent->applicant, empty($relationships[0]) ? ApplicantsParents::relationship_father : $relationships[0], $dob), 'relationship' => $relations[$parent->relationship]]);
         }
 
-        return $this->render('parents', ['relationships' => isset($_POST['ApplicantsParents']) ? $relationships : [], 'relations' => $relations, 'form_content' => $form_content, 'applicant' => empty($applicant->id) ? '' : $applicant->id]);
+        return $this->render('parents', ['relationships' => isset($_POST['ApplicantsParents']) ? $relationships : [], 'relations' => $relations, 'form_content' => $form_content, 'applicant' => empty($applicant->id) ? '' : $applicant->id, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -196,10 +198,10 @@ class DefaultController extends Controller {
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
 
-            $model->modelSave();
+            $saved = $model->modelSave();
         }
 
-        return $this->render('education', ['backgrounds' => EducationBackground::levelsToLoad($applicant), 'applicant' => $model->applicant, 'form_content' => $this->renderPartial('education-form', ['model' => $model])]);
+        return $this->render('education', ['backgrounds' => EducationBackground::levelsToLoad($applicant), 'applicant' => $model->applicant, 'form_content' => $this->renderPartial('education-form', ['model' => $model]), 'saved' => !empty($saved)]);
     }
 
     /**
@@ -216,10 +218,10 @@ class DefaultController extends Controller {
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
 
-            $model->modelSave();
+            $saved = $model->modelSave();
         }
 
-        return $this->render('guarantors', ['guarantors' => ApplicantsGuarantors::guarantorsToLoad($applicant_id), 'form_content' => $this->renderPartial('guarantor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant]);
+        return $this->render('guarantors', ['guarantors' => ApplicantsGuarantors::guarantorsToLoad($applicant_id), 'form_content' => $this->renderPartial('guarantor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -260,10 +262,10 @@ class DefaultController extends Controller {
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
 
-            $model->modelSave();
+            $saved = $model->modelSave();
         }
 
-        return $this->render('institution', ['model' => $model]);
+        return $this->render('institution', ['model' => $model, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -278,10 +280,10 @@ class DefaultController extends Controller {
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
 
-            $model->modelSave();
+            $saved = $model->modelSave();
         }
 
-        return $this->render('employment', ['model' => $model]);
+        return $this->render('employment', ['model' => $model, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -303,19 +305,19 @@ class DefaultController extends Controller {
                 $is_ajax = true;
             } else
                 foreach ($family_expenses as $family_expense)
-                    $family_expense->modelSave();
+                    $saved = (isset($saved) ? $saved : true) && $family_expense->modelSave();
 
         if (isset($_POST['ApplicantsSiblingEducationExpenses']['fname']) && $sibling_expense->load(Yii::$app->request->post()))
             if (($ajax = $this->ajaxValidate($sibling_expense)) === self::IS_AJAX || count($ajax) > 0) {
                 $ajaxes += (is_array($ajax) ? $ajax : []);
                 $is_ajax = true;
             } else
-                $sibling_expense->modelSave();
+                $saved = (isset($saved) ? $saved : true) && $sibling_expense->modelSave();
 
         if ($is_ajax)
             return $ajaxes;
 
-        return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense]);
+        return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -330,10 +332,10 @@ class DefaultController extends Controller {
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
 
-            $model->modelSave();
+            $saved = $model->modelSave();
         }
 
-        return $this->render('spouse', ['model' => $model]);
+        return $this->render('spouse', ['model' => $model, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -348,18 +350,54 @@ class DefaultController extends Controller {
             if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
                 return is_array($ajax) ? $ajax : [];
 
-            $model->modelSave();
+            $saved = $model->modelSave();
         }
 
-        return $this->render('sponsors', ['sponsors' => ApplicantSponsors::sponsorsToLoad($model->applicant), 'form_content' => $this->renderPartial('sponsor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant]);
+        return $this->render('sponsors', ['sponsors' => ApplicantSponsors::sponsorsToLoad($model->applicant), 'form_content' => $this->renderPartial('sponsor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant, 'saved' => !empty($saved)]);
     }
-    
+
     /**
      * 
      * @return string view for applicants to select their desired loans from application
      */
-    public function actionLoans() {
-        return $this->render('loans', ['user' => User::returnUser($_POST['Applications']['applicant']), 'applicant' => Applicants::returnApplicant($_POST['Applications']['applicant'])]);
+    public function actionApplication() {
+        return $this->render('products', ['user' => User::returnUser($_POST['Applications']['applicant']), 'applicant' => Applicants::returnApplicant($_POST['Applications']['applicant'])]);
+    }
+
+    /**
+     * 
+     * @return string view for 
+     */
+    public function actionApplicationTimeline() {
+        return $this->renderAjax('applicant-product-timeline', ['openings' => ProductOpening::forProductAcademicyearAndSubsequent($_POST['product'], null, null, ProductOpening::all), 'applicant' => $_POST['applicant']]);
+    }
+
+    /**
+     * 
+     * @return type view to apply for a loan
+     */
+    public function actionLoadApplication() {
+        return $this->renderAjax('first-time-form', [
+                    'application' => Applications::applicationToLoad(empty($_POST['Applications']['id']) ? '' : $_POST['Applications']['id'], empty($_POST['Applications']['applicant']) ? '' : $_POST['Applications']['applicant'], $application = empty($_POST['Applications']['application']) ? '' : $_POST['Applications']['application'], empty($_POST['Applications']['serial_no']) ? '' : $_POST['Applications']['serial_no']),
+                    'settings' => ProductOpeningSettings::forApplicationSettingAndActive($application, null, ProductOpeningSettings::active, ProductOpeningSettings::all)
+                        ]
+        );
+    }
+
+    /**
+     * capture institution details
+     */
+    public function actionInstitutionPartial() {
+        $model = ApplicantsInstitution::institutionToLoad(empty($_POST['ApplicantsInstitution']['id']) ? '' : $_POST['ApplicantsInstitution']['id'], empty($_POST['ApplicantsInstitution']['applicant']) ? '' : $_POST['ApplicantsInstitution']['applicant']);
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $ajax = $this->ajaxValidate($model);
+
+            $model->modelSave();
+        }
+
+        return isset($ajax) && is_array($ajax) ? $ajax : [];
     }
 
     /**

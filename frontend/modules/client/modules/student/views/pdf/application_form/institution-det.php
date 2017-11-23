@@ -118,7 +118,7 @@ use frontend\modules\business\models\ApplicationPartElements;
                 </tr>
 
                 <tr>
-                    <td class="part-table-data" colspan="4" style="text-align: justify"><?= $institution->narration ?></td>
+                    <td class="part-table-data prgp" colspan="4"><pre class="part-element-narration"><?= $institution->narration ?></pre></td>
                 </tr>
 
             <?php endif; ?>
