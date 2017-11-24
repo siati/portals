@@ -337,6 +337,17 @@ class StaticMethods {
 
         return empty($thePost) ? [] : $thePost;
     }
+    
+    /**
+     * 
+     * @param string $link link
+     * @return boolean true - link exists
+     */
+    public static function linkExists($link) {
+        $headers = @get_headers($link);
+        
+        return stripos($headers[0], '200') !== false;
+    }
 
     /**
      * 

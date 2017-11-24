@@ -111,7 +111,7 @@ class PDFGenerator {
         $only_client = empty($category) || $category == self::category_client;
 
         $mpdf->Output($filename = static::fileNameNow($cat = $only_client ? self::category_client : $category, null, self::location), self::DEST_FILE);
-
+        
         return [self::category => $cat, self::filename => basename($filename)];
     }
 

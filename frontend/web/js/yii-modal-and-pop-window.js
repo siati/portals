@@ -13,6 +13,25 @@ function popWindow(url, windowName) {
     return deferred.promise();
 }
 
+function fileDownLoadInPop(pre, url, ttl) {
+    var deferred = $.Deferred();
+    
+    setTimeout(
+        function () {
+            myFileWindow = window.open('', ttl, "width=300, height=500, scrollbars=yes, toolbar=0, location=0, directories=0, status=0, menubar=0");
+            
+            if (myFileWindow)
+                myFileWindow.document.write("<iframe frameborder=0 src='" + url + "' style='width: 100%; height: 100%'></iframe>");
+            else
+                customSwal('Seeking Permission', 'Please allow popups for this site', '2500', 'info', false, true, 'ok', '#f8bb86', false, 'cancel');
+            
+            deferred.resolve();
+        }, 500
+    );
+
+    return deferred.promise();
+}
+
 function expireResource(pre, url) {
     var deferred = $.Deferred();
     
@@ -38,7 +57,9 @@ function fileDownload(pre, cat, nm, ttl) {
                     
                     sequence = deferred.promise();
                     
-                    sequence.then(popWindow(url, ttl)).then(expireResource(pre, url));
+                    sequence.then(fileDownLoadInPop(pre, url, ttl)).then(expireResource(pre, url));
+                    
+//                    sequence.then(popWindow(url, ttl)).then(expireResource(pre, url));
                     
                     deferred.promise();
                     

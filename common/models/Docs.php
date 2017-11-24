@@ -81,11 +81,21 @@ class Docs {
      * 
      * @param string $category document category
      * @param string $filename file name
+     * @return boolean true - file locator exists
+     */
+    public static function fileLocatorExists($category, $filename) {
+        return StaticMethods::linkExists((Yii::$app->getRequest()->isSecureConnection ? 'https://' : 'http://') . Yii::$app->getRequest()->serverName . static::theFileName($category, $filename, self::locator));
+    }
+
+    /**
+     * 
+     * @param string $category document category
+     * @param string $filename file name
      * @param string $response location or locator
      * @return boolean|string true - location or locator
      */
     public static function fileExists($category, $filename, $response) {
-        return is_file($location = static::theFileName($category, $filename, self::location)) ? ($response == self::locator ? (static::theFileName($category, $filename, $response)) : ($location)) : (false);
+        return static::fileLocatorExists($category, $filename) ? ($response == self::locator ? (static::theFileName($category, $filename, $response)) : (static::theFileName($category, $filename, self::location))) : (false);
     }
 
     /**
@@ -95,23 +105,24 @@ class Docs {
      * @return boolean true - file deleted
      */
     public static function deleteFile($category, $filename) {
-        return ($file = static::fileExists($category, $filename, self::location)) == false || @unlink($file);
+        return static::fileLocatorExists($category, $filename) == false || @unlink(static::fileExists($category, $filename, self::location));
     }
 
     /**
      * 
+     * @param string $source_category source category
      * @param string $category document category
-     * @param string $source source file location
+     * @param string $source_name source name
      * @param string $filename destination name for file
      * @param boolean $overwrite overwrite destination file
      * @return boolean|string true - destination file name
      */
-    public static function copyDocument($category, $source, $filename, $overwrite) {
-        $source_name = explode('.', $source);
+    public static function copyDocument($source_category, $category, $source_name, $filename, $overwrite) {
+        $source_ext = explode('.', $source_name);
 
-        empty($filename) || (!$overwrite && static::fileExists($category, $filename . end($source_name), self::location)) ? $filename = static::fileNameNow() : '';
+        empty($filename) || (!$overwrite && static::fileExists($category, $filename . end($source_ext), self::location)) ? $filename = static::fileNameNow() : '';
 
-        return is_file($source) && copy($source, static::theFileName($category, $dest = "$filename." . end($source_name), self::location)) ? $dest : false;
+        return static::fileLocatorExists($source_category, $source_name) && copy(static::theFileName($source_category, $source_name, self::location), static::theFileName($category, $dest = "$filename." . end($source_ext), self::location)) ? $dest : false;
     }
 
     /**
@@ -124,7 +135,7 @@ class Docs {
      * @return boolean|string true - destination file name
      */
     public static function moveFile($source_category, $destination_category, $source_name, $destination_name, $overwrite) {
-        return ($copy = static::copyDocument($destination_category, $source = static::theFileName($source_category, $source_name, self::location), $destination_name, $overwrite)) &&
+        return ($copy = static::copyDocument($source_category, $destination_category, $source_name, $destination_name, $overwrite)) &&
                 static::deleteFile($source_category, $source_name) ? ($copy) : ($copy ? (static::deleteFile($destination_category, $copy) && false) : (false) );
     }
 
@@ -136,12 +147,12 @@ class Docs {
      * @return boolean|string true - location or locator for file export
      */
     public static function fileLocate($category, $filename, $response) {
-        if ($location = static::fileExists($category, $filename, self::location)){
-            $category != self::category_client ? $filename = static::copyDocument(self::category_client, $location, null, false) : '';
-            
+        if (static::fileExists($category, $filename, self::location)) {
+            $category != self::category_client ? $filename = static::copyDocument($category, self::category_client, $filename, null, false) : '';
+
             return static::fileExists(self::category_client, $filename, $response);
         }
-        
+
         return false;
     }
 
