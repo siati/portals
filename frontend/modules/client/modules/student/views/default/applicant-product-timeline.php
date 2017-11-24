@@ -15,18 +15,26 @@ use common\models\LmBaseEnums;
                 <tr opng="<?= $opening->id ?>" apl="0">
                     <td class="td-pdg-bth btn btn-xs btn-primary tmln-lst-dv-td" style="margin-bottom: 2.5px; text-align: justify"><?= LmBaseEnums::byNameAndValue(LmBaseEnums::applicant_type, $opening->subsequent)->LABEL ?>, <?= $opening->academic_year ?></td>
                 </tr>
+
+                <?php $openings_exist = true ?>
+
             <?php endforeach; ?>
         </table>
+
+        <?php if (empty($openings_exist)): ?>
+
+            <?= $this->render('../../../../../../views/site/no-content', ['message' => 'Oops!<br/><br/>Nothing for you to see here<br/><br/>Close and try some other product']) ?>
+
+        <?php endif; ?>
+
     </div>
 
     <div class="tmln-frm-div pull-left">
-        Select academic year to proceed
+        <?= $this->render('../../../../../../views/site/no-content', ['message' => $message = empty($openings_exist) ? 'Oops!<br/><br/>Nothing for you to see here<br/><br/>Close and try some other product' : 'Select An Academic Year To Proceed']) ?>
     </div>
 
     <div class="tmln-cmpl-div pull-right">
-        <div class="tmln-cmpl-lst-div">Select academic year to proceed</div>
-        
-        <div class="tmln-cmpl-btn-div"><div class="btn btn-sm btn-primary" style="width: 100%"><b><i class="fa fa-print"></i> Compile and Print</b></div></div>
+        <?= $this->render('../../../../../../views/site/no-content', ['message' => $message]) ?>
     </div>
 </div>
 
@@ -44,6 +52,32 @@ $this->registerJs(
                     }
                 );
             }
+            
+            function applicationCompile(aplcnt, aplctn, apl) {
+                $.post('application-compile', {'applicant': aplcnt, 'application': aplctn, 'appeal': apl},
+                    function (compile) {
+                        $('.tmln-cmpl-div').html(compile);
+                    }
+                );
+            }
+            
+            function selectedApplication(btn) {
+                $('.tmln-lst-dv-td').removeClass('btn-success').addClass('btn-primary');
+                btn.removeClass('btn-primary').addClass('btn-success');
+            }
+            
+            function autoSelectFirstApplication() {
+                clicked = false;
+                
+                $('.tmln-lst-dv').find('.tmln-lst-dv-td').each(
+                    function () {
+                        if (!clicked) {
+                            $(this).click();
+                            clicked = true;
+                        }
+                    }
+                );
+            }
         "
         , \yii\web\VIEW::POS_HEAD
 )
@@ -52,11 +86,21 @@ $this->registerJs(
 <?php
 $this->registerJs(
         "
-            $('.tmln-lst-dv-td').click(
-                function () {
-                    applicantsApplication('$applicant', $(this).parent().attr('opng'), $(this).parent().attr('apl'))
-                }
-            );
+            /* load application */
+                $('.tmln-lst-dv-td').click(
+                    function () {
+                        selectedApplication(
+                            $(this), applicationCompile('$applicant', $(this).parent().attr('opng'), $(this).parent().attr('apl'),
+                                applicantsApplication('$applicant', $(this).parent().attr('opng'), $(this).parent().attr('apl'))
+                            )
+                        );
+                    }
+                );
+            /* load application */
+            
+            /* autoselect first academic year */
+                autoSelectFirstApplication();
+            /* autoselect first academic year */
         "
         , \yii\web\VIEW::POS_READY
 )

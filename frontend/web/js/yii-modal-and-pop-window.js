@@ -1,9 +1,30 @@
 function popWindow(url, windowName) {
-    window.open(url, windowName, "width=300, height=500, scrollbars=yes, toolbar=0, location=0, directories=0, status=0, menubar=0");
+    var deferred = $.Deferred();
+    
+    setTimeout(
+        function () {
+            if (!window.open(url, windowName, "width=300, height=500, scrollbars=yes, toolbar=0, location=0, directories=0, status=0, menubar=0"))
+                customSwal('Seeking Permission', 'Please allow popups for this site', '2500', 'info', false, true, 'ok', '#f8bb86', false, 'cancel');
+            
+            deferred.resolve();
+        }, 500
+    );
+
+    return deferred.promise();
 }
 
 function expireResource(pre, url) {
-    $.post(pre + 'site/expire-resource', {'nm': url}, function () {});
+    var deferred = $.Deferred();
+    
+    setTimeout(
+        function () {
+            $.post(pre + 'site/expire-resource', {'nm': url}, function () {});
+
+            deferred.resolve();
+        }, 500
+    );
+
+    return deferred.promise();
 }
 
 function fileDownload(pre, cat, nm, ttl) {
@@ -12,7 +33,15 @@ function fileDownload(pre, cat, nm, ttl) {
                 if (url === false)
                     customSwal('Well...', 'The file seems to have been removed<br/><br/>Please close this pop up window and retry', '2500', 'info', false, true, 'ok', '#f27474', false, 'cancel');
                 else {
-                    expireResource(pre, url, popWindow(url, ttl));
+                    
+                    var deferred = $.Deferred();
+                    
+                    sequence = deferred.promise();
+                    
+                    sequence.then(popWindow(url, ttl)).then(expireResource(pre, url));
+                    
+                    deferred.promise();
+                    
                     swal.close();
                 }
             }

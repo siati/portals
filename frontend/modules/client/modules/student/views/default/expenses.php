@@ -34,9 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-bdy fit-in-pn">
 
-            <?= $this->render('family_expenses', ['form' => $form, 'models' => $family_expenses]) ?>
+            <?= $this->render('family-expenses', ['form' => $form, 'models' => $family_expenses]) ?>
 
-            <?= $this->render('sibling_expenses', ['form' => $form, 'sibling_expenses' => $sibling_expenses, 'model' => empty($sibling_expense) ? end($sibling_expenses) : $sibling_expense]) ?>
+            <?= $this->render('sibling-expenses', ['form' => $form, 'sibling_expenses' => $sibling_expenses, 'model' => empty($sibling_expense) ? end($sibling_expenses) : $sibling_expense]) ?>
 
         </div>
 
