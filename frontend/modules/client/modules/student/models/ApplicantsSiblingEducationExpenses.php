@@ -7,6 +7,7 @@ use common\models\User;
 use frontend\modules\client\modules\student\models\ApplicantsParents;
 use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 use common\models\StaticMethods;
+use common\models\LmBaseEnums;
 
 /**
  * This is the model class for table "{{%applicants_sibling_education_expenses}}".
@@ -45,7 +46,7 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['applicant', 'fname', 'lname', 'study_level', 'institution_type', 'institution_name', 'annual_fees', 'created_by'], 'required'],
+            [['applicant', 'fname', 'lname', 'study_level', 'institution_type', 'institution_name', 'created_by'], 'required'],
             [['applicant', 'birth_cert_no', 'id_no', 'study_level', 'institution_type', 'annual_fees', 'helb_beneficiary'], 'integer'],
             [['created_at', 'modified_at'], 'safe'],
             [['fname', 'mname', 'lname', 'created_by', 'modified_by'], 'string', 'min' => 3, 'max' => 20],
@@ -61,6 +62,16 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
                     }
                 ",
                 'message' => 'Birth Cetificate or National ID. No. must be provided'
+            ],
+            [['annual_fees'], 'required',
+                'when' => function () {
+                    return $this->annualFeesRequired();
+                },
+                'whenClient' => "
+                    function (attribute, value) {
+                        $('#applicantssiblingeducationexpenses-helb_beneficiary').val() !== '" . LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE . "' && $('#applicantssiblingeducationexpenses-institution_type').val() !== '" . LmBaseEnums::institutionType(LmBaseEnums::institution_type_primary)->VALUE . "' && $('#applicantssiblingeducationexpenses-institution_type').val() !== '" . LmBaseEnums::institutionType(LmBaseEnums::institution_type_secondary)->VALUE . "';
+                    }
+                "
             ],
             [['id_no'], 'string', 'min' => 7, 'max' => 8],
             [['birth_cert_no', 'id_no'], 'notOwnSibling'],
@@ -102,7 +113,7 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
     public function guarantorNotBeSibling($attribute) {
         is_object(ApplicantsGuarantors::siblingNotGuarantor($attribute, $this->$attribute, $this->applicant)) ? $this->addError($attribute, 'You\'ve already used this ' . $this->getAttributeLabel($attribute) . ' against your guarantor') : '';
     }
-    
+
     /**
      * 
      * sibling cannot be spouse too
@@ -128,6 +139,14 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
      */
     public function expenditureNotExceedIncome() {
         Applicants::expenditureExceedsIncome(ApplicantsFamilyExpenses::expensesToLoad($this->applicant), static::expensesForApplicant($this->applicant), static::expenseToLoad($this->id, $this->applicant, null, null)) ? $this->addError('annual_fees', 'Your total family expenditure must not exceed income') : '';
+    }
+
+    /**
+     * 
+     * @return boolean true - annual fees is required
+     */
+    public function annualFeesRequired() {
+        return $this->helb_beneficiary != LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE && !in_array(strtolower(LmBaseEnums::byNameAndValue(LmBaseEnums::institution_type, $this->institution_type)->ELEMENT), [strtolower(LmBaseEnums::institution_type_primary), strtolower(LmBaseEnums::institution_type_secondary)]);
     }
 
     /**
@@ -220,6 +239,8 @@ class ApplicantsSiblingEducationExpenses extends \yii\db\ActiveRecord {
         $model->id_no = $id_no;
 
         $model->helb_beneficiary = self::helb_beneficiary_no;
+        
+        $model->study_level = LmBaseEnums::studyLevel(LmBaseEnums::study_level_certificate)->VALUE;
 
         $model->created_by = Yii::$app->user->identity->username;
 

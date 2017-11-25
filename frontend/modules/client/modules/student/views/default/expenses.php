@@ -5,6 +5,7 @@
 /* @var $family_expenses \frontend\modules\client\modules\student\models\ApplicantsFamilyExpenses */
 /* @var $sibling_expenses \frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses */
 /* @var $saved boolean */
+/* @var $save_attempt boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -26,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php ActiveForm::end(); ?>
         
 
-        <?php $form = ActiveForm::begin(['id' => 'form-stdt-exps', 'enableAjaxValidation' => true]); ?>
+        <?php $form = ActiveForm::begin(['id' => 'form-stdt-exps', 'enableAjaxValidation' => true, 'validateOnSubmit' => false]); ?>
         
         <input type="hidden" name="applicant" value="<?= $applicant ?>">
 
@@ -90,13 +91,21 @@ $this->registerJs(
                     }
                 );
             /* study level affects institution types */
+            
+            /* annual fees required against institution type and helb beneficiary */
+                $('#applicantssiblingeducationexpenses-helb_beneficiary, #applicantssiblingeducationexpenses-institution_type').change(
+                    function () {
+                        $('#applicantssiblingeducationexpenses-annual_fees').blur();
+                    }
+                );
+            /* annual fees required against institution type and helb beneficiary */
 
             /* well, just some css here */
                 $('.sbln-exps-lft').css('max-height', '350px').css('overflow-x', 'hidden');
             /* well, just some css here */
             
             /* is saved */
-               '$saved' ? dataSaved('Success', 'Family Expenses Saved', 'success') : '';
+               '$saved' || '$save_attempt' ? dataSaved('$saved' ? 'Success' : 'Failed', '$saved' ? 'Family Expenses Saved' : 'Family Expenses Not Saved', '$saved' ? 'success' : 'error') : '';
             /* is saved */
         "
         , \yii\web\VIEW::POS_READY

@@ -23,7 +23,7 @@ function fileDownLoadInPop(url, ttl) {
             if (myFileWindow)
                 myFileWindow.document.write("<iframe frameborder=0 src='" + url + "' style='width: 100%; height: 100%'></iframe>");
             else
-                customSwal('Seeking Permission', 'Please allow popups for this site', '5000', 'info', false, true, 'ok', '#f8bb86', false, 'cancel');
+                customSwal('Seeking Permission', 'Please allow popups for this site<br/><br/>Then close the popup window and retry', '5000', 'info', false, true, 'ok', '#f8bb86', false, 'cancel');
             
             deferred.resolve();
         }, 500

@@ -317,7 +317,7 @@ class DefaultController extends Controller {
         if ($is_ajax)
             return $ajaxes;
 
-        return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense, 'saved' => !empty($saved)]);
+        return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense, 'saved' => !empty($saved), 'save_attempt' => isset($saved)]);
     }
 
     /**
@@ -390,6 +390,10 @@ class DefaultController extends Controller {
     public function actionInstitutionPartial() {
         $model = ApplicantsInstitution::institutionToLoad(empty($_POST['ApplicantsInstitution']['id']) ? '' : $_POST['ApplicantsInstitution']['id'], empty($_POST['ApplicantsInstitution']['applicant']) ? '' : $_POST['ApplicantsInstitution']['applicant']);
 
+        isset($_POST['ApplicantsInstitution']['annual_fees']) && !isset($_POST['ApplicantsInstitution']['annual_upkeep']) ? $model->annual_upkeep = null : '';
+        
+        isset($_POST['ApplicantsInstitution']['annual_upkeep']) && !isset($_POST['ApplicantsInstitution']['annual_fees']) ? $model->annual_fees = null : '';
+        
         if ($model->load(Yii::$app->request->post())) {
 
             $ajax = $this->ajaxValidate($model);

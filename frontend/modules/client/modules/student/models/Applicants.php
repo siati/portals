@@ -355,6 +355,7 @@ class Applicants extends \yii\db\ActiveRecord {
     }
 
     /**
+     * total income - father, mother, guardian - alive and paying fees
      * 
      * @return integer total annual family income
      */
@@ -362,7 +363,7 @@ class Applicants extends \yii\db\ActiveRecord {
         $incomes = [];
 
         foreach (ApplicantsParents::searchParents($this->id, null, null, null, null, null, null, null, null) as $parent)
-            if ($parent->isPayingFees()) {
+            if ((($this->parents == self::parents_both_alive && in_array($parent->relationship, [ApplicantsParents::relationship_father, ApplicantsParents::relationship_mother])) || ($this->parents == self::parents_father_alive && in_array($parent->relationship, [ApplicantsParents::relationship_father])) || ($this->parents == self::parents_mother_alive && in_array($parent->relationship, [ApplicantsParents::relationship_mother])) || (in_array($this->parents, [self::parents_neither_alive, self::parents_abandoned]) && $parent->relationship == ApplicantsParents::relationship_guardian)) && $parent->isPayingFees()) {
                 $parent->totalAnnualIncome();
 
                 $parent->hasErrors('total_annual_income') ? '' : array_push($incomes, $parent->total_annual_income);
@@ -495,7 +496,7 @@ class Applicants extends \yii\db\ActiveRecord {
             case self::parents_mother_alive:
                 return [ApplicantsParents::relationship_mother];
 
-            case self::parents_neither_alive:
+            case self::parents_neither_alive || self::parents_abandoned:
                 return [ApplicantsParents::relationship_guardian];
 
             case self::parents_not_applicable:

@@ -84,6 +84,8 @@ $this->registerJs(
                         amountApplied();
                     }
                 );
+                
+                $('#applicantsinstitution-annual_fees, #applicantsinstitution-annual_upkeep').change();
             /* auto compute amount applied */
         "
         , \yii\web\VIEW::POS_READY
