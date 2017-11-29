@@ -162,6 +162,69 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
     /**
      * 
      * @param integer $application product opening id
+     * @return boolean true - requires primary education
+     */
+    public static function requiresPrimaryEducation($application) {
+        return is_object(static::searchSettings($application, ProductSettings::primary, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - requires secondary education
+     */
+    public static function requiresSecondaryEducation($application) {
+        return is_object(static::searchSettings($application, ProductSettings::secondary, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - requires tertiary certificate
+     */
+    public static function requiresTertiaryCertificate($application) {
+        return is_object(static::searchSettings($application, ProductSettings::certificate, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - requires diploma certificate
+     */
+    public static function requiresDiplomaCertificate($application) {
+        return is_object(static::searchSettings($application, ProductSettings::diploma, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - requires degree certificate
+     */
+    public static function requiresDegreeCertificate($application) {
+        return is_object(static::searchSettings($application, ProductSettings::degree, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - requires masters certificate
+     */
+    public static function requiresMastersCertificate($application) {
+        return is_object(static::searchSettings($application, ProductSettings::masters, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return boolean true - requires phd certificate
+     */
+    public static function requiresPHDCertificate($application) {
+        return is_object(static::searchSettings($application, ProductSettings::phd, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
      * @return array tuition, upkeep - true, false
      */
     public static function tuitionOrUpkeep($application) {
@@ -189,6 +252,15 @@ class ProductOpeningSettings extends \yii\db\ActiveRecord {
      */
     public static function hasFInancialLiteracy($application) {
         return is_object(static::searchSettings($application, ProductSettings::has_financial_literacy, null, ProductSettings::yes, self::active, null, self::one));
+    }
+    
+    /**
+     * 
+     * @param integer $application product opening id
+     * @return integer no. of guarantors required
+     */
+    public static function noOfGuarantors($application) {
+        return is_object($setting = static::searchSettings($application, ProductSettings::guarantors, null, null, self::active, null, self::one)) ? "$setting->value" : '0';
     }
 
     /**

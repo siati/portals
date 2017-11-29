@@ -19,6 +19,7 @@
             <file>file:/D:/xampp/htdocs/portals/common/models/PDFGenerator.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/parental-status.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/sibling-expenses.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/institution-partial.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/views/layouts/applicant-menu.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/personal-det.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/models/ProductOpeningSettings.php</file>
@@ -32,20 +33,31 @@
             <file>file:/D:/xampp/htdocs/portals/common/models/Docs.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/bank-det.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/employment.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantsSiblingEducationExpenses.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/family-expenses.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/sponsor-det.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantsParents.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/declarations.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/sibling-expenses.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/submission.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/parents-det.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/terms-conditions.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/applicant-product-timeline.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/employment-det.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/views/layouts/guest.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/ApplicantsInstitution.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/check-list.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/product-settings.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/expenses.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/caution.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/controllers/DefaultController.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/controllers/SiteController.php</file>
             <file>file:/D:/xampp/htdocs/portals/common/models/StaticMethods.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/first-time-form.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/web/css/pdf/application-form.css</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/Applicants.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/web/js/swals.js</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/parents.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/education-backgrounds.php</file>
             <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/pdf/application_form/amateur-form.php</file>
         </group>

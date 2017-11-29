@@ -6,6 +6,8 @@
 /* @var $sibling_expenses \frontend\modules\client\modules\student\models\ApplicantsSiblingEducationExpenses */
 /* @var $saved boolean */
 /* @var $save_attempt boolean */
+/* @var $saved2 boolean */
+/* @var $save_attempt2 boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -105,7 +107,7 @@ $this->registerJs(
             /* well, just some css here */
             
             /* is saved */
-               '$saved' || '$save_attempt' ? dataSaved('$saved' ? 'Success' : 'Failed', '$saved' ? 'Family Expenses Saved' : 'Family Expenses Not Saved', '$saved' ? 'success' : 'error') : '';
+               '$saved' || '$save_attempt' || '$saved2' || '$save_attempt2' ? dataSaved('$saved' && '$saved2' ? ('Success') : ('$saved' || '$saved2' ? 'Partial Error'  : 'Failed'), '$saved' && '$saved2' ? ('Family Expenses<br/><br/>and<br/><br/>Sibling Education Expenses<br/><br/>Saved') : ('$saved' ? ('Sibling Education Expenses Not Saved') : ('$saved2' ? 'Family Expenses Not Saved' : 'Family Expenses<br/><br/>and<br/><br/>Sibling Education Expenses<br/><br/>Not Saved')), '$saved' && '$saved2' ? 'success' : 'error') : '';
             /* is saved */
         "
         , \yii\web\VIEW::POS_READY

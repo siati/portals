@@ -3,6 +3,12 @@
 namespace frontend\modules\business\models;
 
 use Yii;
+use frontend\modules\client\modules\student\models\Applicants;
+use frontend\modules\client\modules\student\models\EducationBackground;
+use frontend\modules\client\modules\student\models\ApplicantsInstitution;
+use frontend\modules\client\modules\student\models\ApplicantsEmployment;
+use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
+use common\models\LmBaseEnums;
 use common\models\StaticMethods;
 use common\models\PDFGenerator;
 use common\models\Docs;
@@ -228,6 +234,26 @@ class Applications extends \yii\db\ActiveRecord {
         else {
             $application = ProductOpening::returnOpening($this->application);
             $this->serial_no = substr($application->academic_year, 2, 2) . substr($application->academic_year, 7, 2) . $application->subsequent . '000001';
+        }
+    }
+    
+    /**
+     * @return array missing application parts requiring attention
+     */
+    public function compileApplication() {
+        foreach (ProductOpeningSettings::forApplicationSettingAndActive($this->application, null, ProductOpeningSettings::active, ProductOpeningSettings::all) as $setting) {
+            $setting->setting == ProductSettings::primary && !is_object(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_primary)) ? $profile[Applicants::profile_has_education_background_primary] = [Applicants::narration => 'Primary Education Details Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::secondary && !is_object(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_secondary)) ? $profile[Applicants::profile_has_education_background_secondary] = [Applicants::narration => 'Secondary Education Details Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::certificate && !is_object(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_certificate)) ? $profile[Applicants::profile_has_education_background_certificate] = [Applicants::narration => 'Tertiary Certificate Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::diploma && !is_object(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_diploma)) ? $profile[Applicants::profile_has_education_background_diploma] = [Applicants::narration => 'Diploma Certificate Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::degree && !is_object(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_degree)) ? $profile[Applicants::profile_has_education_background_degree] = [Applicants::narration => 'Degree Certificate Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::masters && !is_object(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_masters)) ? $profile[Applicants::profile_has_education_background_masters] = [Applicants::narration => 'Masters Certificate Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::phd && !is_object(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_phd)) ? $profile[Applicants::profile_has_education_background_phd] = [Applicants::narration => 'PhD Certificate Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::tuition_or_upkeep && is_array($tuition_or_upkeep = ProductOpeningSettings::tuitionOrUpkeep($this->application)) && !empty($tuition_or_upkeep[ProductSettings::no]) && (!is_object($applicant = Applicants::returnApplicant($this->applicant)) || (empty($applicant->account_number) && empty($applicant->smart_card_number))) ? $profile[Applicants::profile_has_bank] = [Applicants::narration => 'Bank Details Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::has_society_narration && (!is_object($institution = ApplicantsInstitution::forApplicant($this->applicant)) || empty($institution->narration)) ? $profile[Applicants::profile_has_institution_narration] = [Applicants::narration => 'Society Narration Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::employed && ((!is_object($applicant) && !is_object($applicant = Applicants::returnApplicant($this->applicant))) || $applicant->employed != LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE || !is_object(ApplicantsEmployment::forApplicant($this->applicant))) ? $profile[Applicants::profile_has_employment] = [Applicants::narration => 'Employment Details Missing', Applicants::required => true] : '';
+            $setting->setting == ProductSettings::guarantors && $setting->value > 0 && ($count = count(ApplicantsGuarantors::forApplicant($this->applicant))) < $setting->value ? $profile[Applicants::profile_has_guarantors] = [Applicants::narration => "$count Guarantors\' Details Provided; $setting->value Required", Applicants::required => true] : '';
+            //pending financial literacy
         }
     }
 

@@ -80,7 +80,7 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
     <?php elseif ($part->part == ApplicationPartCheckers::part_guarantors): ?>
 
-        <?= $this->render('../application_form/guarantors-det', ['guarantors' => ApplicantsGuarantors::searchGuarantors($application->applicant, null, null, null, null, null), 'part' => $part]) ?>
+        <?= $this->render('../application_form/guarantors-det', ['guarantors' => ApplicantsGuarantors::forApplicant($application->applicant), 'part' => $part]) ?>
 
     <?php elseif ($part->part == ApplicationPartCheckers::part_bank): ?>
 

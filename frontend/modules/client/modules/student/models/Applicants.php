@@ -61,6 +61,25 @@ class Applicants extends \yii\db\ActiveRecord {
     const parents_separated = 5;
     const parents_single = 6;
     const parents_abandoned = 7;
+    
+    // for compiling applicant's profile
+    const narration = 'narration';
+    const required = 'required';
+    const profile_has_user = 'user';
+    const profile_has_residence = 'residence';
+    const profile_has_education_background = 'education_background';
+    const profile_has_institution = 'institution';
+    const profile_has_father = 'father';
+    const profile_has_guardian_to_father = 'guardian_to_father';
+    const profile_has_mother = 'mother';
+    const profile_has_guardian_to_mother = 'guardian_to_mother';
+    const profile_has_guardian = 'guardian';
+    const profile_has_family_expenses = 'family_expenses';
+    const profile_has_sibling_expenses = 'sibling_expenses';
+    const profile_has_savings = 'savings';
+    const profile_has_employment = 'employment';
+    const profile_has_spouse = 'spouse';
+    const profile_has_guarantors = 'guarantors';
 
     /**
      * @inheritdoc
@@ -457,6 +476,39 @@ class Applicants extends \yii\db\ActiveRecord {
 
         return $totalExpenditure > $totalIncome;
     }
+    
+    /**
+     * 
+     * @return array applicant's missing profile bits
+     */
+    public function compileProfile() {
+        is_object(User::returnUser($this->id)) ? '' : $profile[self::profile_has_user] = [self::narration => 'No User Account', self::required => true];
+        
+        is_object(ApplicantsResidence::forApplicant($this->id)) ? '' : $profile[self::profile_has_residence] = [self::narration => 'Residence Details Missing', self::required => true];
+        
+        empty(EducationBackground::searchEducations($this->id, null)) ? $profile[self::profile_has_education_background] = [self::narration => 'Education Background Missing', self::required => true] : '';
+        
+        is_object(ApplicantsInstitution::forApplicant($this->id)) ? '' : $profile[self::profile_has_institution] = [self::narration => 'Institution Details Missing', self::required => true];
+        
+        if ($this->isMinor() || $this->parents != self::parents_not_applicable) {
+            !is_object($father = ApplicantsParents::byApplicantAndRelationship($this->id, ApplicantsParents::relationship_father)) && ($this->parents == self::parents_both_alive || $this->parents == self::parents_father_alive) ? $profile[self::profile_has_father] = [self::narration => 'Father\'s Details Missing', self::required => true] : '';
+            is_object($father) && $father->isMinor() && !is_object(ApplicantsParents::byApplicantAndRelationship($this->id, ApplicantsParents::relationship_guardian_to_father)) ? $profile[self::profile_has_guardian_to_father] = [self::narration => 'Father\'s Guardian\'s Details Missing', self::required => true] : '';
+            !is_object($mother = ApplicantsParents::byApplicantAndRelationship($this->id, ApplicantsParents::relationship_mother)) && ($this->parents == self::parents_both_alive || $this->parents == self::parents_mother_alive) ? $profile[self::profile_has_mother] = [self::narration => 'Mother\'s Details Missing', self::required => true] : '';
+            is_object($mother) && $mother->isMinor() && !is_object(ApplicantsParents::byApplicantAndRelationship($this->id, ApplicantsParents::relationship_guardian_to_mother)) ? $profile[self::profile_has_guardian_to_mother] = [self::narration => 'Mother\'s Guardian\'s Details Missing', self::required => true] : '';
+            !is_object($guardian = ApplicantsParents::byApplicantAndRelationship($this->id, ApplicantsParents::relationship_guardian)) && ($this->parents == self::parents_neither_alive || $this->parents == self::parents_abandoned) ? $profile[self::profile_has_guardian] = [self::narration => 'Guardian\'s Details Missing', self::required => true] : '';
+            
+            ((is_object($father) && $father->paysFees()) || (is_object($mother) && $mother->paysFees()) || (is_object($guardian) && $guardian->paysFees())) && empty(ApplicantsFamilyExpenses::searchExpenses($this->id, null, ApplicantsFamilyExpenses::all)) ? $profile[self::profile_has_family_expenses] = [self::narration => 'Family Expenses Missing', self::required => true] : '';
+            empty(ApplicantsSiblingEducationExpenses::expensesForApplicant($this->id)) ? $profile[self::profile_has_sibling_expenses] = [self::narration => 'Siblings\' Details Missing', self::required => false] : '';
+            $this->myTotalAnnualFamilySaving() < 0  ? $profile[self::profile_has_savings] = [self::narration => 'Total family expenditure exceeds total family income', self::required => true] : '';
+            empty(ApplicantSponsors::sponsorsForApplicant($this->id)) ? $profile[self::profile_has_sponsors] = [self::narration => 'Sponsor\'s Details Missing', self::required => false] : '';
+        }
+        
+        $this->employed == ($yes = LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE) && !is_object(ApplicantsEmployment::forApplicant($this->id)) ? $profile[self::profile_has_employment] = [self::narration => 'Employment Details Missing', self::required => true] : '';
+        
+        $this->married == $yes && !is_object(ApplicantsSpouse::forApplicant($this->id)) ? $profile[self::profile_has_spouse] = [self::narration => 'Spouse Details Missing', self::required => true] : '';
+        
+        return empty($profile) ? [] : $profile;
+    }
 
     /**
      * 
@@ -480,8 +532,7 @@ class Applicants extends \yii\db\ActiveRecord {
             self::parents_single => 'Single Unmarried Parent',
             self::parents_abandoned => 'Abandoned',
             self::parents_not_applicable => 'I\'m Mature and Independent'
-        ];
-    }
+        ];    }
 
     /**
      * 

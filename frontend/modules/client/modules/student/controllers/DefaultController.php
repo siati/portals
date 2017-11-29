@@ -307,17 +307,25 @@ class DefaultController extends Controller {
                 foreach ($family_expenses as $family_expense)
                     $saved = (isset($saved) ? $saved : true) && $family_expense->modelSave();
 
-        if (isset($_POST['ApplicantsSiblingEducationExpenses']['fname']) && $sibling_expense->load(Yii::$app->request->post()))
+        if (isset($_POST['ApplicantsSiblingEducationExpenses']['fname']) && ((!$sibling_expense->isNewRecord || static::newSiblingSubmitted())) && $sibling_expense->load(Yii::$app->request->post()))
             if (($ajax = $this->ajaxValidate($sibling_expense)) === self::IS_AJAX || count($ajax) > 0) {
                 $ajaxes += (is_array($ajax) ? $ajax : []);
                 $is_ajax = true;
             } else
-                $saved = (isset($saved) ? $saved : true) && $sibling_expense->modelSave();
+                $saved2 = (isset($saved2) ? $saved2 : true) && $sibling_expense->modelSave();
 
         if ($is_ajax)
             return $ajaxes;
 
-        return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense, 'saved' => !empty($saved), 'save_attempt' => isset($saved)]);
+        return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense, 'saved' => !empty($saved), 'save_attempt' => isset($saved), 'saved2' => !empty($saved2), 'save_attempt2' => isset($saved2)]);
+    }
+    
+    /**
+     * 
+     * @return boolean true - no new sibling submitted
+     */
+    public static function newSiblingSubmitted() {
+        return !empty($_POST['ApplicantsSiblingEducationExpenses']['mname']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['lname']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['birth_cert_no']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['id_no']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['institution_name']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['annual_fees']);
     }
 
     /**

@@ -311,6 +311,15 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
     
     /**
      * 
+     * @param integer $applicant applicant id
+     * @return ApplicantsGuarantors models
+     */
+    public static function forApplicant($applicant) {
+        return static::searchGuarantors($applicant, null, null, null, null, null);
+    }
+    
+    /**
+     * 
      * @param string $attribute attribute of User model
      * @param string $value value of [[$attribute]]
      * @param integer $applicant applicant's id
@@ -397,7 +406,7 @@ class ApplicantsGuarantors extends \yii\db\ActiveRecord {
      * @return ApplicantsGuarantors models
      */
     public static function guarantorsToLoad($applicant_id) {
-        return static::searchGuarantors($applicant_id, null, null, null, null, null);
+        return static::forApplicant($applicant_id);
     }
 
     /**
