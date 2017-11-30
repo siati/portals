@@ -68,7 +68,15 @@ class Applicants extends \yii\db\ActiveRecord {
     const profile_has_user = 'user';
     const profile_has_residence = 'residence';
     const profile_has_education_background = 'education_background';
+    const profile_has_education_background_primary = 'education_background_primary';
+    const profile_has_education_background_secondary = 'education_background_secondary';
+    const profile_has_education_background_certificate = 'education_background_certificate';
+    const profile_has_education_background_diploma = 'education_background_diploma';
+    const profile_has_education_background_degree = 'education_background_degree';
+    const profile_has_education_background_masters = 'education_background_masters';
+    const profile_has_education_background_phd = 'education_background_phd';
     const profile_has_institution = 'institution';
+    const profile_has_institution_narration = 'institution_narration';
     const profile_has_father = 'father';
     const profile_has_guardian_to_father = 'guardian_to_father';
     const profile_has_mother = 'mother';
@@ -80,6 +88,8 @@ class Applicants extends \yii\db\ActiveRecord {
     const profile_has_employment = 'employment';
     const profile_has_spouse = 'spouse';
     const profile_has_guarantors = 'guarantors';
+    const profile_has_bank = 'bank';
+    const application_has_financial_literacy = 'financial_literacy';
 
     /**
      * @inheritdoc

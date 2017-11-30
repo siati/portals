@@ -8,6 +8,7 @@ use frontend\modules\client\modules\student\models\EducationBackground;
 use frontend\modules\client\modules\student\models\ApplicantsInstitution;
 use frontend\modules\client\modules\student\models\ApplicantsEmployment;
 use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
+use frontend\modules\client\modules\student\models\FinancialLiteracyScores;
 use common\models\LmBaseEnums;
 use common\models\StaticMethods;
 use common\models\PDFGenerator;
@@ -236,7 +237,7 @@ class Applications extends \yii\db\ActiveRecord {
             $this->serial_no = substr($application->academic_year, 2, 2) . substr($application->academic_year, 7, 2) . $application->subsequent . '000001';
         }
     }
-    
+
     /**
      * @return array missing application parts requiring attention
      */
@@ -253,8 +254,10 @@ class Applications extends \yii\db\ActiveRecord {
             $setting->setting == ProductSettings::has_society_narration && (!is_object($institution = ApplicantsInstitution::forApplicant($this->applicant)) || empty($institution->narration)) ? $profile[Applicants::profile_has_institution_narration] = [Applicants::narration => 'Society Narration Missing', Applicants::required => true] : '';
             $setting->setting == ProductSettings::employed && ((!is_object($applicant) && !is_object($applicant = Applicants::returnApplicant($this->applicant))) || $applicant->employed != LmBaseEnums::yesOrNo(LmBaseEnums::yes)->VALUE || !is_object(ApplicantsEmployment::forApplicant($this->applicant))) ? $profile[Applicants::profile_has_employment] = [Applicants::narration => 'Employment Details Missing', Applicants::required => true] : '';
             $setting->setting == ProductSettings::guarantors && $setting->value > 0 && ($count = count(ApplicantsGuarantors::forApplicant($this->applicant))) < $setting->value ? $profile[Applicants::profile_has_guarantors] = [Applicants::narration => "$count Guarantors\' Details Provided; $setting->value Required", Applicants::required => true] : '';
-            //pending financial literacy
+            $setting->setting == ProductSettings::has_financial_literacy && !is_object(FinancialLiteracyScores::byApplicantAndAcademicYear($this->applicant, ProductOpening::returnOpening($this->application)->academic_year)) ? $profile[Applicants::application_has_financial_literacy] = [Applicants::narration => "Financial Literacy Status Not Upadated", Applicants::required => true] : '';
         }
+
+        return empty($profile) ? [] : $profile;
     }
 
     /**
