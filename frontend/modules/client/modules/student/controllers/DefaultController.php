@@ -45,14 +45,14 @@ class DefaultController extends Controller {
                 'only' => [
                     'index', 'register', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                     'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
-                    'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial', 'application-compile'
+                    'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial', 'application-compile', 'amateur-form'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'index', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                             'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
-                            'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial', 'application-compile'
+                            'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial', 'application-compile', 'amateur-form'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -411,14 +411,6 @@ class DefaultController extends Controller {
 
         return isset($ajax) && is_array($ajax) ? $ajax : [];
     }
-    
-    /**
-     * 
-     * @return string view to compile application
-     */
-    public function actionApplicationCompile() {
-        return $this->renderAjax('application-compile', ['applicant' => $_POST['applicant'], 'application' => $_POST['application'], 'appeal' => $_POST['appeal']]);
-    }
 
     /**
      * load employers dynamically
@@ -536,6 +528,14 @@ class DefaultController extends Controller {
      */
     public function actionEmploymentPeriods() {
         StaticMethods::populateDropDown(ApplicantsEmployment::employmentPeriod($_POST['terms']), 'Duration', $_POST['period']);
+    }
+    
+    /**
+     * 
+     * @return string view to compile application
+     */
+    public function actionApplicationCompile() {
+        return $this->renderAjax('application-compile', ['compilation' => Applications::returnApplication($_POST['application'])->compileApplication(), 'applicant' => $_POST['applicant'], 'application' => $_POST['application'], 'appeal' => $_POST['appeal']]);
     }
 
     /**

@@ -61,6 +61,14 @@ $this->registerJs(
                 );
             }
             
+            function amateurForm(aplcnt, aplctn, apl) {
+                $.post('amateur-form', {'applicant': aplcnt, 'application': aplctn, 'appeal': apl},
+                    function (res) {
+                        fileDownload('../../../', res[0], res[1], 'Amateur Form');
+                    }
+                );
+            }
+            
             function selectedApplication(btn) {
                 $('.tmln-lst-dv-td').removeClass('btn-success').addClass('btn-primary');
                 btn.removeClass('btn-primary').addClass('btn-success');
