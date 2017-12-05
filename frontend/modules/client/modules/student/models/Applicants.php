@@ -519,6 +519,33 @@ class Applicants extends \yii\db\ActiveRecord {
         
         return empty($profile) ? [] : $profile;
     }
+    
+    /**
+     * 
+     * @param string $section applicant's profile section
+     * @return string correction action - jquery
+     */
+    public static function correctionAction($section) {
+            if (in_array($section, [self::profile_has_education_background_primary, self::profile_has_education_background_secondary, self::profile_has_education_background_certificate, self::profile_has_education_background_diploma, self::profile_has_education_background_degree, self::profile_has_education_background_masters, self::profile_has_education_background_phd]))
+                return "$('#sd-nav-edctn').click()";
+                
+            if ($section == self::profile_has_bank)
+                return "$('#sd-nav-prsnl').click()";
+                
+            if ($section == self::profile_has_institution_narration)
+                return "$('#applicantsinstitution-narration').focus()";
+                
+            if ($section == self::profile_has_employment)
+                return "$('#sd-nav-eplymt').click()";
+                
+            if ($section == self::profile_has_guarantors)
+                return "$('#sd-nav-grntrs').click()";
+                
+            if ($section == self::application_has_financial_literacy)
+                return "alert('Fanya Kitu Hapa Literacy')";
+                
+            return "alert('$section mebaki')";
+    }
 
     /**
      * 

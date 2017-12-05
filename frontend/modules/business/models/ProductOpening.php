@@ -309,8 +309,8 @@ class ProductOpening extends \yii\db\ActiveRecord {
      * @return boolean true - opened by maximum numbers
      */
     public function openedByMaximumNumbers($datetime) {
-        return (($dontConsiderMaximum = !$this->maximumConsidered()) || (($count = $this->countApplications()) < $this->max_apps) && ($this->openByOpeningDates(false, $datetime) || $this->openByGraceDates($datetime))) ||
-                (!$dontConsiderMaximum && (isset($count) ? $count : $this->countApplications()) < $this->max_apps && !$this->openByGraceDates($datetime));
+        return (($dontConsiderMaximum = !$this->maximumConsidered()) && ($this->openByOpeningDates(false, $datetime) || $this->openByGraceDates($datetime))) ||
+                (!$dontConsiderMaximum && $this->countApplications() < $this->max_apps && !$this->openByGraceDates($datetime));
     }
 
     /**
@@ -326,7 +326,17 @@ class ProductOpening extends \yii\db\ActiveRecord {
             self::consider_max_counts => $is_appeal ? false : $this->openedByMaximumNumbers($datetime)
         ];
     }
-    
+
+    /**
+     * 
+     * @param integer $applicant applicant
+     * @param boolean $appeal true - is appeal
+     * @return boolean true - applicant can view application
+     */
+    public function applicantCanViewApplication($applicant, $appeal) {
+        return Applications::applicationToLoad(null, $applicant, $this->id, null)->printed($appeal) || ProductAccessPropertyItems::applicantCanAccessProduct($this->id, $applicant);
+    }
+
     /**
      * 
      * @return array descriptions for various application open reasons

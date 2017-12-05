@@ -6,6 +6,7 @@
 /* @var $upkeep boolean */
 /* @var $bursary boolean */
 /* @var $narration boolean */
+/* @var $disabled boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -25,11 +26,11 @@ use common\models\LmBaseEnums;
     <table>
         <tr>
             <?php if ($tuition): ?>
-                <td class="td-pdg-lft"><?= $form->field($model, 'annual_fees', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'annual_fees', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled]) ?></td>
             <?php endif; ?>
 
             <?php if ($upkeep): ?>
-                <td class="td-pdg-lft"><?= $form->field($model, 'annual_upkeep', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true]) ?></td>
+                <td class="td-pdg-lft"><?= $form->field($model, 'annual_upkeep', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled]) ?></td>
             <?php endif; ?>
         </tr>
     </table>
@@ -40,12 +41,12 @@ use common\models\LmBaseEnums;
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'amount_can_raise', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'amount_can_raise', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled]) ?></td>
 
-        <td class="td-pdg-lft"><?= $form->field($model, 'amount_applied', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true, 'readonly' => 'readonly']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'amount_applied', ['addon' => ['prepend' => ['content' => '<i class="fa fa-money"></i>']]])->textInput(['maxlength' => true, 'disabled' => $disabled, 'readonly' => !$disabled]) ?></td>
 
         <?php if ($bursary): ?>
-            <td class="td-pdg-lft"><?= $form->field($model, 'need_bursary', ['addon' => ['prepend' => ['content' => '<i class="fa fa-question"></i>']]])->dropDownList(LmBaseEnums::yesNo(), ['prompt' => '-- Bursary --']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'need_bursary', ['addon' => ['prepend' => ['content' => '<i class="fa fa-question"></i>']]])->dropDownList(LmBaseEnums::yesNo(), ['prompt' => '-- Bursary --', 'disabled' => $disabled]) ?></td>
         <?php endif; ?>
     </tr>
 </table>
@@ -56,7 +57,7 @@ use common\models\LmBaseEnums;
 
     <table>
         <tr>
-            <td class="td-pdg-lft"><?= $form->field($model, 'narration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-align-justify"></i>']]])->textarea(['rows' => 20, 'maxlength' => true, 'style' => 'resize: none']) ?></td>
+            <td class="td-pdg-lft"><?= $form->field($model, 'narration', ['addon' => ['prepend' => ['content' => '<i class="fa fa-align-justify"></i>']]])->textarea(['rows' => 20, 'maxlength' => true, 'disabled' => $disabled, 'style' => 'resize: none']) ?></td>
         </tr>
     </table>
 
@@ -85,7 +86,7 @@ $this->registerJs(
                     }
                 );
                 
-                $('#applicantsinstitution-annual_fees, #applicantsinstitution-annual_upkeep').change();
+                '$disabled' ? '' : $('#applicantsinstitution-annual_fees, #applicantsinstitution-annual_upkeep').change();
             /* auto compute amount applied */
         "
         , \yii\web\VIEW::POS_READY

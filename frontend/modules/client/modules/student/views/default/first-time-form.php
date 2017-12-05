@@ -34,7 +34,8 @@ if (!empty($tuition) || !empty($upkeep) || !empty($bursary) || !empty($narration
         'tuition' => !empty($tuition),
         'upkeep' => !empty($upkeep),
         'bursary' => !empty($bursary),
-        'narration' => !empty($narration)
+        'narration' => !empty($narration),
+        'disabled' => $application->printOutExists()
             ]
     );
 

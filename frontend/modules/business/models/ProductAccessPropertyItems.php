@@ -265,10 +265,14 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
 
                 $min_max = $item->min_value != '' && $item->min_value != null && $item->max_value != '' && $item->max_value != null ? ("$property->column >= '$item->min_value' && $property->column <= '$item->max_value'") : (
                         $item->min_value != '' && $item->min_value != null && ($item->max_value = '' || $item->max_value == null) ? ("$property->column >= '$item->min_value'") : (
-                        $item->max_value != '' && $item->max_value != null && ($item->min_value = '' || $item->min_value == null) ? ("$property->column <= '$item->max_value'") : ('id > 0')));
+                        $item->max_value != '' && $item->max_value != null && ($item->min_value = '' || $item->min_value == null) ? ("$property->column <= '$item->max_value'") : ('')));
+                
+                $specific_values = empty($item->specific_values) ? '' : ("$property->column in ('" . str_replace(self::comma, "', '", $item->specific_values) . "')");
 
-                $valueModel = $model_class::find()->where(static::applicantIDColumn($property->property) . " = '$applicant' && $property->column != '' && $property->column is not null && (($min_max) || $property->column in ($item->specific_values))");
-
+                $where = empty($min_max) && empty($specific_values) ? ('') : (empty($specific_values) ? (" && $min_max") : (empty($min_max) ? " && $specific_values" : " && (($min_max) || $specific_values)") );
+                
+                $valueModel = $model_class::find()->where(ApplicantProductAccessCheckers::applicantIDColumn($property->property) . " = '$applicant' && $property->column != '' && $property->column is not null$where")->one();
+                
                 if (!is_object($valueModel) && $item->required == self::required)
                     return false;
                 else

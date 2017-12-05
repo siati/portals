@@ -535,7 +535,9 @@ class DefaultController extends Controller {
      * @return string view to compile application
      */
     public function actionApplicationCompile() {
-        return $this->renderAjax('application-compile', ['compilation' => Applications::returnApplication($_POST['application'])->compileApplication(), 'applicant' => $_POST['applicant'], 'application' => $_POST['application'], 'appeal' => $_POST['appeal']]);
+        $application = Applications::applicationToLoad(null, $_POST['applicant'], $_POST['application'], null);
+
+        return $this->renderAjax('application-compile', ['compilation' => $application->compileApplication(), 'applicant' => $_POST['applicant'], 'application' => $_POST['application'], 'appeal' => $_POST['appeal'], 'print' => !empty($_POST['print']) || $application->printOutExists()]);
     }
 
     /**
@@ -546,7 +548,7 @@ class DefaultController extends Controller {
 
         $application = Applications::applicationToLoad(null, $_POST['applicant'], $_POST['application'], null);
 
-        return [PDFGenerator::category_client, basename(Docs::fileLocate(PDFGenerator::category_laf, $application->modelSave(false) ? $application->print_out : 'nope', Docs::locator))];
+        return [PDFGenerator::category_client, basename(Docs::fileLocate(PDFGenerator::category_laf, $application->modelSave(false) ? $application->print_out : 'nope', Docs::locator)), $application->printOutExists()];
     }
 
 }
