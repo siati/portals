@@ -275,11 +275,9 @@ class ProductAccessPropertyItems extends \yii\db\ActiveRecord {
                 
                 if (!is_object($valueModel) && $item->required == self::required)
                     return false;
-                else
-                    $access = true;
             }
 
-        return isset($access);
+        return true;
     }
 
     /**

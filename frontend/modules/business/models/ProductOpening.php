@@ -329,12 +329,30 @@ class ProductOpening extends \yii\db\ActiveRecord {
 
     /**
      * 
+     * @param boolean $is_appeal true - is appeal
+     * @param string $datetime datetime
+     * @return boolean true - application is open
+     */
+    public function applicationIsOpenByEitherCriterion($is_appeal, $datetime) {
+        if (is_array($open = $this->applicationIsOpen($is_appeal, $datetime)))
+            return $open[self::consider_counts_no] || $open[self::consider_min_counts] || $open[self::consider_max_counts];
+
+        return false;
+    }
+
+    /**
+     * 
      * @param integer $applicant applicant
-     * @param boolean $appeal true - is appeal
+     * @param boolean $is_appeal true - is appeal
      * @return boolean true - applicant can view application
      */
-    public function applicantCanViewApplication($applicant, $appeal) {
-        return Applications::applicationToLoad(null, $applicant, $this->id, null)->printed($appeal) || ProductAccessPropertyItems::applicantCanAccessProduct($this->id, $applicant);
+    public function applicantCanViewApplication($applicant, $is_appeal, $datetime) {
+        $application = Applications::applicationToLoad(null, $applicant, $this->id, null);
+
+        if ($is_appeal)
+            return $application->printed(true) || ($application->printed(false) && $this->applicationIsOpenByEitherCriterion(true, $datetime));
+        else
+            return $application->printed(false) || ($this->applicationIsOpenByEitherCriterion(false, $datetime) && ProductAccessPropertyItems::applicantCanAccessProduct($this->id, $applicant));
     }
 
     /**

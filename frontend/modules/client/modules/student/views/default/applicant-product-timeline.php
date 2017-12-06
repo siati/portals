@@ -4,7 +4,6 @@
 /* @var $openings \frontend\modules\business\models\ProductOpening */
 /* @var $applicant integer */
 
-use frontend\modules\business\models\ProductOpening;
 use common\models\LmBaseEnums;
 ?>
 
@@ -15,12 +14,20 @@ use common\models\LmBaseEnums;
         <table>
             <?php foreach ($openings as $opening): ?>
 
-                <?php $open = $opening->applicationIsOpen(false, $now) ?>
-
-                <?php if ($opening->applicantCanViewApplication($applicant, false) || $open[ProductOpening::consider_counts_no] || $open[ProductOpening::consider_min_counts] || $open[ProductOpening::consider_max_counts]): ?>
+                <?php if ($opening->applicantCanViewApplication($applicant, false, $now)): ?>
 
                     <tr opng="<?= $opening->id ?>" apl="0">
                         <td class="td-pdg-bth btn btn-xs btn-primary tmln-lst-dv-td" style="margin-bottom: 2.5px; text-align: justify"><?= LmBaseEnums::byNameAndValue(LmBaseEnums::applicant_type, $opening->subsequent)->LABEL ?>, <?= $opening->academic_year ?></td>
+                    </tr>
+
+                    <?php $openings_exist = true ?>
+
+                <?php endif; ?>
+
+                <?php if ($opening->applicantCanViewApplication($applicant, true, $now)): ?>
+
+                    <tr opng="<?= $opening->id ?>" apl="1">
+                        <td class="td-pdg-bth btn btn-xs btn-primary tmln-lst-dv-td" style="margin-bottom: 2.5px; text-align: justify"><?= LmBaseEnums::byNameAndValue(LmBaseEnums::applicant_type, $opening->subsequent)->LABEL ?> Review, <?= $opening->academic_year ?></td>
                     </tr>
 
                     <?php $openings_exist = true ?>

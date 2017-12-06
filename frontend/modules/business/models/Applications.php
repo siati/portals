@@ -239,10 +239,11 @@ class Applications extends \yii\db\ActiveRecord {
     }
 
     /**
+     * @param boolean $is_appeal true - id appeal
      * @return array missing application parts requiring attention
      */
-    public function compileApplication() {
-        if (!$this->printOutExists())
+    public function compileApplication($is_appeal) {
+        if (!$this->applicationOrAppealPrintOutExists($is_appeal))
             foreach (ProductOpeningSettings::forApplicationSettingAndActive($this->application, null, ProductOpeningSettings::active, ProductOpeningSettings::all) as $setting) {
                 $setting->setting == ProductSettings::primary && $setting->value == ProductSettings::yes && empty(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_primary)) ? $profile[Applicants::profile_has_education_background_primary] = [Applicants::narration => 'Primary Education Details Missing', Applicants::required => true] : '';
                 $setting->setting == ProductSettings::secondary && $setting->value == ProductSettings::yes && empty(EducationBackground::searchEducations($this->applicant, EducationBackground::study_level_secondary)) ? $profile[Applicants::profile_has_education_background_secondary] = [Applicants::narration => 'Secondary Education Details Missing', Applicants::required => true] : '';
@@ -267,7 +268,7 @@ class Applications extends \yii\db\ActiveRecord {
      * @return boolean true - form is printed
      */
     public function printed($appeal) {
-        return !$this->isNewRecord && ($appeal ? $this->appeal_printed_at <= StaticMethods::now() : $this->printed_at <= StaticMethods::now());
+        return !$this->isNewRecord && ($appeal ? $this->appeal_prints > 0 : $this->prints > 0) && ($appeal ? $this->appeal_printed_at <= StaticMethods::now() : $this->printed_at <= StaticMethods::now());
     }
 
     /**
@@ -316,6 +317,15 @@ class Applications extends \yii\db\ActiveRecord {
         }
 
         return false;
+    }
+    
+    /**
+     * 
+     * @param boolean $is_appeal true - is appeal
+     * @return boolean true - application or appeal print out exists
+     */
+    public function applicationOrAppealPrintOutExists($is_appeal) {
+        return ($is_appeal && $this->appealPrintOutExists()) || (!$is_appeal && $this->printOutExists());
     }
 
     /**
