@@ -9,8 +9,10 @@ class ApplicationPartCheckers {
 
     const part_caution = 'caution';
     const part_personal = 'personal';
+    const part_personal_subsequent = 'personal_subsequent';
     const part_residence = 'residence';
     const part_institution = 'institution';
+    const part_institution_subsequent = 'institution_subsequent';
     const part_next_of_kin = 'next_of_kin';
     const part_loan = 'loan';
     const part_siblings = 'siblings';
@@ -25,8 +27,10 @@ class ApplicationPartCheckers {
     const part_guarantors = 'guarantors';
     const part_bank = 'bank';
     const part_terms_and_conditions = 'terms_and_conditions';
+    const part_terms_and_conditions_subsequent = 'terms_and_conditions_subsequent';
     const part_check_list = 'check_list';
     const part_submission = 'submission';
+    const part_submission_subsequent = 'submission_subsequent';
     const part_institution_dean_registrar = 'institution_dean_registrar';
     const part_employment_hr_cert = 'employment_hr_cert';
     const part_parents_marital = 'parents_marital';
@@ -97,6 +101,19 @@ class ApplicationPartCheckers {
             self::part_terms_and_conditions => [self::title => 'Terms and Conditions', self::intro => static::termsAndConditionsStatement(), self::order => ++$order, self::new_page => false, self::items => static::termsAndConditionsItems(), self::order_elements => self::order_elements_yes],
             self::part_check_list => [self::title => 'The Checklist', self::intro => null, self::order => ++$order, self::new_page => false, self::items => static::checkListItems(), self::order_elements => self::order_elements_yes],
             self::part_submission => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no]
+        ];
+    }
+
+    /**
+     * @return array[] all the checkers for subsequent form grouped in parts
+     */
+    public static function checkerPartsSubsequent() {
+        return [
+            self::part_caution => [self::title => 'CAUTION', self::intro => static::cautionStatement(), self::order => $order = self::min_order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_personal_subsequent => [self::title => 'Applicant\'s Personal Details', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_institution_subsequent => [self::title => 'Dean of Students\' Certification', self::intro => 'I certify this is a bonafide student of this University pursuing a course at the following level:', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_terms_and_conditions_subsequent => [self::title => 'Agreement', self::intro => static::termsAndConditionsSubsequentStatement(), self::order => ++$order, self::new_page => false, self::items => static::termsAndConditionsItems(), self::order_elements => self::order_elements_yes],
+            self::part_submission_subsequent => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no]
         ];
     }
 
@@ -262,6 +279,20 @@ class ApplicationPartCheckers {
                 'PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY BEFORE SIGNING THE LOAN APPLICATION FORM.'
                 . ' YOUR ACCESS TO THIS LOAN IS CONDITIONED TO YOUR ACCEPTANCE OF THESE TERMS AND CONDITIONS. THESE TERMS ARE APPLICABLE TO ALL LOAN APPLICANTS.'
                 . ' BY SIGNING THIS FORM YOU ARE AGREEING TO BE BOUND BY THESE TERMS AND CONDITIONS; DO NOT SIGN THE FORM IF YOU DISAGREE WITH ANY OF THE TERMS.'
+        ;
+    }
+
+    /**
+     * 
+     * @return string terms and conditions opening statement for subsequent form
+     */
+    public function termsAndConditionsSubsequentStatement() {
+        return
+                'I understand that this is a loan which MUST be repaid and do hereby bind myself to repay to the order of the Board all sums disbursed to me (hereinafter'
+                . ' called;the loan) together with the interest thereon and any other charges that may become due and payable under terms and conditions set hereinafter. I'
+                . ' understand that acceptance of any disbursement issued to me at anytime will signify obligation to repay the loan and I shall abide by all the obligations as'
+                . ' bestowed upon me by the Higher Education Loans board Act CAP 213A. The Higher Education Loans Board, hereinafter called the Board shall refer to'
+                . ' the current Board and it\'s successors and assigns.'
         ;
     }
 

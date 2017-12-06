@@ -34,6 +34,10 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
         <?= $this->render('../application_form/personal-det', ['user' => $user, 'applicant' => $applicant, 'part' => $part]) ?>
 
+    <?php elseif ($part->part == ApplicationPartCheckers::part_personal_subsequent): ?>
+
+        <?= $this->render('../application_form/personal-det-subsequent', ['user' => $user, 'applicant' => $applicant, 'institution' => empty($institution) ? $institution = ApplicantsInstitution::forApplicant($application->applicant) : $institution, 'part' => $part]) ?>
+
     <?php elseif ($part->part == ApplicationPartCheckers::part_residence): ?>
 
         <?= $this->render('../application_form/residence-det', ['residence' => ApplicantsResidence::forApplicant($application->applicant), 'part' => $part]) ?>
@@ -41,6 +45,10 @@ use frontend\modules\business\models\ApplicationPartCheckers;
     <?php elseif ($part->part == ApplicationPartCheckers::part_institution): ?>
 
         <?= $this->render('../application_form/institution-det', ['institution' => empty($institution) ? $institution = ApplicantsInstitution::forApplicant($application->applicant) : $institution, 'part' => $part]) ?>
+
+    <?php elseif ($part->part == ApplicationPartCheckers::part_institution_subsequent): ?>
+
+        <?= $this->render('../application_form/institution-det-subsequent', ['part' => $part]) ?>
 
     <?php elseif ($part->part == ApplicationPartCheckers::part_loan): ?>
 
@@ -90,11 +98,15 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
         <?= $this->render('../application_form/terms-conditions', ['part' => $part]) ?>
 
+    <?php elseif ($part->part == ApplicationPartCheckers::part_terms_and_conditions_subsequent): ?>
+
+        <?= $this->render('../application_form/terms-conditions-subsequent', ['part' => $part]) ?>
+
     <?php elseif ($part->part == ApplicationPartCheckers::part_check_list): ?>
 
         <?= $this->render('../application_form/check-list', ['part' => $part]) ?>
 
-    <?php elseif ($part->part == ApplicationPartCheckers::part_submission): ?>
+    <?php elseif (in_array($part->part, [ApplicationPartCheckers::part_submission, ApplicationPartCheckers::part_submission_subsequent])): ?>
 
         <?= $this->render('../application_form/submission', ['part' => $part]) ?>
 

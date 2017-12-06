@@ -40,6 +40,10 @@
     margin-top: 0
 }
 
+.align-left {
+    text-align: left;
+}
+
 .part-table-divider {
     height: 5px
 }

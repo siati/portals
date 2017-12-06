@@ -354,6 +354,15 @@ class ProductOpening extends \yii\db\ActiveRecord {
         else
             return $application->printed(false) || ($this->applicationIsOpenByEitherCriterion(false, $datetime) && ProductAccessPropertyItems::applicantCanAccessProduct($this->id, $applicant));
     }
+    
+    /**
+     * 
+     * @param boolean $is_appeal true - is appeal
+     * @return array application parts
+     */
+    public function theParts($is_appeal) {
+        return $this->subsequent == LmBaseEnums::applicantType(LmBaseEnums::applicant_type_subsequent)->VALUE ? ApplicationPartCheckers::checkerPartsSubsequent() : ApplicationPartCheckers::checkerParts();
+    }
 
     /**
      * 

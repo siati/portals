@@ -13,7 +13,6 @@ use frontend\modules\business\models\ProductAccessPropertyItems;
 use frontend\modules\client\modules\student\models\ApplicantProductAccessCheckers;
 use frontend\modules\business\models\ApplicationParts;
 use frontend\modules\business\models\ApplicationPartElements;
-use frontend\modules\business\models\ApplicationPartCheckers;
 
 /**
  * Default controller for the `business` module
@@ -206,7 +205,7 @@ class DefaultController extends Controller {
      * @return string main interface for application part settings
      */
     public function actionApplicationParts() {
-        return $this->renderAjax('application-parts', ['parts' => ApplicationPartCheckers::checkerParts(), 'application' => $_POST['application']]);
+        return $this->renderAjax('application-parts', ['parts' => ProductOpening::returnOpening($_POST['application'])->theParts(!empty($_POST['appeal'])), 'application' => $_POST['application']]); 
     }
     
     /**
