@@ -3,7 +3,6 @@
 /* @var $this yii\web\View */
 /* @var $application \frontend\modules\business\models\Applications */
 
-
 use common\models\User;
 use frontend\modules\client\modules\student\models\Applicants;
 use frontend\modules\client\modules\student\models\ApplicantsResidence;
@@ -18,6 +17,7 @@ use frontend\modules\client\modules\student\models\ApplicantsSpouse;
 use frontend\modules\client\modules\student\models\ApplicantSponsors;
 use frontend\modules\business\models\ApplicationParts;
 use frontend\modules\business\models\ApplicationPartCheckers;
+use frontend\modules\business\models\ProductOpeningSettings;
 ?>
 
 <?php $user = User::returnUser($application->applicant) ?>
@@ -88,7 +88,11 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
     <?php elseif ($part->part == ApplicationPartCheckers::part_guarantors): ?>
 
-        <?= $this->render('../application_form/guarantors-det', ['guarantors' => ApplicantsGuarantors::forApplicant($application->applicant), 'part' => $part]) ?>
+        <?php if (ProductOpeningSettings::noOfGuarantors($application->application) > 0): ?>
+
+            <?= $this->render('../application_form/guarantors-det', ['guarantors' => ApplicantsGuarantors::forApplicant($application->applicant), 'part' => $part]) ?>
+
+        <?php endif; ?>
 
     <?php elseif ($part->part == ApplicationPartCheckers::part_bank): ?>
 

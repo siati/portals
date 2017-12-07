@@ -17,11 +17,13 @@ use common\models\StaticMethods;
  * @property string $course_name
  * @property integer $since
  * @property integer $till
+ * @property integer $annual_fees
  * @property string $exam_no
  * @property integer $score
  * @property integer $out_of
  * @property string $grade
  * @property integer $sponsored
+ * @property integer $sponsorship_reason
  * @property string $created_by
  * @property string $created_at
  * @property string $modified_by
@@ -50,6 +52,10 @@ class EducationBackground extends \yii\db\ActiveRecord {
     const study_level_phd = 6;
     const sponsored_yes = 1;
     const sponsored_no = 0;
+    const sponsor_reason_none = 0;
+    const sponsor_reason_poor = 1;
+    const sponsor_reason_orphan = 2;
+    const sponsor_reason_scholarship = 3;
     const primary_cert = 'Kenya Certificate of Primary Education';
     const secondary_cert = 'Kenya Certificate of Secondary Education';
 
@@ -66,7 +72,7 @@ class EducationBackground extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['applicant', 'institution_name', 'institution_type', 'study_level', 'course_name', 'since', 'till', 'exam_no', 'created_by'], 'required'],
-            [['applicant', 'institution_type', 'school_type', 'study_level', 'since', 'till', 'score', 'out_of', 'sponsored'], 'integer'],
+            [['applicant', 'institution_type', 'school_type', 'study_level', 'since', 'till', 'annual_fees', 'score', 'out_of', 'sponsored', 'sponsorship_reason'], 'integer'],
             [['institution_name'], 'string', 'min' => 10, 'max' => 35],
             [['institution_name', 'course_name'], 'notNumerical'],
             [['course_name'], 'string', 'min' => 15, 'max' => 60],
@@ -99,10 +105,11 @@ class EducationBackground extends \yii\db\ActiveRecord {
                     }
                 "
             ],
+            ['sponsorship_reason', 'hasSponsorship'],
             [['grade'], 'string', 'max' => 2],
             [['exam_no'], is_numeric($this->exam_no) ? 'positiveValue' : 'sanitizeString'],
-            [['score', 'out_of'], 'positiveValue'],
-            [['institution_name', 'course_name', 'score', 'out_of'], 'sanitizeString'],
+            [['annual_fees', 'score', 'out_of'], 'positiveValue'],
+            [['institution_name', 'annual_fees', 'course_name', 'score', 'out_of'], 'sanitizeString'],
             [['created_at', 'modified_at'], 'safe'],
         ];
     }
@@ -172,6 +179,29 @@ class EducationBackground extends \yii\db\ActiveRecord {
     public function gradeRequired() {
         return !in_array($this->study_level, [self::study_level_masters, self::study_level_phd]);
     }
+    
+    /**
+     * 
+     * @return boolean true - is sponsored
+     */
+    public function isSponsored() {
+        return $this->sponsored == self::sponsored_yes;
+    }
+    
+    /**
+     * 
+     * @return boolean true - is sponsored by reason
+     */
+    public function isSponsoredByReason() {
+        return $this->sponsorship_reason != self::sponsor_reason_none;
+    }
+    
+    /**
+     * sponsorship must have valid reason
+     */
+    public function hasSponsorship() {
+        $this->isSponsored() && !$this->isSponsoredByReason() ? $this->addError('sponsorship_reason', 'Not a valid reason for sponsorship') : '';
+    }
 
     /**
      * @inheritdoc
@@ -187,11 +217,13 @@ class EducationBackground extends \yii\db\ActiveRecord {
             'course_name' => Yii::t('app', 'Course Name'),
             'since' => Yii::t('app', 'Admission Year'),
             'till' => Yii::t('app', 'Examination Year'),
+            'annual_fees' => Yii::t('app', 'Annual Fees'),
             'exam_no' => Yii::t('app', 'Examination No.'),
             'score' => Yii::t('app', 'Marks/Points'),
             'out_of' => Yii::t('app', 'Out Of'),
             'grade' => Yii::t('app', 'Grade/Merit'),
             'sponsored' => Yii::t('app', 'Sponsored'),
+            'sponsorship_reason' => Yii::t('app', 'Sponsorship Reason'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),
             'modified_by' => Yii::t('app', 'Modified By'),
@@ -254,6 +286,8 @@ class EducationBackground extends \yii\db\ActiveRecord {
         $model->till = $educationYears[1];
 
         $model->sponsored = self::sponsored_no;
+        
+        $model->sponsorship_reason = self::sponsor_reason_none;
 
         $model->created_by = Yii::$app->user->identity->username;
 
@@ -484,6 +518,14 @@ class EducationBackground extends \yii\db\ActiveRecord {
      */
     public static function sponsoreds() {
         return [self::sponsored_no => 'No', self::sponsored_yes => 'Yes'];
+    }
+
+    /**
+     * 
+     * @return array sponsorship reasons
+     */
+    public static function sponsorshipReasons() {
+        return [self::sponsor_reason_none => 'Not Applicable', self::sponsor_reason_poor => 'Poverty', self::sponsor_reason_orphan => 'Orphan', self::sponsor_reason_scholarship => 'Academic Scholarship'];
     }
 
     /**

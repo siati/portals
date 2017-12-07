@@ -166,6 +166,14 @@ $this->registerJs(
                 );
             /* dynamically recalculate the grade */
 
+            /* keep sponsorship reason in check */
+                $('#educationbackground-sponsored').change(
+                    function () {
+                        $('#educationbackground-sponsorship_reason').blur();
+                    }
+                );
+            /* keep sponsorship reason in check */
+
             /* the submit button is actually hidden */
                 $('#edcn-btn').click(
                     function () {

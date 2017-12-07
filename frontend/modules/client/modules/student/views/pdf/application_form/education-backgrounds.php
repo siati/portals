@@ -20,9 +20,10 @@ use frontend\modules\business\models\ApplicationParts;
                 <td class="part-table-label"><small>Institution Name</small></td>
                 <td class="part-table-label"><small>Study Level</small></td>
                 <td class="part-table-label"><small>Inst. Type</small></td>
-                <td class="part-table-label"><small>Adm. Year</small></td>
-                <td class="part-table-label"><small>Exam Year</small></td>
-                <td class="part-table-label"><small>Score, Grade</small></td>
+                <td class="part-table-label"><small>Adm. Yr</small></td>
+                <td class="part-table-label"><small>Exam Yr</small></td>
+                <td class="part-table-label"><small>Grade</small></td>
+                <td class="part-table-label"><small>Sponsored</small></td>
             </tr>
 
             <?php foreach ($education_backgrounds as $education_background): ?>
@@ -33,6 +34,7 @@ use frontend\modules\business\models\ApplicationParts;
                     <td class="part-table-data"><small><?= $education_background->since ?></small></td>
                     <td class="part-table-data"><small><?= $education_background->till ?></small></td>
                     <td class="part-table-data"><small><?= "$education_background->score ($education_background->grade)" ?></small></td>
+                    <td class="part-table-data"><small><?= EducationBackground::sponsorshipReasons()[$education_background->sponsorship_reason] ?></small></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
