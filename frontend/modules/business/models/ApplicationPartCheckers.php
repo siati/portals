@@ -286,7 +286,7 @@ class ApplicationPartCheckers {
      * 
      * @return string terms and conditions opening statement for subsequent form
      */
-    public function termsAndConditionsSubsequentStatement() {
+    public static function termsAndConditionsSubsequentStatement() {
         return
                 'I understand that this is a loan which MUST be repaid and do hereby bind myself to repay to the order of the Board all sums disbursed to me (hereinafter'
                 . ' called;the loan) together with the interest thereon and any other charges that may become due and payable under terms and conditions set hereinafter. I'

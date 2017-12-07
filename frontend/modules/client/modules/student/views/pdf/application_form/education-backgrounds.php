@@ -14,29 +14,44 @@ use frontend\modules\business\models\ApplicationParts;
         <pre class="part-element-narration"><?= $part->intro ?></pre>
     <?php endif; ?>
 
-    <table class="part-table">
-        <tbody>
-            <tr>
-                <td class="part-table-label"><small>Institution Name</small></td>
-                <td class="part-table-label"><small>Study Level</small></td>
-                <td class="part-table-label"><small>Inst. Type</small></td>
-                <td class="part-table-label"><small>Adm. Yr</small></td>
-                <td class="part-table-label"><small>Exam Yr</small></td>
-                <td class="part-table-label"><small>Grade</small></td>
-                <td class="part-table-label"><small>Sponsored</small></td>
-            </tr>
+    <?php foreach ($education_backgrounds as $education_background): ?>
 
-            <?php foreach ($education_backgrounds as $education_background): ?>
-                <tr>
-                    <td class="part-table-data"><small><?= $education_background->institution_name ?></small></td>
-                    <td class="part-table-data"><small><?= EducationBackground::studyLevels()[$education_background->study_level] ?></small></td>
-                    <td class="part-table-data"><small><?= EducationBackground::institutionTypes()[$education_background->institution_type] ?></small></td>
-                    <td class="part-table-data"><small><?= $education_background->since ?></small></td>
-                    <td class="part-table-data"><small><?= $education_background->till ?></small></td>
-                    <td class="part-table-data"><small><?= "$education_background->score ($education_background->grade)" ?></small></td>
-                    <td class="part-table-data"><small><?= EducationBackground::sponsorshipReasons()[$education_background->sponsorship_reason] ?></small></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+        <div class="part-container">
+
+            <legend class="part-legend-2"><?= EducationBackground::studyLevels()[$education_background->study_level] ?></legend>
+
+            <table class="part-table">
+                <tbody>
+                    <tr>
+                        <td class="part-table-label" colspan="2">Institution Name</td>
+                        <td class="part-table-label">Institution Type</td>
+                        <td class="part-table-label">Annual Fees</td>
+                    </tr>
+
+                    <tr>
+                        <td class="part-table-data" colspan="2"><?= $education_background->institution_name ?></td>
+                        <td class="part-table-data"><?= EducationBackground::institutionTypes()[$education_background->institution_type] ?></td>
+                        <td class="part-table-data">KShs. <?= number_format($education_background->annual_fees, 0) ?></td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="part-table-label">Sponsored</td>
+                        <td class="part-table-label">Admission Year</td>
+                        <td class="part-table-label">Exam Year</td>
+                        <td class="part-table-label">Grade</td>
+                    </tr>
+
+                    <tr>
+                        <td class="part-table-data"><?= EducationBackground::sponsorshipReasons()[$education_background->sponsorship_reason] ?></td>
+                        <td class="part-table-data"><?= $education_background->since ?></td>
+                        <td class="part-table-data"><?= $education_background->till ?></td>
+                        <td class="part-table-data"><?= "$education_background->score ($education_background->grade)" ?></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+    <?php endforeach; ?>
 </div>
