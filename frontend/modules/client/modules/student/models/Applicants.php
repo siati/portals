@@ -75,6 +75,9 @@ class Applicants extends \yii\db\ActiveRecord {
     const profile_has_education_background_degree = 'education_background_degree';
     const profile_has_education_background_masters = 'education_background_masters';
     const profile_has_education_background_phd = 'education_background_phd';
+    const profile_has_sponsor_primary = 'sponsor_primary';
+    const profile_has_sponsor_secondary = 'sponsor_secondary';
+    const profile_has_sponsor_tertiary = 'sponsor_tertiary';
     const profile_has_institution = 'institution';
     const profile_has_institution_narration = 'institution_narration';
     const profile_has_father = 'father';
@@ -496,7 +499,13 @@ class Applicants extends \yii\db\ActiveRecord {
         
         is_object(ApplicantsResidence::forApplicant($this->id)) ? '' : $profile[self::profile_has_residence] = [self::narration => 'Residence Details Missing', self::required => true];
         
-        empty(EducationBackground::searchEducations($this->id, null)) ? $profile[self::profile_has_education_background] = [self::narration => 'Education Background Missing', self::required => true] : '';
+        count($education_backgrounds = EducationBackground::searchEducations($this->id, null)) < 1 ? $profile[self::profile_has_education_background] = [self::narration => 'Education Background Missing', self::required => true] : '';
+        
+        foreach ($education_backgrounds as $education_background) {
+            $education_background->study_level == EducationBackground::study_level_primary && !is_object(ApplicantSponsors::forApplicantAndStudyLevel($this->id, ApplicantSponsors::study_level_primary . ', ' . ApplicantSponsors::study_level_primary_secondary . ', ' . ApplicantSponsors::study_level_primary_secondary_tertiary, ApplicantSponsors::one)) ? $profile[self::profile_has_sponsor_primary] = [self::narration => 'Sponsor for primary education missing', self::required => true] : '';
+            $education_background->study_level == EducationBackground::study_level_secondary && !is_object(ApplicantSponsors::forApplicantAndStudyLevel($this->id, ApplicantSponsors::study_level_secondary . ', ' . ApplicantSponsors::study_level_primary_secondary . ', ' . ApplicantSponsors::study_level_primary_secondary_tertiary, ApplicantSponsors::one)) ? $profile[self::profile_has_sponsor_secondary] = [self::narration => 'Sponsor for secondary education missing', self::required => true] : '';
+            !in_array($education_background->study_level, [EducationBackground::study_level_primary, EducationBackground::study_level_secondary]) && !is_object(ApplicantSponsors::forApplicantAndStudyLevel($this->id, ApplicantSponsors::study_level_tertiary . ', ' . ApplicantSponsors::study_level_primary_secondary_tertiary, ApplicantSponsors::one)) ? $profile[self::profile_has_sponsor_tertiary] = [self::narration => 'Sponsor for tertiary education missing', self::required => true] : '';
+        }
         
         is_object(ApplicantsInstitution::forApplicant($this->id)) ? '' : $profile[self::profile_has_institution] = [self::narration => 'Institution Details Missing', self::required => true];
         
@@ -540,6 +549,9 @@ class Applicants extends \yii\db\ActiveRecord {
                 
             if ($section == self::profile_has_guarantors)
                 return "$('#sd-nav-grntrs').click()";
+                
+            if (in_array($section, [self::profile_has_sponsor_primary, self::profile_has_sponsor_secondary, self::profile_has_sponsor_tertiary]))
+                return "$('#sd-nav-spnsrs').click()";
                 
             if ($section == self::application_has_financial_literacy)
                 return "alert('Fanya Kitu Hapa Literacy')";

@@ -42,6 +42,17 @@ class ApplicantSponsorsQuery extends \yii\db\ActiveQuery {
     
     /**
      * 
+     * @param integer $applicant applicant id
+     * @param integer $study_level study level(s, comma separated)
+     * @param string $oneOrAll one or all
+     * @return ApplicantSponsors ActiveRecord(s)
+     */
+    public function forApplicantAndStudyLevel($applicant, $study_level, $oneOrAll) {
+        return $this->where("applicant = '$applicant' && study_level in ($study_level)")->orderBy('name asc')->$oneOrAll();
+    }
+    
+    /**
+     * 
      * @param integer $id sponsor id
      * @param string $name sponsor name
      * @return ApplicantSponsors ActiveRecord

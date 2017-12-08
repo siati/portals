@@ -19,18 +19,18 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="gnrl-frm stdt-exps">
 
     <div class="gnrl-frm-cont">
-        
+
         <?php ActiveForm::begin(['id' => 'form-sblg-nvgt']); ?>
-        
+
         <input type="hidden" name="applicant" value="<?= $applicant ?>">
-        
+
         <input type="hidden" name="ApplicantsSiblingEducationExpenses[id]" id="id">
-        
+
         <?php ActiveForm::end(); ?>
-        
+
 
         <?php $form = ActiveForm::begin(['id' => 'form-stdt-exps', 'enableAjaxValidation' => true, 'validateOnSubmit' => false]); ?>
-        
+
         <input type="hidden" name="applicant" value="<?= $applicant ?>">
 
         <div class="gnrl-frm-hdr"><?= $this->title ?></div>
@@ -53,6 +53,26 @@ $this->params['breadcrumbs'][] = $this->title;
 
     </div>
 </div>
+
+<?php
+$swals = [false, false, false];
+
+if ($save_attempt || $save_attempt2) {
+    if ($save_attempt && $save_attempt2)
+        if ($saved && $saved2)
+            $swals = ['Success', 'Family Expenses<br/><br/>and<br/><br/>Sibling Education Expenses<br/><br/>Saved', 'success'];
+        elseif ($saved)
+            $swals = ['Partial Save', 'Family Expenses Saved<br/><br/><br/><b>Sibling Education Expenses Not Saved</b>', 'success'];
+        elseif ($saved2)
+            $swals = ['Partial Save', 'Sibling Education Expenses Saved<br/><br/><br/><b>Family Expenses Not Saved</b>', 'success'];
+        else
+            $swals = ['Not Saved', 'Family Expenses<br/><br/>and<br/><br/>Sibling Education Expenses<br/><br/>Not Saved', 'error'];
+    elseif ($save_attempt)
+        $swals = $saved ? ['Success', 'Family Expenses Saved', 'success'] : ['Not Saved', 'Family Expenses Not Saved', 'error'];
+    else
+        $swals = $saved2 ? ['Success', 'Sibling Education Expenses Saved', 'success'] : ['Not Saved', 'Sibling Education Expenses Not Saved', 'error'];
+}
+?>
 
 <?php
 $this->registerJs(
@@ -107,7 +127,7 @@ $this->registerJs(
             /* well, just some css here */
             
             /* is saved */
-               '$saved' || '$save_attempt' || '$saved2' || '$save_attempt2' ? dataSaved('$saved' && '$saved2' ? ('Success') : ('$saved' || '$saved2' ? 'Partial Error'  : 'Failed'), '$saved' && '$saved2' ? ('Family Expenses<br/><br/>and<br/><br/>Sibling Education Expenses<br/><br/>Saved') : ('$saved' ? ('Sibling Education Expenses Not Saved') : ('$saved2' ? 'Family Expenses Not Saved' : 'Family Expenses<br/><br/>and<br/><br/>Sibling Education Expenses<br/><br/>Not Saved')), '$saved' && '$saved2' ? 'success' : 'error') : '';
+               '$swals[0]' ? dataSaved('$swals[0]', '$swals[1]', '$swals[2]') : '';
             /* is saved */
         "
         , \yii\web\VIEW::POS_READY

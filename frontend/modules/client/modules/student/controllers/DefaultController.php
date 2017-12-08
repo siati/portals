@@ -322,10 +322,10 @@ class DefaultController extends Controller {
     
     /**
      * 
-     * @return boolean true - no new sibling submitted
+     * @return boolean true - new sibling submitted
      */
     public static function newSiblingSubmitted() {
-        return !empty($_POST['ApplicantsSiblingEducationExpenses']['mname']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['lname']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['birth_cert_no']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['id_no']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['institution_name']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['annual_fees']);
+        return !empty($_POST['ApplicantsSiblingEducationExpenses']['fname']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['mname']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['lname']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['birth_cert_no']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['id_no']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['institution_name']) || !empty($_POST['ApplicantsSiblingEducationExpenses']['annual_fees']);
     }
 
     /**

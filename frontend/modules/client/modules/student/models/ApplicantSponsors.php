@@ -140,10 +140,21 @@ class ApplicantSponsors extends \yii\db\ActiveRecord {
     /**
      * 
      * @param integer $applicant applicant id
-     * @return ApplicantSponsors model
+     * @return ApplicantSponsors models
      */
     public static function sponsorsForApplicant($applicant) {
         return static::find()->sponsorsForApplicant($applicant);
+    }
+    
+    /**
+     * 
+     * @param integer $applicant applicant id
+     * @param string|integer $study_level study level(s, comma separated)
+     * @param string $oneOrAll one or all
+     * @return ApplicantSponsors model(s)
+     */
+    public static function forApplicantAndStudyLevel($applicant, $study_level, $oneOrAll) {
+        return static::find()->forApplicantAndStudyLevel($applicant, $study_level, $oneOrAll);
     }
 
     /**
