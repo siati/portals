@@ -12,6 +12,8 @@ use frontend\modules\business\models\ApplicationParts;
 
 <?php $product_setting = ProductOpeningSettings::hasSocietyNarration($part->application) ?>
 
+<?php if ($part->new_page != ApplicationParts::new_page_yes): ?> <br/> <?php endif; ?>
+
 <div class="part-container<?= $part->new_page == ApplicationParts::new_page_yes ? ' page-break' : '' ?>">
     <legend class="part-legend"><?= $part->title ?></legend>
 
