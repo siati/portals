@@ -123,7 +123,7 @@ use frontend\modules\business\models\ProductOpeningSettings;
 
         <?= $this->render('../application_form/check-list', ['part' => $part]) ?>
 
-    <?php elseif (in_array($part->part, [ApplicationPartCheckers::part_submission, ApplicationPartCheckers::part_submission_subsequent])): ?>
+    <?php elseif (in_array($part->part, [ApplicationPartCheckers::part_submission, ApplicationPartCheckers::part_submission_subsequent, ApplicationPartCheckers::part_submission_appeal])): ?>
 
         <?= $this->render('../application_form/submission', ['part' => $part]) ?>
 

@@ -33,6 +33,7 @@ class ApplicationPartCheckers {
     const part_check_list = 'check_list';
     const part_submission = 'submission';
     const part_submission_subsequent = 'submission_subsequent';
+    const part_submission_appeal = 'submission_appeal';
     const part_institution_dean_registrar = 'institution_dean_registrar';
     const part_employment_hr_cert = 'employment_hr_cert';
     const part_parents_marital = 'parents_marital';
@@ -134,6 +135,7 @@ class ApplicationPartCheckers {
             self::part_personal_appeal => [self::title => 'Applicant\'s Personal Details', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_appeal => [self::title => 'Loan Appeal Details', self::intro => false, self::order => ++$order, self::new_page => false, self::items => static::appealItems(), self::order_elements => self::order_elements_yes],
             self::part_declaration_appeal => [self::title => 'Declarations', self::intro => false, self::order => ++$order, self::new_page => false, self::items => static::appealDeclarationsItems(), self::order_elements => self::order_elements_yes],
+            self::part_submission_appeal => [self::title => 'Submission of the appeal form', self::intro => static::formSubmissionStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no]
         ];
     }
 
