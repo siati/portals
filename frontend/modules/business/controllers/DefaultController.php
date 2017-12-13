@@ -205,16 +205,15 @@ class DefaultController extends Controller {
      * @return string main interface for application part settings
      */
     public function actionApplicationParts() {
-        return $this->renderAjax('application-parts', ['parts' => ProductOpening::returnOpening($_POST['application'])->theParts(!empty($_POST['appeal'])), 'application' => $_POST['application']]); 
+        return $this->renderAjax('application-parts', ['parts' => ProductOpening::returnOpening($_POST['application'])->theParts(!empty($_POST['appeal'])), 'application' => $_POST['application'], 'appeal' => empty($_POST['appeal']) ? ApplicationParts::appeal_no : ApplicationParts::appeal_yes]); 
     }
     
     /**
-     * 
      * @return array save application part
      */
     public function actionSaveApplicationPart() {
         foreach ($_POST['ApplicationParts'] as $key => $post) {
-            $models[$key] = ApplicationParts::partToLoad(empty($post['id']) ? '' : $post['id'], empty($post['application']) ? '' : $post['application'], empty($post['part']) ? '' : $post['part']);
+            $models[$key] = ApplicationParts::partToLoad(empty($post['id']) ? '' : $post['id'], empty($post['application']) ? '' : $post['application'], empty($post['appeal']) ? ApplicationParts::appeal_no : $post['appeal'], empty($post['part']) ? '' : $post['part']);
             $models[$key]->attributes = $post;
         }
 

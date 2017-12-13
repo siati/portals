@@ -135,11 +135,11 @@ $this->registerJs(
                 );
             }
             
-            function applicationParts() {
+            function applicationParts(apl) {
                 $.post('opening-i-d', {'product': $('#products-id').val(), 'academic_year': $('#productopening-academic_year').val(), 'subsequent': $('#productopening-subsequent').val()},
                     function(id) {
                         id * 1 > 0 ?
-                            yiiModal('Application Parts and Elements', 'application-parts', {'application': id}, $(window).width() * 0.95, $('.gnrl-frm').height()) :
+                            yiiModal('Application Parts and Elements', 'application-parts', {'application': id, 'appeal': apl}, $(window).width() * 0.95, $('.gnrl-frm').height()) :
                             customSwal('Declined', 'The Application Dates below must first be saved', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
                     }
                 );
@@ -243,13 +243,21 @@ $this->registerJs(
                 );
             /* advanced access settings */
             
-            /* the application parts */
+            /* the main application parts */
                 $('#prntg-stngs').click(
                     function () {
-                        applicationParts();
+                        applicationParts(0);
                     }
                 );
-            /* the application parts */
+            /* the main application parts */
+            
+            /* the appeal application parts */
+                $('#prntg-stngs-apl').click(
+                    function () {
+                        applicationParts(1);
+                    }
+                );
+            /* the appeal application parts */
         "
         , \yii\web\VIEW::POS_READY
 )

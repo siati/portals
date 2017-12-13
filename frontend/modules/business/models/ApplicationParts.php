@@ -10,6 +10,7 @@ use common\models\StaticMethods;
  *
  * @property integer $id
  * @property integer $application
+ * @property integer $appeal
  * @property string $part
  * @property integer $order
  * @property string $title
@@ -23,6 +24,8 @@ use common\models\StaticMethods;
  */
 class ApplicationParts extends \yii\db\ActiveRecord {
 
+    const appeal_yes = 1;
+    const appeal_no = 0;
     const new_page_no = 0;
     const new_page_yes = 1;
     const order_elements_no = 0;
@@ -40,8 +43,8 @@ class ApplicationParts extends \yii\db\ActiveRecord {
      */
     public function rules() {
         return [
-            [['application', 'part', 'title', 'created_by'], 'required'],
-            [['application', 'order', 'new_page', 'order_elements'], 'integer'],
+            [['application', 'appeal', 'part', 'title', 'created_by'], 'required'],
+            [['application', 'appeal', 'order', 'new_page', 'order_elements'], 'integer'],
             [['application'], 'positiveValue'],
             [['created_at', 'modified_at'], 'safe'],
             [['part'], 'string', 'max' => 60],
@@ -59,6 +62,7 @@ class ApplicationParts extends \yii\db\ActiveRecord {
         return [
             'id' => Yii::t('app', 'ID'),
             'application' => Yii::t('app', 'Application'),
+            'appeal' => Yii::t('app', 'Is Appeal'),
             'part' => Yii::t('app', 'Section'),
             'order' => Yii::t('app', 'Order'),
             'title' => Yii::t('app', 'Title'),
@@ -92,45 +96,50 @@ class ApplicationParts extends \yii\db\ActiveRecord {
     /**
      * 
      * @param integer $application application id
+     * @param integer $appeal is appeal
      * @param string $part application part
      * @param integer $order part order
      * @param string $oneOrAll one or all
      * @return ApplicationParts model(s)
      */
-    public static function searchParts($application, $part, $order, $oneOrAll) {
-        return static::find()->searchParts($application, $part, $order, $oneOrAll);
+    public static function searchParts($application, $appeal, $part, $order, $oneOrAll) {
+        return static::find()->searchParts($application, empty($appeal) ? self::appeal_no : self::appeal_yes, $part, $order, $oneOrAll);
     }
 
     /**
      * 
      * @param integer $application application id
+     * @param integer $appeal appeal
      * @param integer $order part order
      * @return ApplicationParts models
      */
-    public static function forApplication($application, $order) {
-        return static::searchParts($application, null, $order, self::all);
+    public static function forApplication($application, $appeal, $order) {
+        return static::searchParts($application, $appeal, null, $order, self::all);
     }
 
     /**
      * 
      * @param integer $application application id
+     * @param integer $appeal is appeal
      * @param string $part application part
      * @return ApplicationParts model
      */
-    public static function byApplicationAndPart($application, $part) {
-        return static::searchParts($application, $part, null, self::one);
+    public static function byApplicationAndPart($application, $appeal, $part) {
+        return static::searchParts($application, $appeal, $part, null, self::one);
     }
 
     /**
      * 
      * @param integer $application application id
+     * @param integer $appeal appeal
      * @param string $part application part
      * @return ApplicationParts model
      */
-    public static function newPart($application, $part) {
+    public static function newPart($application, $appeal, $part) {
         $model = new ApplicationParts;
 
         $model->application = $application;
+        $model->appeal = $appeal;
         $model->part = $part;
         $model->new_page = self::new_page_no;
         $model->order_elements = self::order_elements_no;
@@ -144,11 +153,12 @@ class ApplicationParts extends \yii\db\ActiveRecord {
      * 
      * @param integer $id part id
      * @param integer $application application id
+     * @param integer $appeal appeal
      * @param string $part application part
      * @return ApplicationParts model
      */
-    public static function partToLoad($id, $application, $part) {
-        return is_object($model = static::returnPart($id)) || (!empty($application) && is_object($model = static::byApplicationAndPart($application, $part))) ? $model : static::newPart($application, $part);
+    public static function partToLoad($id, $application, $appeal, $part) {
+        return is_object($model = static::returnPart($id)) || (!empty($application) && is_object($model = static::byApplicationAndPart($application, $appeal, $part))) ? $model : static::newPart($application, $appeal, $part);
     }
 
     /**

@@ -15,6 +15,7 @@ use kartik\form\ActiveForm;
 
     <?= Html::activeHiddenInput($model, "[$model->part]id") ?>
     <?= Html::activeHiddenInput($model, "[$model->part]application") ?>
+    <?= Html::activeHiddenInput($model, "[$model->part]appeal") ?>
     <?= Html::activeHiddenInput($model, "[$model->part]part") ?>
     <?= Html::activeHiddenInput($model, "[$model->part]title") ?>
 

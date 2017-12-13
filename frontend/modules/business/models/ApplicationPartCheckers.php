@@ -10,6 +10,7 @@ class ApplicationPartCheckers {
     const part_caution = 'caution';
     const part_personal = 'personal';
     const part_personal_subsequent = 'personal_subsequent';
+    const part_personal_appeal = 'personal_appeal';
     const part_residence = 'residence';
     const part_institution = 'institution';
     const part_institution_subsequent = 'institution_subsequent';
@@ -24,6 +25,7 @@ class ApplicationPartCheckers {
     const part_expenses = 'expenses';
     const part_education_expenses = 'education_expenses';
     const part_declaration = 'declaration';
+    const part_declaration_appeal = 'declaration_appeal';
     const part_guarantors = 'guarantors';
     const part_bank = 'bank';
     const part_terms_and_conditions = 'terms_and_conditions';
@@ -53,6 +55,12 @@ class ApplicationPartCheckers {
     const part_check_list_attachment_confirm = 'check_list_attachment_confirm';
     const part_check_list_signatures_stamps = 'check_list_signatures_stamps';
     const part_check_list_signatures_stamps_confirm = 'check_list_signatures_stamps_confirm';
+    const part_appeal = 'appeal';
+    const part_appeal_personal = 'appeal_personal';
+    const part_appeal_education = 'appeal_education';
+    const part_declaration_appeal_applicant = 'declaration_appeal_applicant';
+    const part_declaration_appeal_finance_officer = 'declaration_appeal_finance_officer';
+    const part_declaration_appeal_institution = 'declaration_appeal_institution';
     const order = 'order';
     const title = 'title';
     const intro = 'intro';
@@ -114,6 +122,18 @@ class ApplicationPartCheckers {
             self::part_institution_subsequent => [self::title => 'Dean of Students\' Certification', self::intro => 'I certify this is a bonafide student of this University pursuing a course at the following level:', self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
             self::part_terms_and_conditions_subsequent => [self::title => 'Agreement', self::intro => static::termsAndConditionsSubsequentStatement(), self::order => ++$order, self::new_page => false, self::items => static::termsAndConditionsItems(), self::order_elements => self::order_elements_yes],
             self::part_submission_subsequent => [self::title => 'Submission of the application form', self::intro => static::formSubmissionStatement(), self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no]
+        ];
+    }
+
+    /**
+     * @return array[] all the checkers for appeal form grouped in parts
+     */
+    public static function checkerPartsAppeal() {
+        return [
+            self::part_caution => [self::title => 'CAUTION', self::intro => static::cautionStatement(), self::order => $order = self::min_order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_personal_appeal => [self::title => 'Applicant\'s Personal Details', self::intro => false, self::order => ++$order, self::new_page => false, self::order_elements => self::order_elements_no],
+            self::part_appeal => [self::title => 'Loan Appeal Details', self::intro => false, self::order => ++$order, self::new_page => false, self::items => static::appealItems(), self::order_elements => self::order_elements_yes],
+            self::part_declaration_appeal => [self::title => 'Declarations', self::intro => false, self::order => ++$order, self::new_page => false, self::items => static::appealDeclarationsItems(), self::order_elements => self::order_elements_yes],
         ];
     }
 
@@ -184,6 +204,18 @@ class ApplicationPartCheckers {
             self::part_declaration_fund_secretary => [self::title => 'Constituency Education Revolving Fund Secretary', self::narration => static::fundAdministratorStatement(), self::active => self::active_yes, self::order => 10]
         ];
     }
+    
+    /**
+     * 
+     * @return array appeal declaration items
+     */
+    public static function appealDeclarationsItems() {
+        return [
+            self::part_declaration_appeal_applicant => [self::title => 'Applicant\'s Declaration', self::narration => static::applicantStatement(), self::active => self::active_yes, self::order => 1],
+            self::part_declaration_appeal_finance_officer => [self::title => 'Finance Officer / Financial Aid Officer', self::narration => static::financeOfficerAppealStatement(), self::active => self::active_yes, self::order => 2],
+            self::part_declaration_appeal_institution => [self::title => 'Dean of Students Certification', self::narration => static::institutionCertificationAppealStatement(), self::active => self::active_yes, self::order => 3],
+        ];
+    }
 
     /**
      * 
@@ -241,6 +273,17 @@ class ApplicationPartCheckers {
             self::part_check_list_attachment_confirm => [self::title => 'Attachments confirmation', self::narration => static::attachmentConfirmationStatement(), self::active => self::active_yes, self::order => 4],
             self::part_check_list_signatures_stamps => [self::title => 'Declarations, Signatures and stamps', self::narration => null, self::active => self::active_yes, self::order => 5],
             self::part_check_list_signatures_stamps_confirm => [self::title => 'Declarations, Signatures and stamps confirmation', self::narration => static::signatureAndStampConfirmationStatement(), self::active => self::active_yes, self::order => 6],
+        ];
+    }
+
+    /**
+     * 
+     * @return array appeal items
+     */
+    public static function appealItems() {
+        return [
+            self::part_appeal_personal => [self::title => 'Personal Details', self::narration => static::appealPersonalNarration(), self::active => self::active_yes, self::order => 1],
+            self::part_appeal_education => [self::title => 'Education Background', self::narration => 'If sponsored, attach letters from sponsor & school', self::active => self::active_yes, self::order => 2],
         ];
     }
 
@@ -442,6 +485,28 @@ class ApplicationPartCheckers {
 
     /**
      * 
+     * @return string institution certification appeal opening statement
+     */
+    public static function institutionCertificationAppealStatement() {
+        return
+                'The above named applicant and his/her parent/guardian appeared before me and made the solemn declaration that the information given herein is correct.'
+                . self::line_break
+                . self::line_break
+                . 'Name of Officer : .............................................................. Tel : ...................................'
+                . self::line_break
+                . self::line_break
+                . 'Stamp/Signature: ............................................................  Date :.....................................'
+                . self::line_break
+                . self::line_break
+                . 'Campus : .........................................................................................................................'
+                . self::line_break
+                . self::line_break
+                . 'Additional Comments : ...........................................................................................................................'
+        ;
+    }
+
+    /**
+     * 
      * @return string institution finance officer certification opening statement
      */
     public static function financeOfficerStatement() {
@@ -453,6 +518,25 @@ class ApplicationPartCheckers {
                 . self::line_break
                 . self::line_break
                 . 'Signature ........................................................................ Official Stamp & Date: .......................................'
+        ;
+    }
+    
+    /**
+     * 
+     * @return string institution finance officer certification appeal opening statement
+     */
+    public static function financeOfficerAppealStatement() {
+        return
+                'I confirm that the student herein is registered in this university and receives scholarship aid from the following organization(s).'
+                . self::line_break
+                . self::line_break
+                . '1. .............................................................................    2. ................................................................................'
+                . self::line_break
+                . self::line_break
+                . 'Fee Balance: .....................................     Campus: ...........................................................................'
+                . self::line_break
+                . self::line_break
+                . 'Name of Officer: .......................................... Signature: ............................... Tel: ..............................'
         ;
     }
 
@@ -518,6 +602,18 @@ class ApplicationPartCheckers {
                 . self::line_break
                 . self::line_break
                 . 'Signature ........................................................................ Date: .................................................'
+        ;
+    }
+
+    /**
+     * 
+     * @return string appeal personal opening statement
+     */
+    public static function appealPersonalNarration() {
+        return
+                'If disabled, attach certification from National Council for Persons with Disability and School\'s Medical Officer'
+                . self::line_break
+                . 'If orphaned, attached death certificate if you have not provided them before'
         ;
     }
 

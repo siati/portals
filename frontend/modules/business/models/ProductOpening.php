@@ -354,14 +354,14 @@ class ProductOpening extends \yii\db\ActiveRecord {
         else
             return $application->printed(false) || ($this->applicationIsOpenByEitherCriterion(false, $datetime) && ProductAccessPropertyItems::applicantCanAccessProduct($this->id, $applicant));
     }
-    
+
     /**
      * 
      * @param boolean $is_appeal true - is appeal
      * @return array application parts
      */
     public function theParts($is_appeal) {
-        return $this->subsequent == LmBaseEnums::applicantType(LmBaseEnums::applicant_type_subsequent)->VALUE ? ApplicationPartCheckers::checkerPartsSubsequent() : ApplicationPartCheckers::checkerParts();
+        return $is_appeal ? (ApplicationPartCheckers::checkerPartsAppeal()) : ($this->subsequent == LmBaseEnums::applicantType(LmBaseEnums::applicant_type_subsequent)->VALUE ? ApplicationPartCheckers::checkerPartsSubsequent() : ApplicationPartCheckers::checkerParts());
     }
 
     /**
@@ -397,14 +397,15 @@ class ProductOpening extends \yii\db\ActiveRecord {
     /**
      * 
      * @param Applications $application model
+     * @param boolean $is_appeal true - is appeal
      * @return boolean true - application form printed and saved
      */
-    public static function applicationFormPrinter($application) {
+    public static function applicationFormPrinter($application, $is_appeal) {
         try {
             $form = PDFGenerator::go(
                             [
                         PDFGenerator::view => '../pdf/application_form/amateur-form',
-                        PDFGenerator::view_params => ['application' => $application]
+                        PDFGenerator::view_params => ['application' => $application, 'is_appeal' => $is_appeal]
                             ], [
                         PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
                         PDFGenerator::html_header => '<img src="' . Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg" height="90" style="margin-top: -20">',

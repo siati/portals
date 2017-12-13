@@ -154,7 +154,7 @@ class ApplicantSponsors extends \yii\db\ActiveRecord {
      * @return ApplicantSponsors model(s)
      */
     public static function forApplicantAndStudyLevel($applicant, $study_level, $oneOrAll) {
-        return static::find()->forApplicantAndStudyLevel($applicant, $study_level, $oneOrAll);
+        return static::find()->forApplicantAndStudyLevel($applicant, ("'" . str_replace(',', "', '", $study_level) . "'"), $oneOrAll);
     }
 
     /**

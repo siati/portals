@@ -13,7 +13,8 @@ use frontend\modules\business\models\ProductOpening;
 
 <div class="gnrl-frm-divider">
     Application Opening and Closing Dates
-    <div class="btn btn-xs btn-warning pull-right" id="prntg-stngs"><small><b><i class="fa fa-file-pdf-o"></i> Application Parts</b></small></div>
+    <div class="btn btn-xs btn-warning pull-right" id="prntg-stngs-apl"><small><b><i class="fa fa-file-pdf-o"></i> Appeal Parts</b></small></div>
+    <div class="btn btn-xs btn-warning pull-right" id="prntg-stngs" style="margin-right: 10px"><small><b><i class="fa fa-file-pdf-o"></i> Application Parts</b></small></div>
     <div class="btn btn-xs btn-warning pull-right" id="advnc-stngs" style="margin-right: 10px"><small><b><i class="fa fa-gears"></i> Advanced Access Controls</b></small></div>
 </div>
 

@@ -3,6 +3,7 @@
 /* @var $form \kartik\form\ActiveForm */
 /* @var $parts array */
 /* @var $application integer */
+/* @var $appeal integer */
 
 use frontend\modules\business\models\ApplicationParts;
 ?>
@@ -15,7 +16,7 @@ use frontend\modules\business\models\ApplicationParts;
         <ol style="width: 100%; padding: 0">
             <?php foreach ($parts as $part => $detail): ?>
 
-                <?php $model = ApplicationParts::partToLoad(null, $application, $part) ?>
+                <?php $model = ApplicationParts::partToLoad(null, $application, $appeal, $part) ?>
 
                 <?php $model->isNewRecord ? $model->attributes = $detail : ''; ?>
 

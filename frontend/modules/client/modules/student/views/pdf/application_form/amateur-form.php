@@ -2,6 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $application \frontend\modules\business\models\Applications */
+/* @var $is_appeal integer */
 
 use common\models\User;
 use frontend\modules\client\modules\student\models\Applicants;
@@ -24,7 +25,7 @@ use frontend\modules\business\models\ProductOpeningSettings;
 
 <?php $applicant = Applicants::returnApplicant($application->applicant) ?>
 
-<?php foreach (ApplicationParts::forApplication($application->application, 1) as $part): ?>
+<?php foreach (ApplicationParts::forApplication($application->application, $is_appeal, 1) as $part): ?>
 
     <?php if ($part->part == ApplicationPartCheckers::part_caution): ?>
 
@@ -37,6 +38,14 @@ use frontend\modules\business\models\ProductOpeningSettings;
     <?php elseif ($part->part == ApplicationPartCheckers::part_personal_subsequent): ?>
 
         <?= $this->render('../application_form/personal-det-subsequent', ['user' => $user, 'applicant' => $applicant, 'institution' => empty($institution) ? $institution = ApplicantsInstitution::forApplicant($application->applicant) : $institution, 'part' => $part]) ?>
+
+    <?php elseif ($part->part == ApplicationPartCheckers::part_personal_appeal): ?>
+
+        <?= $this->render('../application_form/personal-det-appeal', ['user' => $user, 'applicant' => $applicant, 'application' => $application, 'institution' => empty($institution) ? $institution = ApplicantsInstitution::forApplicant($application->applicant) : $institution, 'part' => $part]) ?>
+
+    <?php elseif ($part->part == ApplicationPartCheckers::part_appeal): ?>
+
+        <?= $this->render('../application_form/appeal-det', ['applicant' => $applicant, 'part' => $part]) ?>
 
     <?php elseif ($part->part == ApplicationPartCheckers::part_residence): ?>
 
@@ -85,6 +94,10 @@ use frontend\modules\business\models\ProductOpeningSettings;
     <?php elseif ($part->part == ApplicationPartCheckers::part_declaration): ?>
 
         <?= $this->render('../application_form/declarations', ['part' => $part]) ?>
+
+    <?php elseif ($part->part == ApplicationPartCheckers::part_declaration_appeal): ?>
+
+        <?= $this->render('../application_form/declarations-appeal', ['part' => $part]) ?>
 
     <?php elseif ($part->part == ApplicationPartCheckers::part_guarantors): ?>
 

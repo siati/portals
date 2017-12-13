@@ -45,14 +45,14 @@ class DefaultController extends Controller {
                 'only' => [
                     'index', 'register', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                     'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
-                    'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial', 'application-compile', 'amateur-form'
+                    'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial', 'personal-partial', 'education-partial', 'application-compile', 'amateur-form'
                 ],
                 'rules' => [
                     [
                         'actions' => [
                             'index', 'residence', 'parents', 'check-parent-status', 'parent-is-guarantor', 'education', 'grade', 'merits', 'inst-types', 'out-ofs', 'educ-since-till', 'guarantors', 'id-no-is-parents',
                             'institution', 'employment', 'dynamic-institutions', 'dynamic-institution-branches', 'dynamic-inst-types', 'dynamic-admission-categories', 'dynamic-course-durations', 'dynamic-study-years', 'completion-year',
-                            'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial', 'application-compile', 'amateur-form'
+                            'expenses', 'spouse', 'sponsors', 'bank-branches', 'dynamic-employers', 'employment-periods', 'application', 'application-timeline', 'load-application', 'institution-partial', 'personal-partial', 'education-partial', 'application-compile', 'amateur-form'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -319,7 +319,7 @@ class DefaultController extends Controller {
 
         return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense, 'saved' => !empty($saved), 'save_attempt' => isset($saved), 'saved2' => !empty($saved2), 'save_attempt2' => isset($saved2)]);
     }
-    
+
     /**
      * 
      * @return boolean true - new sibling submitted
@@ -385,9 +385,17 @@ class DefaultController extends Controller {
      * @return type view to apply for a loan
      */
     public function actionLoadApplication() {
+        $application = Applications::applicationToLoad(empty($_POST['Applications']['id']) ? '' : $_POST['Applications']['id'], empty($_POST['Applications']['applicant']) ? '' : $_POST['Applications']['applicant'], $opening = empty($_POST['Applications']['application']) ? '' : $_POST['Applications']['application'], empty($_POST['Applications']['serial_no']) ? '' : $_POST['Applications']['serial_no']);
+        
+        if (!empty($_POST['appeal']))
+            return $this->renderAjax('appeal-form', [
+                        'application' => $application,
+                            ]
+            );
+
         return $this->renderAjax('first-time-form', [
-                    'application' => Applications::applicationToLoad(empty($_POST['Applications']['id']) ? '' : $_POST['Applications']['id'], empty($_POST['Applications']['applicant']) ? '' : $_POST['Applications']['applicant'], $application = empty($_POST['Applications']['application']) ? '' : $_POST['Applications']['application'], empty($_POST['Applications']['serial_no']) ? '' : $_POST['Applications']['serial_no']),
-                    'settings' => ProductOpeningSettings::forApplicationSettingAndActive($application, null, ProductOpeningSettings::active, ProductOpeningSettings::all)
+                    'application' => $application,
+                    'settings' => ProductOpeningSettings::forApplicationSettingAndActive($opening, null, ProductOpeningSettings::active, ProductOpeningSettings::all)
                         ]
         );
     }
@@ -399,9 +407,41 @@ class DefaultController extends Controller {
         $model = ApplicantsInstitution::institutionToLoad(empty($_POST['ApplicantsInstitution']['id']) ? '' : $_POST['ApplicantsInstitution']['id'], empty($_POST['ApplicantsInstitution']['applicant']) ? '' : $_POST['ApplicantsInstitution']['applicant']);
 
         isset($_POST['ApplicantsInstitution']['annual_fees']) && !isset($_POST['ApplicantsInstitution']['annual_upkeep']) ? $model->annual_upkeep = null : '';
-        
+
         isset($_POST['ApplicantsInstitution']['annual_upkeep']) && !isset($_POST['ApplicantsInstitution']['annual_fees']) ? $model->annual_fees = null : '';
-        
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $ajax = $this->ajaxValidate($model);
+
+            $model->modelSave();
+        }
+
+        return isset($ajax) && is_array($ajax) ? $ajax : [];
+    }
+
+    /**
+     * @return array any errors on capture personal details
+     */
+    public function actionPersonalPartial() {
+        $model = Applicants::returnApplicant($_POST['Applicants']['id']);
+
+        if ($model->load(Yii::$app->request->post())) {
+
+            $ajax = $this->ajaxValidate($model);
+
+            $model->modelSave();
+        }
+
+        return isset($ajax) && is_array($ajax) ? $ajax : [];
+    }
+
+    /**
+     * @return array any errors on capture education background details
+     */
+    public function actionEducationPartial() {
+        $model = EducationBackground::returnEducation($_POST['EducationBackground']['id']);
+
         if ($model->load(Yii::$app->request->post())) {
 
             $ajax = $this->ajaxValidate($model);
@@ -529,7 +569,7 @@ class DefaultController extends Controller {
     public function actionEmploymentPeriods() {
         StaticMethods::populateDropDown(ApplicantsEmployment::employmentPeriod($_POST['terms']), 'Duration', $_POST['period']);
     }
-    
+
     /**
      * 
      * @return string view to compile application
@@ -537,7 +577,7 @@ class DefaultController extends Controller {
     public function actionApplicationCompile() {
         $application = Applications::applicationToLoad(null, $_POST['applicant'], $_POST['application'], null);
 
-        return $this->renderAjax('application-compile', ['compilation' => $application->compileApplication($_POST['appeal']), 'applicant' => $_POST['applicant'], 'application' => $_POST['application'], 'appeal' => $_POST['appeal'], 'print' => !empty($_POST['print']) || $application->applicationOrAppealPrintOutExists(!empty($_POST['appeal']))]);
+        return $this->renderAjax('application-compile', ['compilation' => $application->compileApplication(!empty($_POST['appeal'])), 'applicant' => $_POST['applicant'], 'application' => $_POST['application'], 'appeal' => $_POST['appeal'], 'print' => !empty($_POST['print']) || $application->applicationOrAppealPrintOutExists(!empty($_POST['appeal']))]);
     }
 
     /**
@@ -548,7 +588,7 @@ class DefaultController extends Controller {
 
         $application = Applications::applicationToLoad(null, $_POST['applicant'], $_POST['application'], null);
 
-        return [PDFGenerator::category_client, basename(Docs::fileLocate(PDFGenerator::category_laf, $application->modelSave(!empty($_POST['appeal'])) ? $application->print_out : 'nope', Docs::locator)), $application->applicationOrAppealPrintOutExists(!empty($_POST['appeal']))];
+        return [PDFGenerator::category_client, basename(Docs::fileLocate(PDFGenerator::category_laf, $application->modelSave($is_appeal = !empty($_POST['appeal'])) ? ($is_appeal ? $application->appeal_print_out : $application->print_out) : ('nope'), Docs::locator)), $application->applicationOrAppealPrintOutExists(!empty($_POST['appeal']))];
     }
 
 }
