@@ -388,10 +388,7 @@ class DefaultController extends Controller {
         $application = Applications::applicationToLoad(empty($_POST['Applications']['id']) ? '' : $_POST['Applications']['id'], empty($_POST['Applications']['applicant']) ? '' : $_POST['Applications']['applicant'], $opening = empty($_POST['Applications']['application']) ? '' : $_POST['Applications']['application'], empty($_POST['Applications']['serial_no']) ? '' : $_POST['Applications']['serial_no']);
         
         if (!empty($_POST['appeal']))
-            return $this->renderAjax('appeal-form', [
-                        'application' => $application,
-                            ]
-            );
+            return $this->renderAjax('appeal-form', ['application' => $application]);
 
         return $this->renderAjax('first-time-form', [
                     'application' => $application,
