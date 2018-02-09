@@ -269,8 +269,16 @@ table {
     text-align: right
 }
 
+.td-center {
+    text-align: center
+}
+
 .td-pdg-lft {
     padding-left: 10px
+}
+
+.td-pdg-rgt {
+    padding-right: 10px
 }
 
 .td-pdg-bth {

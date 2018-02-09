@@ -22,13 +22,13 @@
             <b style="font-size: 12px">Serial Number</b>
             <div class="part-table-data-header" style="margin-left: 25px"><?= $application->serial_no ?></div>
         </pre>
-        
+
 
     </div>
 
     <div class="part-container part-element-narration border-less mid-half-header-width stamp-height pull-left-pdf">
 
-        <img src="<?= Yii::$app->homeUrl ?>../../common/assets/logos/kakamega.gif" height="90">
+        <img src="<?= $product->logo('logo_owner') ?>" height="90">
 
         <br/>
 
@@ -59,13 +59,17 @@
 
             CAP 213A
 
-            <br/>
+            <?php if ($logo = $product->logo('logo_partner')): ?>
 
-            <br/>
+                <br/>
 
-            <br/>
-            
-            <img src="<?= Yii::$app->homeUrl ?>../../common/assets/logos/helb-logo.jpg" height="90">
+                <br/>
+
+                <br/>
+
+                <img src="<?= $logo ?>" height="90">
+
+            <?php endif; ?>
         </div>
     </div>
 

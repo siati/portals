@@ -1,6 +1,8 @@
 <?php
 /* @var $this yii\web\View */
 /* @var $application \frontend\modules\business\models\Applications */
+/* @var $opening \frontend\modules\business\models\ProductOpening */
+/* @var $product \frontend\modules\business\models\Products */
 /* @var $is_appeal integer */
 
 use frontend\modules\business\models\Products;
@@ -27,14 +29,14 @@ use common\models\StaticMethods;
 
 <?php $applicant = Applicants::returnApplicant($application->applicant) ?>
 
-<?php $opening = ProductOpening::returnOpening($application->application) ?>
-
-<?php $product = Products::returnProduct($opening->product) ?>
-
 <htmlpageheader name='otherpagesheader' style='display: none'>
     <div class="part-element-narration-sm heda">
         <?= "$applicant->fname $applicant->mname $applicant->lname; ID. No.: $user->id_no; Application: $product->code - $opening->academic_year; Serial No.: $application->serial_no" ?>
-        <img src="<?= str_replace('frontend/web', 'common', Yii::$app->homeUrl) ?>assets/logos/kakamega.gif" height="30" style="margin-top: -20px">
+        
+        <?php if ($logo = $product->logo('logo_header')): ?>
+            <img src="<?= $logo ?>" height="90" style="margin-top: -20px">
+        <?php endif; ?>
+            
     </div>
 </htmlpageheader>
 

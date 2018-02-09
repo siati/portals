@@ -84,7 +84,7 @@ class Docs {
      * @return boolean true - file locator exists
      */
     public static function fileLocatorExists($category, $filename) {
-        return StaticMethods::linkExists((Yii::$app->getRequest()->isSecureConnection ? 'https://' : 'http://') . Yii::$app->getRequest()->serverName . static::theFileName($category, $filename, self::locator));
+        return StaticMethods::linkExists(StaticMethods::serverLink() . static::theFileName($category, $filename, self::locator));
     }
 
     /**

@@ -190,6 +190,15 @@ class Products extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
+    
+    /**
+     * 
+     * @param string $attribute logo attribute - logo_owner, logo_partner, watermark, logo_header
+     * @return boolean|string true - logo is available
+     */
+    public function logo($attribute) {
+        return !empty($this->$attribute) && StaticMethods::linkExists(StaticMethods::serverLink() . ($link = static::logosFolderLink() . $this->$attribute)) ? $link : false;
+    }
 
     /**
      * 
@@ -208,6 +217,22 @@ class Products extends \yii\db\ActiveRecord {
      */
     public static function extensions() {
         return ['jpg', 'jpeg', 'png', 'gif'];
+    }
+    
+    /**
+     * 
+     * @return string location of logos
+     */
+    public static function logosFolder() {
+        return StaticMethods::commonFolder() . '/assets/logos/';
+    }
+    
+    /**
+     * 
+     * @return string location of logos
+     */
+    public static function logosFolderLink() {
+        return StaticMethods::commonFolderLink() . 'assets/logos/';
     }
 
 }

@@ -31,6 +31,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="prdcts-frm-pn pull-right">
                 <?= $this->render('product', ['product' => $product]) ?>
 
+                <?php if (!$product->isNewRecord): ?>
+                    <?= $this->render('product-logos', ['product' => $product]) ?>
+                <?php endif; ?>
+
                 <?= $this->render('opening', ['opening' => $opening]) ?>
 
                 <?= $this->render('settings', ['settings' => $settings]) ?>
@@ -69,6 +73,39 @@ $this->registerJs(
                             customSwal('Failed', 'Product Was Not Saved<br\><br\>Make any corrections and retry', '2500', 'error', false, true, 'ok', '#f27474', false, 'cancel');
                     }
                 );
+            }
+            
+            function uploadLogo(field) {
+                var files = document.getElementById(field.attr('id')).files;
+                
+                if (!field.parent().hasClass('has-error') && files.length > 0) {
+                    var fd = new FormData();
+                    fd.append('Products[id]', $('#products-id').val());
+                    fd.append('attribute', attr = field.attr('field'));
+                    fd.append('Products[' + attr + ']', files[0]);
+                    
+                    $.ajax(
+                        {
+                            contentType: false,
+                            processData: false,
+                            async: false,
+                            cache: false,
+                            type: 'post',
+                            url: 'product-logos',
+                            data: fd,
+                            success: function(res) {
+                                if (res) {
+                                    $('[for=products-' + field.attr('field') + ']').html(field.attr('label') + (res ? (': ' + res) : ('')))
+                                    dataSaved('Done', 'Logo Uploaded Successfully', 'success');
+                                } else
+                                    dataSaved('Nope!', 'Logo Not Uploaded<br/><br/>Please Retry', 'error');
+                            },
+                            error: function() {
+                                dataSaved('Oops!', 'An Error Occured', 'error');
+                            }
+                        }
+                    );
+                }
             }
             
             function saveOpening() {
@@ -180,6 +217,14 @@ $this->registerJs(
                     }
                 );
             /* save product details only */
+            
+            /* save logos on the fly */
+                $('[logo=logo]').change(
+                    function () {
+                        uploadLogo($(this));
+                    }
+                );
+            /* save logos on the fly */
             
             /* save product opening only */
                 $('#opng-sv').click(

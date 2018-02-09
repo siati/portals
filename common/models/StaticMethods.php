@@ -4,6 +4,7 @@ namespace common\models;
 
 use Yii;
 use DateTime;
+use yii\web\UploadedFile;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -340,6 +341,14 @@ class StaticMethods {
     
     /**
      * 
+     * @return string server link
+     */
+    public static function serverLink() {
+        return (Yii::$app->getRequest()->isSecureConnection ? 'https://' : 'http://') . Yii::$app->getRequest()->serverName;
+    }
+    
+    /**
+     * 
      * @param string $link link
      * @return boolean true - link exists
      */
@@ -347,6 +356,37 @@ class StaticMethods {
         $headers = @get_headers($link);
         
         return stripos($headers[0], '200') !== false;
+    }
+    
+    /**
+     * 
+     * @return string location to common folder
+     */
+    public static function commonFolder() {
+        return str_replace('frontend', 'common', Yii::$app->basePath);
+    }
+    
+    /**
+     * 
+     * @return string location to common folder
+     */
+    public static function commonFolderLink() {
+        return str_replace('frontend/web', 'common', Yii::$app->homeUrl);
+    }
+
+    /**
+     * 
+     * @param ActiveRecord $model model
+     * @param string $attribute attribute of model
+     * @param UploadedFile $file uploaded file
+     * @param array $allowed_files allowed extensions
+     * @param string $directory location to save file
+     * @param string $filename file name
+     * @param string $folder attribute of Files object class
+     */
+    public static function saveUploadedFile($model, $attribute, $file, $allowed_files, $directory, $filename) {
+        !empty($file) && in_array(strtolower($file->extension), $allowed_files) && ($model->$attribute = $file) && $model->validate([$attribute]) && $file->saveAs($directory . ($saveAs = strtolower(("$filename." . (strtolower($file->extension)))))) ?
+                        ($model->$attribute = $saveAs) : (empty($file) ? '' : $model->addError($attribute, "$file->name not uploaded"));
     }
 
     /**

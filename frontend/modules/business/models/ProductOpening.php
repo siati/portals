@@ -247,7 +247,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
-    
+
     /**
      * 
      * @return boolean true - is subsequent
@@ -413,10 +413,15 @@ class ProductOpening extends \yii\db\ActiveRecord {
             $form = PDFGenerator::go(
                             [
                         PDFGenerator::view => '../pdf/application_form/amateur-form',
-                        PDFGenerator::view_params => ['application' => $application, 'is_appeal' => $is_appeal]
+                        PDFGenerator::view_params => [
+                            'application' => $application,
+                            'opening' => $opening = ProductOpening::returnOpening($application->application),
+                            'product' => $product = Products::returnProduct($opening->product),
+                            'is_appeal' => $is_appeal
+                        ]
                             ], [
                         PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
-                        PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/kakamega.gif',
+                        PDFGenerator::water_mark => ($logo = $product->logo('watermark')) ? $logo : $product->logo('logo_owner'),
                         PDFGenerator::category => PDFGenerator::category_laf
                             ]
             );

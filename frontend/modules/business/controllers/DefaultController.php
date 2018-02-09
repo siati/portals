@@ -5,6 +5,7 @@ namespace frontend\modules\business\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\web\UploadedFile;
 use frontend\modules\business\models\Products;
 use frontend\modules\business\models\ProductOpening;
 use frontend\modules\business\models\ProductOpeningSettings;
@@ -13,6 +14,7 @@ use frontend\modules\business\models\ProductAccessPropertyItems;
 use frontend\modules\client\modules\student\models\ApplicantProductAccessCheckers;
 use frontend\modules\business\models\ApplicationParts;
 use frontend\modules\business\models\ApplicationPartElements;
+use common\models\StaticMethods;
 
 /**
  * Default controller for the `business` module
@@ -27,12 +29,12 @@ class DefaultController extends Controller {
             'access' => [
                 'class' => AccessControl::className(),
                 'only' => [
-                    'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part', 'save-application-part-element'
+                    'index', 'products', 'save-product', 'product-logos', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part', 'save-application-part-element'
                 ],
                 'rules' => [
                     [
                         'actions' => [
-                            'index', 'products', 'save-product', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part', 'save-application-part-element'
+                            'index', 'products', 'save-product', 'product-logos', 'save-opening', 'opening-i-d', 'save-settings', 'dynamic-settings', 'access-checkers', 'save-access-property', 'save-access-property-item', 'application-parts', 'save-application-part', 'save-application-part-element'
                         ],
                         'allow' => !Yii::$app->user->isGuest,
                         'roles' => ['@'],
@@ -80,6 +82,20 @@ class DefaultController extends Controller {
 
             return is_array($ajax) ? $ajax : [];
         }
+    }
+
+    public function actionProductLogos() {
+        $model = Products::returnProduct($_POST['Products']['id']);
+        
+        if ($instance = UploadedFile::getInstance($model, $attribute = $_POST['attribute'])) {
+            StaticMethods::saveUploadedFile($model, $attribute, $instance, Products::extensions(), Products::logosFolder(), empty($model->$attribute) ? StaticMethods::stripNonNumeric(StaticMethods::now()) : $model->$attribute);
+            
+            echo !$model->hasErrors($attribute) && $model->modelSave() ? $model->$attribute : false;
+            
+            Yii::$app->end();
+        }
+        
+        echo false;
     }
 
     /**
@@ -177,7 +193,7 @@ class DefaultController extends Controller {
             return is_array($ajax) ? $ajax : [];
         }
     }
-    
+
     /**
      * 
      * @return array save applicant product access rules
@@ -199,15 +215,15 @@ class DefaultController extends Controller {
             return is_array($ajax) ? $ajax : [];
         }
     }
-    
+
     /**
      * 
      * @return string main interface for application part settings
      */
     public function actionApplicationParts() {
-        return $this->renderAjax('application-parts', ['parts' => ProductOpening::returnOpening($_POST['application'])->theParts(!empty($_POST['appeal'])), 'application' => $_POST['application'], 'appeal' => empty($_POST['appeal']) ? ApplicationParts::appeal_no : ApplicationParts::appeal_yes]); 
+        return $this->renderAjax('application-parts', ['parts' => ProductOpening::returnOpening($_POST['application'])->theParts(!empty($_POST['appeal'])), 'application' => $_POST['application'], 'appeal' => empty($_POST['appeal']) ? ApplicationParts::appeal_no : ApplicationParts::appeal_yes]);
     }
-    
+
     /**
      * @return array save application part
      */
@@ -228,7 +244,7 @@ class DefaultController extends Controller {
             return is_array($ajax) ? $ajax : [];
         }
     }
-    
+
     /**
      * 
      * @return array save application part element
