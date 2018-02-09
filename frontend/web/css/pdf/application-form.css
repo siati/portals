@@ -174,7 +174,6 @@ pre {
 
 @page :first {
     header: none;
-    footer: pagefooter;
     margin-top: 50px
 }
 
