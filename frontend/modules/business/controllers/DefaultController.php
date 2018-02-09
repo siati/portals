@@ -88,7 +88,7 @@ class DefaultController extends Controller {
         $model = Products::returnProduct($_POST['Products']['id']);
         
         if ($instance = UploadedFile::getInstance($model, $attribute = $_POST['attribute'])) {
-            StaticMethods::saveUploadedFile($model, $attribute, $instance, Products::extensions(), Products::logosFolder(), empty($model->$attribute) ? StaticMethods::stripNonNumeric(StaticMethods::now()) : $model->$attribute);
+            StaticMethods::saveUploadedFile($model, $attribute, $instance, Products::extensions(), Products::logosFolder(), empty($model->$attribute) ? StaticMethods::stripNonNumeric(StaticMethods::now()) : substr($model->$attribute, 0, 20));
             
             echo !$model->hasErrors($attribute) && $model->modelSave() ? $model->$attribute : false;
             
