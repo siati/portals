@@ -34,7 +34,7 @@ use common\models\StaticMethods;
 <htmlpageheader name='otherpagesheader' style='display: none'>
     <div class="part-element-narration-sm heda">
         <?= "$applicant->fname $applicant->mname $applicant->lname; ID. No.: $user->id_no; Application: $product->code - $opening->academic_year; Serial No.: $application->serial_no" ?>
-        <img src="<?= str_replace('frontend/web', 'common', Yii::$app->homeUrl) ?>assets/logos/kakamega.gif" height="90" style="margin-top: -20px">
+        <img src="<?= str_replace('frontend/web', 'common', Yii::$app->homeUrl) ?>assets/logos/kakamega.gif" height="30" style="margin-top: -20px">
     </div>
 </htmlpageheader>
 

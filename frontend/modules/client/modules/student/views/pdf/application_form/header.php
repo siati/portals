@@ -40,7 +40,7 @@
 
         <br/>
 
-        <strong> <?= empty($is_appeal) ? ($opening->isSubsequent() ? 'SUBSEQUENT APPLICATION' : 'FIRST TIME APPLICATION') : ('APPEAL / REVIEW') ?> FORM</strong>
+        <strong> <?= empty($is_appeal) ? ($opening->isSubsequent() ? 'SUBSEQUENT APPLICATION' : 'FIRST TIME APPLICATION') : ($opening->isSubsequent() ? 'SUBSEQUENT REVIEW' : 'FIRST TIME REVIEW') ?> FORM</strong>
 
         <br/>
 
