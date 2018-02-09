@@ -247,6 +247,14 @@ class ProductOpening extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
+    
+    /**
+     * 
+     * @return boolean true - is subsequent
+     */
+    public function isSubsequent() {
+        return $this->subsequent == LmBaseEnums::applicantType(LmBaseEnums::applicant_type_subsequent)->VALUE;
+    }
 
     /**
      * 
@@ -408,7 +416,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
                         PDFGenerator::view_params => ['application' => $application, 'is_appeal' => $is_appeal]
                             ], [
                         PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
-                        PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg',
+                        PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/kakamega.gif',
                         PDFGenerator::category => PDFGenerator::category_laf
                             ]
             );

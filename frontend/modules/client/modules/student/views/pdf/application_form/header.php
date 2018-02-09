@@ -28,11 +28,11 @@
 
     <div class="part-container part-element-narration border-less mid-half-header-width stamp-height pull-left-pdf">
 
-        <img src="<?= Yii::$app->homeUrl ?>../../common/assets/logos/helb-logo.jpg" height="90">
+        <img src="<?= Yii::$app->homeUrl ?>../../common/assets/logos/kakamega.gif" height="90">
 
         <br/>
 
-        <strong style="font-size: 19px">HIGHER EDUCATION LOANS BOARD</strong>
+        <strong style="font-size: 19px">KAKAMEGA COUNTY EDUCATION REVOLVING FUND</strong>
 
         <br/>
 
@@ -40,7 +40,7 @@
 
         <br/>
 
-        <strong> <?= empty($is_appeal) ? 'APPLICATION' : 'APPEAL / REVIEW' ?> FORM</strong>
+        <strong> <?= empty($is_appeal) ? ($opening->isSubsequent() ? 'SUBSEQUENT APPLICATION' : 'FIRST TIME APPLICATION') : ('APPEAL / REVIEW') ?> FORM</strong>
 
         <br/>
 
