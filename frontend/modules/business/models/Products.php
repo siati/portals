@@ -14,6 +14,10 @@ use common\models\StaticMethods;
  * @property string $helb_code
  * @property string $description
  * @property integer $active
+ * @property string $logo_owner
+ * @property string $logo_partner
+ * @property string $watermark
+ * @property string $logo_header
  * @property string $created_by
  * @property string $created_at
  * @property string $modified_by
@@ -42,7 +46,8 @@ class Products extends \yii\db\ActiveRecord {
             [['name'], 'string', 'min' => 10, 'max' => 60],
             [['description'], 'string', 'min' => 20, 'max' => 250],
             [['helb_code'], 'string', 'max' => 15],
-            [['created_by', 'modified_by'], 'string', 'max' => 20],
+            [['logo_owner', 'logo_partner', 'watermark', 'logo_header'], 'file', 'extensions' => implode(',', static::extensions()), 'checkExtensionByMimeType' => false],
+            [['created_by', 'modified_by'], 'string', 'min' => 3, 'max' => 20],
             [['name', 'code', 'description'], 'sanitizeString'],
             [['name', 'code', 'description'], 'notNumerical'],
             [['code'], 'toUpperCase'],
@@ -61,6 +66,10 @@ class Products extends \yii\db\ActiveRecord {
             'helb_code' => Yii::t('app', 'HELB Code'),
             'description' => Yii::t('app', 'Description'),
             'active' => Yii::t('app', 'Active'),
+            'logo_owner' => Yii::t('app', 'Owner\'s Logo'),
+            'logo_partner' => Yii::t('app', 'Partner\'s Logo'),
+            'watermark' => Yii::t('app', 'Watermark'),
+            'logo_header' => Yii::t('app', 'Header Section Logo'),
             'created_by' => Yii::t('app', 'Created By'),
             'created_at' => Yii::t('app', 'Created At'),
             'modified_by' => Yii::t('app', 'Modified By'),
@@ -191,6 +200,14 @@ class Products extends \yii\db\ActiveRecord {
             self::active_yes => 'Active',
             self::active_no => 'Inactive'
         ];
+    }
+
+    /**
+     * 
+     * @return array acceptable image types
+     */
+    public static function extensions() {
+        return ['jpg', 'jpeg', 'png', 'gif'];
     }
 
 }
