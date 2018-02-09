@@ -1,43 +1,31 @@
 <?php
+/* @var $applicant \frontend\modules\client\modules\student\models\Applicants */
+/* @var $institution \frontend\modules\client\modules\student\models\ApplicantsInstitution */
+/* @var $upkeep boolean */
 
-/* @var $this yii\web\View */
-/* @var $application \frontend\modules\business\models\Applications */
-/* @var $settings \frontend\modules\business\models\ProductOpeningSettings */
-
-use frontend\modules\business\models\ProductOpeningSettings;
-use frontend\modules\client\modules\student\models\ApplicantsInstitution;
-use frontend\modules\business\models\ProductSettings;
+use common\models\LmBanks;
+use common\models\LmBankBranch;
 ?>
+<div class="full-dim" style="display: table">
+    <div class="full-dim" style="display: table-cell; vertical-align: middle; text-align: center">
 
-<?php
+        <div><b>Hi <?= Yii::$app->user->identity->username ?>,</b></div>
 
-foreach ($settings as $setting):
-    if ($setting->setting == ProductSettings::has_bursary):
-        $bursary = ProductOpeningSettings::hasBursary($application->application);
-    elseif ($setting->setting == ProductSettings::has_society_narration):
-        $narration = ProductOpeningSettings::hasSocietyNarration($application->application);
-    elseif ($setting->setting == ProductSettings::tuition_or_upkeep && is_array($tuition_or_upkeep = ProductOpeningSettings::tuitionOrUpkeep($application->application))):
-        $tuition = !empty($tuition_or_upkeep[ProductSettings::yes]);
-        $upkeep = !empty($tuition_or_upkeep[ProductSettings::no]);
-    elseif ($setting->setting == ProductSettings::has_financial_literacy):
-        $financial = ProductOpeningSettings::hasFInancialLiteracy($application->application);
-    endif;
-endforeach;
-?>
+        <p><strong>You may want to update your profile:</strong></p>
 
-<?php
+        <?php $i = 0 ?>
 
-if (!empty($tuition) || !empty($upkeep) || !empty($bursary) || !empty($narration)):
+        <ol>
+            <li class="td-pdg-rnd"><b>Update your bank details</b></li>
 
-    echo $this->render('institution-partial', [
-        'model' => ApplicantsInstitution::institutionToLoad(null, $application->applicant),
-        'tuition' => !empty($tuition),
-        'upkeep' => !empty($upkeep),
-        'bursary' => !empty($bursary),
-        'narration' => !empty($narration),
-        'disabled' => $application->printOutExists()
-            ]
-    );
+            <?php if ($upkeep): ?>
+                <?php $bank = LmBanks::byBankCode($applicant->bank) ?>
+            
+                <?php $bank_branch = LmBankBranch::byBankAndBranchCode($applicant->bank, $applicant->bank_branch) ?>
+            
+            <li class="td-pdg-rnd"><b>Bank Details: Bank - <?= empty($bank->NAME) ? 'Undefined' : $bank->NAME ?>, Branch - <?= empty($bank_branch->BRANCHNAME) ? 'Undefined' : $bank_branch->BRANCHNAME ?>, Account No. - <?= $applicant->account_number ?>, Smart Card No.<?= $applicant->smart_card_number ?></b></li>
+            <?php endif; ?>
+        </ol>
 
-endif;
-?>
+    </div>
+</div>

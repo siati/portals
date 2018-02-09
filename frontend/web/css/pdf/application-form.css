@@ -40,8 +40,25 @@
     margin-top: 0
 }
 
+.part-table-data-header {
+    border: 3px solid #ddd;
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 5px 0;
+    margin-top: 0;
+}
+
 .align-left {
     text-align: left;
+}
+
+.align-center {
+    text-align: center;
+}
+
+.align-right {
+    text-align: right;
 }
 
 .part-table-divider {
@@ -85,6 +102,23 @@
     float: right
 }
 
+.left-half-header-width {
+    width: 30%;
+    padding: -10px -25px
+}
+
+.mid-half-header-width {
+    width: 50%;
+    text-align: center;
+    margin-left: 5%;
+    padding-top: 0
+}
+
+.right-half-header-width {
+    width: 17.5%;
+    padding-top: 0
+}
+
 .left-half-width {
     width: 39%
 }
@@ -109,10 +143,15 @@
     vertical-align: top;
     text-align: justify
 }
+
 .prgp {
     padding-left: 5px;
     padding-right: 5px;
     text-align: justify
+}
+
+.fa-pdf {
+    font-family: fontawesome
 }
 
 pre {
@@ -125,4 +164,27 @@ pre {
     white-space: -o-pre-wrap;
     word-wrap: break-word;
     margin: 0
+}
+
+@page {
+    header: otherpagesheader;
+    footer: pagefooter;
+    margin-top: 120px
+}
+
+@page :first {
+    header: none;
+    footer: pagefooter;
+    margin-top: 50px
+}
+
+.heda {
+    text-align: right;
+    font-style: italic;
+    border-bottom: 2px solid #000
+}
+
+.futa {
+    font-style: italic;
+    border-top: 2px solid #000
 }

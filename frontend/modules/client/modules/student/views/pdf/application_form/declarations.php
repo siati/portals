@@ -28,7 +28,7 @@ use frontend\modules\business\models\ApplicationPartCheckers;
 
                 <div class="part-container">
                     <legend class="part-legend-2"><?= $element->title ?></legend>
-                    
+
                     <pre class="part-element-narration border-less<?php if (!$parent_or_student): ?> left-half-width pull-left-pdf<?php endif; ?>"><?= $element->narration ?></pre>
 
                     <?php if (!$parent_or_student): ?>

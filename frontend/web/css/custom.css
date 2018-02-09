@@ -261,6 +261,14 @@ table {
     width: 100%
 }
 
+.td-left {
+    text-align: left
+}
+
+.td-right {
+    text-align: right
+}
+
 .td-pdg-lft {
     padding-left: 10px
 }

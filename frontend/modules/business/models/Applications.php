@@ -239,7 +239,7 @@ class Applications extends \yii\db\ActiveRecord {
     }
 
     /**
-     * @param boolean $is_appeal true - id appeal
+     * @param boolean $is_appeal true - is appeal
      * @return array missing application parts requiring attention
      */
     public function compileApplication($is_appeal) {

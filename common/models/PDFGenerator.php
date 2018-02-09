@@ -82,9 +82,9 @@ class PDFGenerator {
 
         $mpdf = new mPDF(null, empty($pdf_params[self::paper_size]) ? self::FORMAT_A4 : $pdf_params[self::paper_size], false, null, 15, 15, 16, 16, 9, 9, empty($pdf_params[self::orientation]) ? self::ORIENT_PORTRAIT : $pdf_params[self::orientation]);
 
-        $mpdf->SetHeader($pdf_params[self::html_header]);
+        /* $mpdf->showImageErrors = true; */
 
-        $mpdf->setTopMargin('30px');
+        empty($pdf_params[self::html_header]) ? '' : $mpdf->SetHeader($pdf_params[self::html_header]);
 
         $mpdf->SetFooter(empty($pdf_params[self::footer]) ? '{PAGENO}' : $pdf_params[self::footer]);
 
@@ -111,7 +111,7 @@ class PDFGenerator {
         $only_client = empty($category) || $category == self::category_client;
 
         $mpdf->Output($filename = static::fileNameNow($cat = $only_client ? self::category_client : $category, null, self::location), self::DEST_FILE);
-        
+
         return [self::category => $cat, self::filename => basename($filename)];
     }
 

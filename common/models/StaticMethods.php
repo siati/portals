@@ -239,7 +239,7 @@ class StaticMethods {
         return [$end_year + $extra_years, $extra_months];
     }
 
-    /*
+    /**
      * remove non-numeric characters from a string.
      */
 

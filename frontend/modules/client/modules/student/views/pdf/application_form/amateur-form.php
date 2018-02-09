@@ -1,9 +1,10 @@
 <?php
-
 /* @var $this yii\web\View */
 /* @var $application \frontend\modules\business\models\Applications */
 /* @var $is_appeal integer */
 
+use frontend\modules\business\models\Products;
+use frontend\modules\business\models\ProductOpening;
 use common\models\User;
 use frontend\modules\client\modules\student\models\Applicants;
 use frontend\modules\client\modules\student\models\ApplicantsResidence;
@@ -19,11 +20,33 @@ use frontend\modules\client\modules\student\models\ApplicantSponsors;
 use frontend\modules\business\models\ApplicationParts;
 use frontend\modules\business\models\ApplicationPartCheckers;
 use frontend\modules\business\models\ProductOpeningSettings;
+use common\models\StaticMethods;
 ?>
 
 <?php $user = User::returnUser($application->applicant) ?>
 
 <?php $applicant = Applicants::returnApplicant($application->applicant) ?>
+
+<?php $opening = ProductOpening::returnOpening($application->application) ?>
+
+<?php $product = Products::returnProduct($opening->product) ?>
+
+<htmlpageheader name='otherpagesheader' style='display: none'>
+    <div class="part-element-narration-sm heda">
+        <?= "$applicant->fname $applicant->mname $applicant->lname; ID. No.: $user->id_no; Application: $product->code - $opening->academic_year; Serial No.: $application->serial_no" ?>
+        <img src="<?= str_replace('frontend/web', 'common', Yii::$app->homeUrl) ?>assets/logos/helb-logo.jpg" height="90" style="margin-top: -20px">
+    </div>
+</htmlpageheader>
+
+<htmlpagefooter name="pagefooter" style="display:none">
+    <div class="part-element-narration-sm futa">
+        <div class="pull-left-pdf align-center" style="width: 30%">contactcentre@helb.co.ke</div>
+        <div class="pull-left-pdf align-center" style="width: 40%"><?= StaticMethods::dateString(StaticMethods::today(), StaticMethods::longest) ?></div>
+        <div class="pull-right-pdf align-center" style="width: 30%">Page {PAGENO} of {nb}</div>
+    </div>
+</htmlpagefooter>
+
+<?= $this->render('../application_form/header', ['application' => $application, 'is_appeal' => $is_appeal, 'opening' => $opening, 'product' => $product]) ?>
 
 <?php foreach (ApplicationParts::forApplication($application->application, $is_appeal, 1) as $part): ?>
 

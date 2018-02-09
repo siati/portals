@@ -408,7 +408,6 @@ class ProductOpening extends \yii\db\ActiveRecord {
                         PDFGenerator::view_params => ['application' => $application, 'is_appeal' => $is_appeal]
                             ], [
                         PDFGenerator::css_file => 'frontend/web/css/pdf/application-form.css',
-                        PDFGenerator::html_header => '<img src="' . Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg" height="90" style="margin-top: -20">',
                         PDFGenerator::water_mark => Yii::$app->homeUrl . '../../common/assets/logos/helb-logo.jpg',
                         PDFGenerator::category => PDFGenerator::category_laf
                             ]
