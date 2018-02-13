@@ -334,6 +334,30 @@ class Applicants extends \yii\db\ActiveRecord {
 
         return $this->save();
     }
+    
+    /**
+     * 
+     * @return boolean true - is employed
+     */
+    public function isEmployed() {
+        return $this->employed == LmBaseEnums::byNameAndElement(LmBaseEnums::yes_no, LmBaseEnums::yes)->VALUE;
+    }
+    
+    /**
+     * 
+     * @return boolean true - is married
+     */
+    public function isMarried() {
+        return $this->married == LmBaseEnums::byNameAndElement(LmBaseEnums::yes_no, LmBaseEnums::yes)->VALUE;
+    }
+    
+    /**
+     * 
+     * @return boolean true - parents applicable
+     */
+    public function parentsApplicable() {
+        return  $this->parents != self::parents_not_applicable;
+    }
 
     /**
      * 

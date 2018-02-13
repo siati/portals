@@ -16,6 +16,8 @@ $this->title = 'Family And Sibling Education Expenses';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'client/student/default/' : '' ?>
+
 <div class="gnrl-frm stdt-exps">
 
     <div class="gnrl-frm-cont">
@@ -45,7 +47,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'expenses-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['class' => 'btn btn-primary pull-left', 'name' => 'expenses-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'expenses-button']) ?>
+
+            <?php endif; ?>
 
         </div>
 
@@ -79,11 +91,11 @@ $this->registerJs(
         "
             function loadSibling(id) {
                 $('#id').val(id);
-                $('#form-sblg-nvgt').submit();
+                '$pre' === '' || '$pre' === null ? $('#form-sblg-nvgt').submit() : dynamicSibling();
             }
             
             function dynamicInstTypes() {
-                $.post('dynamic-inst-types', {'level_of_study': $('#applicantssiblingeducationexpenses-study_level').val(), 'institution_type': $('#applicantssiblingeducationexpenses-institution_type').val(), 'pri_sec': true},
+                $.post('$pre' + 'dynamic-inst-types', {'level_of_study': $('#applicantssiblingeducationexpenses-study_level').val(), 'institution_type': $('#applicantssiblingeducationexpenses-institution_type').val(), 'pri_sec': true},
                     function (institution_types) {
                         $('#applicantssiblingeducationexpenses-institution_type').html(institution_types).blur();
                     }
@@ -133,3 +145,52 @@ $this->registerJs(
         , \yii\web\VIEW::POS_READY
 )
 ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function dynamicSibling() {
+                    form = $('#form-sblg-nvgt');
+
+                   $.post(form.attr('action'), form.serialize(),
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+                
+                function saveExpenses() {
+                    form = $('#form-stdt-exps');
+                    
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                   $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('[name=expenses-button]').click(
+                    function() {
+                        saveExpenses();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>

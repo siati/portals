@@ -15,6 +15,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use common\models\User;
 use common\models\StaticMethods;
 use common\models\Docs;
 
@@ -70,7 +71,25 @@ class SiteController extends Controller {
      * @return mixed
      */
     public function actionIndex() {
-        return $this->render('index');
+        if (Yii::$app->user->isGuest)
+            return $this->render('index');
+
+        if (Yii::$app->user->identity->user_type == User::USER_BUSINESS)
+            return $this->render('business');
+
+        if (Yii::$app->user->identity->user_type == User::USER_PARTNER)
+            return $this->render('partners');
+
+        if (Yii::$app->user->identity->user_type == User::USER_EMPLOYER)
+            return $this->render('employers');
+
+        if (Yii::$app->user->identity->user_type == User::USER_INSTITUTION)
+            return $this->render('institutions');
+
+        if (Yii::$app->user->identity->user_type == User::USER_STUDENT)
+            return $this->render('students');
+
+        return $this->render('users');
     }
 
     public function actionModal() {
@@ -207,14 +226,14 @@ class SiteController extends Controller {
                     'model' => $model,
         ]);
     }
-    
+
     /**
      * check if resource is available on the server and return response to client
      */
     public function actionCheckFile() {
         echo Docs::fileLocate($_POST['cat'], $_POST['nm'], Docs::locator);
     }
-    
+
     /**
      * drop file
      */

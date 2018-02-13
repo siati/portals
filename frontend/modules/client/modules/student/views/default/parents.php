@@ -34,6 +34,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php $paysFees = ApplicantsParents::pays_fees_yes ?>
 
+<?php $pre2 = Yii::$app->request->isAjax ? 'client/student/default/' : '' ?>
+
 <div class="gnrl-frm prnt-det">
 
     <div class="gnrl-frm-cont">
@@ -68,7 +70,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::button('Update', ['id' => 'prts-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'parents-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['id' => 'prts-btn', 'class' => 'btn btn-primary pull-left', 'name' => 'parents-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::button('Update', ['id' => 'prts-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'parents-button']) ?>
+
+            <?php endif; ?>
+            
 
         </div>
 
@@ -124,7 +137,7 @@ $this->registerJs(
             function checkParentStatus() {
                 post = $('#form-prntl-stts').length ? $('#form-prntl-stts').serialize() : {'Applicants[id]': '$applicant'};
 
-                $.post('check-parent-status', post,
+                $.post('$pre2' + 'check-parent-status', post,
                     function (statuses) {
                         if (statuses[0] === false)
                             $('.prt-rln').hide();
@@ -142,7 +155,7 @@ $this->registerJs(
             
             function parentIsGuarantor(opn) {
                 opn ? $('#oth-prt-det').show() :
-                    $.post('parent-is-guarantor', {'ApplicantsParents[applicant]': $('#applicantsparents-applicant').val(), 'ApplicantsParents[id_no]': $('#applicantsparents-id_no').val()},
+                    $.post('$pre2' + 'parent-is-guarantor', {'ApplicantsParents[applicant]': $('#applicantsparents-applicant').val(), 'ApplicantsParents[id_no]': $('#applicantsparents-id_no').val()},
                         function(opn) {
                             opn ? $('#oth-prt-det').show() : $('#oth-prt-det').hide();
                         }
@@ -208,7 +221,7 @@ $this->registerJs(
                 $('.prt-rln').click(
                     function () {
                         $('#relationship').val($(this).attr('rltn'));
-                        $('#form-prnt-det-btn').submit();
+                        '$pre2' === '' || '$pre2' === null ? $('#form-prnt-det-btn').submit() : dynamicParentsDetails();
                     }
                 );
             /* load various parents details on the view */
@@ -234,3 +247,80 @@ $this->registerJs(
         , \yii\web\VIEW::POS_READY
 )
 ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function dynamicParentsDetails() {
+                    form = $('#form-prnt-det-btn');
+
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                    $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+                function loadParentalStatus() {
+                    form = $('#form-prntl-stts-btn');
+
+                    $.post(form.attr('action'), form.serialize(),
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+                
+                function saveParentsDetails() {
+                    form = $('#form-prnt-det');
+
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                    $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('[name=prntl-stts-btn-btn]').click(
+                    function(event) {
+                        event.preventDefault();
+                        
+                        event.stopPropagation();
+                        
+                        loadParentalStatus();
+                    }
+                );
+                
+                $('#prts-btn-inner').click(
+                    function(event) {
+                        event.preventDefault();
+                        
+                        event.stopPropagation();
+                        
+                        saveParentsDetails();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>

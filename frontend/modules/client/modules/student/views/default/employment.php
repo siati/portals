@@ -19,6 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php $initial_employer = LmEmployers::searchEmployers($model->employer_name, null, LmEmployers::one) ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'client/student/default/' : '' ?>
+
 <div class="gnrl-frm stdt-eplmt">
 
     <div class="gnrl-frm-cont">
@@ -136,7 +138,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'employment-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['class' => 'btn btn-primary pull-left', 'name' => 'employment-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'employment-button']) ?>
+
+            <?php endif; ?>
 
         </div>
 
@@ -149,7 +161,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $this->registerJs(
         "
             function dynamicEmployers() {
-                $.post('dynamic-employers', {'search_name': $('#search_employer_name').val(), 'selected': $('#employer_name').val()},
+                $.post('$pre' + 'dynamic-employers', {'search_name': $('#search_employer_name').val(), 'selected': $('#employer_name').val()},
                     function (employers) {
                         $('#employer_name').html(employers);
                     }
@@ -157,7 +169,7 @@ $this->registerJs(
             }
             
             function employmentPeriods() {
-                $.post('employment-periods', {'terms': $('#applicantsemployment-employment_terms').val(), 'period': $('#applicantsemployment-employment_period').val()},
+                $.post('$pre' + 'employment-periods', {'terms': $('#applicantsemployment-employment_terms').val(), 'period': $('#applicantsemployment-employment_period').val()},
                     function (periods) {
                         $('#applicantsemployment-employment_period').html(periods).blur();
                     }
@@ -208,3 +220,42 @@ $this->registerJs(
         , \yii\web\VIEW::POS_READY
 )
 ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function saveEmployment() {
+                    form = $('#form-stdt-eplmt');
+                    
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                   $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('[name=employment-button]').click(
+                    function() {
+                        saveEmployment();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>

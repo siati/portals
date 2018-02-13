@@ -88,12 +88,14 @@ class DefaultController extends Controller {
 
         if (isset($_POST['Applicants']['fname']) && $applicant->load(Yii::$app->request->post()) && $user->load(Yii::$app->request->post())) {
 
-            $ajax1 = ($ajax = $this->ajaxValidate($applicant)) === self::IS_AJAX ? [] : $ajax;
+            if (Yii::$app->request->isAjax && !isset($_POST['sbmt'])) {
+                $ajax1 = ($ajax = $this->ajaxValidate($applicant)) === self::IS_AJAX ? [] : $ajax;
 
-            $ajax2 = ($ajax = $this->ajaxValidate($user)) === self::IS_AJAX ? [] : $ajax;
+                $ajax2 = ($ajax = $this->ajaxValidate($user)) === self::IS_AJAX ? [] : $ajax;
 
-            if (is_array($ajax1) || is_array($ajax2))
-                return ((is_array($ajax1) ? $ajax1 : []) + (is_array($ajax2) ? $ajax2 : []));
+                if (is_array($ajax1) || is_array($ajax2))
+                    return ((is_array($ajax1) ? $ajax1 : []) + (is_array($ajax2) ? $ajax2 : []));
+            }
 
             $wasNew = $user->isNewRecord;
 
@@ -102,7 +104,9 @@ class DefaultController extends Controller {
             $wasNew && !$user->isNewRecord && Yii::$app->getResponse()->redirect(Yii::$app->getUser()->loginUrl);
         }
 
-        return $this->render($user->isNewRecord ? 'register' : 'personal', ['applicant' => $applicant, 'user' => $user, 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render($user->isNewRecord ? 'register' : 'personal', ['applicant' => $applicant, 'user' => $user, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -114,13 +118,16 @@ class DefaultController extends Controller {
 
         if (isset($_POST['ApplicantsResidence']['nearest_primary']) && $model->load(Yii::$app->request->post())) {
 
-            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
-                return is_array($ajax) ? $ajax : [];
+            if (Yii::$app->request->isAjax && !isset($_POST['sbmt']))
+                if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                    return is_array($ajax) ? $ajax : [];
 
             $saved = $model->modelSave();
         }
 
-        return $this->render('residence', ['model' => $model, 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('residence', ['model' => $model, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -149,8 +156,9 @@ class DefaultController extends Controller {
 
             if (isset($_POST['ApplicantsParents']['fname']) && $parent->load(Yii::$app->request->post())) {
 
-                if (($ajax = $this->ajaxValidate($parent)) === self::IS_AJAX || count($ajax) > 0)
-                    return is_array($ajax) ? $ajax : [];
+                if (Yii::$app->request->isAjax && !isset($_POST['sbmt']))
+                    if (($ajax = $this->ajaxValidate($parent)) === self::IS_AJAX || count($ajax) > 0)
+                        return is_array($ajax) ? $ajax : [];
 
                 $saved = $parent->modelSave();
             }
@@ -158,7 +166,9 @@ class DefaultController extends Controller {
             $form_content = $this->renderPartial('parent', ['parent' => isset($relations[$parent->relationship]) ? $parent : $parent = ApplicantsParents::parentToLoad(null, $parent->applicant, empty($relationships[0]) ? ApplicantsParents::relationship_father : $relationships[0], $dob), 'relationship' => $relations[$parent->relationship]]);
         }
 
-        return $this->render('parents', ['relationships' => isset($_POST['ApplicantsParents']) ? $relationships : [], 'relations' => $relations, 'form_content' => $form_content, 'applicant' => empty($applicant->id) ? '' : $applicant->id, 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('parents', ['relationships' => isset($_POST['ApplicantsParents']) ? $relationships : [], 'relations' => $relations, 'form_content' => $form_content, 'applicant' => empty($applicant->id) ? '' : $applicant->id, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -195,13 +205,16 @@ class DefaultController extends Controller {
 
         if (isset($_POST['EducationBackground']['institution_name']) && $model->load(Yii::$app->request->post())) {
 
-            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
-                return is_array($ajax) ? $ajax : [];
+            if (Yii::$app->request->isAjax && !isset($_POST['sbmt']))
+                if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                    return is_array($ajax) ? $ajax : [];
 
             $saved = $model->modelSave();
         }
 
-        return $this->render('education', ['backgrounds' => EducationBackground::levelsToLoad($applicant), 'applicant' => $model->applicant, 'form_content' => $this->renderPartial('education-form', ['model' => $model]), 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('education', ['backgrounds' => EducationBackground::levelsToLoad($applicant), 'applicant' => $model->applicant, 'form_content' => $this->renderPartial('education-form', ['model' => $model]), 'saved' => !empty($saved)]);
     }
 
     /**
@@ -215,13 +228,16 @@ class DefaultController extends Controller {
 
         if (isset($_POST['ApplicantsGuarantors']['id_no']) && ($model->IDNoIsParents() || ($model->load(Yii::$app->request->post()) && ($model->IDNoIsSpouses() || true)))) {
 
-            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
-                return is_array($ajax) ? $ajax : [];
+            if (Yii::$app->request->isAjax && !isset($_POST['sbmt']))
+                if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                    return is_array($ajax) ? $ajax : [];
 
             $saved = $model->modelSave();
         }
 
-        return $this->render('guarantors', ['guarantors' => ApplicantsGuarantors::guarantorsToLoad($applicant_id), 'form_content' => $this->renderPartial('guarantor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant, 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('guarantors', ['guarantors' => ApplicantsGuarantors::guarantorsToLoad($applicant_id), 'form_content' => $this->renderPartial('guarantor', ['model' => $model, 'posted' => isset($saved)]), 'applicant' => empty($model->applicant) ? '' : $model->applicant, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -259,13 +275,16 @@ class DefaultController extends Controller {
 
         if (isset($_POST['ApplicantsInstitution']['institution_code']) && $model->load(Yii::$app->request->post())) {
 
-            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
-                return is_array($ajax) ? $ajax : [];
+            if (Yii::$app->request->isAjax && !isset($_POST['sbmt']))
+                if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                    return is_array($ajax) ? $ajax : [];
 
             $saved = $model->modelSave();
         }
 
-        return $this->render('institution', ['model' => $model, 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('institution', ['model' => $model, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -277,13 +296,16 @@ class DefaultController extends Controller {
 
         if (isset($_POST['ApplicantsEmployment']['employer_name']) && $model->load(Yii::$app->request->post())) {
 
-            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
-                return is_array($ajax) ? $ajax : [];
+            if (Yii::$app->request->isAjax && !isset($_POST['sbmt']))
+                if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                    return is_array($ajax) ? $ajax : [];
 
             $saved = $model->modelSave();
         }
 
-        return $this->render('employment', ['model' => $model, 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('employment', ['model' => $model, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -299,8 +321,10 @@ class DefaultController extends Controller {
 
         $is_ajax = false;
 
+        $ajax_init = Yii::$app->request->isAjax && !isset($_POST['sbmt']);
+
         if (isset($_POST['ApplicantsFamilyExpenses']) && ApplicantsFamilyExpenses::loadMultiple($family_expenses, Yii::$app->request->post()))
-            if (($ajax = $this->ajaxValidateMultiple($family_expenses)) === self::IS_AJAX || count($ajax) > 0) {
+            if ($ajax_init && (($ajax = $this->ajaxValidateMultiple($family_expenses)) === self::IS_AJAX || count($ajax) > 0)) {
                 $ajaxes += (is_array($ajax) ? $ajax : []);
                 $is_ajax = true;
             } else
@@ -308,7 +332,7 @@ class DefaultController extends Controller {
                     $saved = (isset($saved) ? $saved : true) && $family_expense->modelSave();
 
         if (isset($_POST['ApplicantsSiblingEducationExpenses']['fname']) && ((!$sibling_expense->isNewRecord || static::newSiblingSubmitted())) && $sibling_expense->load(Yii::$app->request->post()))
-            if (($ajax = $this->ajaxValidate($sibling_expense)) === self::IS_AJAX || count($ajax) > 0) {
+            if ($ajax_init && (($ajax = $this->ajaxValidate($sibling_expense)) === self::IS_AJAX || count($ajax) > 0)) {
                 $ajaxes += (is_array($ajax) ? $ajax : []);
                 $is_ajax = true;
             } else
@@ -317,7 +341,9 @@ class DefaultController extends Controller {
         if ($is_ajax)
             return $ajaxes;
 
-        return $this->render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense, 'saved' => !empty($saved), 'save_attempt' => isset($saved), 'saved2' => !empty($saved2), 'save_attempt2' => isset($saved2)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('expenses', ['applicant' => $applicant, 'family_expenses' => $family_expenses, 'sibling_expenses' => ApplicantsSiblingEducationExpenses::expensesForApplicant($applicant), 'sibling_expense' => $sibling_expense, 'saved' => !empty($saved), 'save_attempt' => isset($saved), 'saved2' => !empty($saved2), 'save_attempt2' => isset($saved2)]);
     }
 
     /**
@@ -337,13 +363,16 @@ class DefaultController extends Controller {
 
         if (isset($_POST['ApplicantsSpouse']['id_no']) && $model->load(Yii::$app->request->post())) {
 
-            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
-                return is_array($ajax) ? $ajax : [];
+            if (Yii::$app->request->isAjax && !isset($_POST['sbmt']))
+                if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                    return is_array($ajax) ? $ajax : [];
 
             $saved = $model->modelSave();
         }
 
-        return $this->render('spouse', ['model' => $model, 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('spouse', ['model' => $model, 'saved' => !empty($saved)]);
     }
 
     /**
@@ -355,13 +384,16 @@ class DefaultController extends Controller {
 
         if (isset($_POST['ApplicantSponsors']['name']) && $model->load(Yii::$app->request->post())) {
 
-            if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
-                return is_array($ajax) ? $ajax : [];
+            if (Yii::$app->request->isAjax && !isset($_POST['sbmt']))
+                if (($ajax = $this->ajaxValidate($model)) === self::IS_AJAX || count($ajax) > 0)
+                    return is_array($ajax) ? $ajax : [];
 
             $saved = $model->modelSave();
         }
 
-        return $this->render('sponsors', ['sponsors' => ApplicantSponsors::sponsorsToLoad($model->applicant), 'form_content' => $this->renderPartial('sponsor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant, 'saved' => !empty($saved)]);
+        $render = Yii::$app->request->isAjax ? 'renderAjax' : 'render';
+
+        return $this->$render('sponsors', ['sponsors' => ApplicantSponsors::sponsorsToLoad($model->applicant), 'form_content' => $this->renderPartial('sponsor', ['model' => $model]), 'applicant' => empty($model->applicant) ? '' : $model->applicant, 'saved' => !empty($saved)]);
     }
 
     /**

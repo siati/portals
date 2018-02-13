@@ -16,6 +16,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php $employed = ApplicantsGuarantors::employed_yes ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'site' : '../../../site' ?>
+
+<?php $pre2 = Yii::$app->request->isAjax ? 'client/student/default/' : '' ?>
+
 <div class="gnrl-frm grntr-det">
 
     <div class="gnrl-frm-cont">
@@ -50,7 +54,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::button('Update', ['id' => 'grntrs-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'guarantors-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['id' => 'grntrs-btn', 'class' => 'btn btn-primary pull-left', 'name' => 'guarantors-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::button('Update', ['id' => 'grntrs-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'guarantors-button']) ?>
+
+            <?php endif; ?>
 
         </div>
 
@@ -68,11 +82,11 @@ $this->registerJs(
             
             function loadGuarantor(id) {
                 $('#id').val(id);
-                $('#form-grntr-det-btn').submit();
+                '$pre2' === '' || '$pre2' === null ? $('#form-grntr-det-btn').submit() : dynamicGuarantor();
             }
             
             function checkTheIDNo() {
-                $.post('id-no-is-parents', {'ApplicantsGuarantors[id]': $('#applicantsguarantors-id').val(), 'ApplicantsGuarantors[applicant]': $('#applicantsguarantors-applicant').val(), 'ApplicantsGuarantors[id_no]': $('#applicantsguarantors-id_no').val()},
+                $.post('$pre2' + 'id-no-is-parents', {'ApplicantsGuarantors[id]': $('#applicantsguarantors-id').val(), 'ApplicantsGuarantors[applicant]': $('#applicantsguarantors-applicant').val(), 'ApplicantsGuarantors[id_no]': $('#applicantsguarantors-id_no').val()},
                     function (values) {
                         $.each(values[1],
                             function(attr, val) {
@@ -84,10 +98,10 @@ $this->registerJs(
                                     else
                                     if (attr === 'applicantsguarantors-county') {
                                         $('#applicantsguarantors-ward').val(values[1]['applicantsguarantors-ward']);
-                                        countyChanged(values[1]['applicantsguarantors-county'], values[1]['applicantsguarantors-sub_county'], $('#applicantsguarantors-sub_county'), '../../../site/dynamic-subcounties', values[1]['applicantsguarantors-constituency'], $('#applicantsguarantors-constituency'), '../../../site/dynamic-constituencies');
+                                        countyChanged(values[1]['applicantsguarantors-county'], values[1]['applicantsguarantors-sub_county'], $('#applicantsguarantors-sub_county'), '$pre/dynamic-subcounties', values[1]['applicantsguarantors-constituency'], $('#applicantsguarantors-constituency'), '$pre/dynamic-constituencies');
                                     } else
                                     if (attr === 'applicantsguarantors-constituency')
-                                        dynamicWards(values[1]['applicantsguarantors-constituency'], values[1]['applicantsguarantors-ward'], $('#applicantsguarantors-ward'), '../../../site/dynamic-wards');
+                                        dynamicWards(values[1]['applicantsguarantors-constituency'], values[1]['applicantsguarantors-ward'], $('#applicantsguarantors-ward'), '$pre/dynamic-wards');
                                 }
                             }
                         );
@@ -159,3 +173,56 @@ $this->registerJs(
         , \yii\web\VIEW::POS_READY
 )
 ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function dynamicGuarantor() {
+                    form = $('#form-grntr-det-btn');
+
+                   $.post(form.attr('action'), form.serialize(),
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+                
+                function saveGuarantor() {
+                    form = $('#form-grntr-det');
+                    
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                   $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('#grntrs-btn-inner').click(
+                    function(event) {
+                        event.preventDefault();
+                        
+                        event.stopPropagation();
+                        
+                        saveGuarantor();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>

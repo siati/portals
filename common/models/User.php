@@ -43,8 +43,10 @@ class User extends ActiveRecord implements IdentityInterface {
     const STATUS_PHONE_CONFIRMED = 2;
     const STATUS_ACTIVE = 3;
     const USER_STUDENT = 0;
-    const USER_PARTNER = 1;
-    const USER_BUSINESS = 2;
+    const USER_INSTITUTION = 1;
+    const USER_EMPLOYER = 2;
+    const USER_PARTNER = 3;
+    const USER_BUSINESS = 4;
     const CREATED_BY_SELF = 'self';
     const CURRENTLY_NOT_LOGGED_IN = 0;
     const CURRENTLY_LOGGED_IN = 1;

@@ -16,6 +16,8 @@ use common\models\LmBaseEnums;
 use frontend\modules\client\modules\student\models\ApplicantsParents;
 ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'site' : '../../../site' ?>
+
 <?php $form = ActiveForm::begin(['id' => 'form-prnt-det', 'enableAjaxValidation' => true]); ?>
 
 <?= Html::activeHiddenInput($parent, 'id') ?>
@@ -57,9 +59,9 @@ use frontend\modules\client\modules\student\models\ApplicantsParents;
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($parent, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicantsparents-sub_county').val(), $('#applicantsparents-sub_county'), '../../../site/dynamic-subcounties', $('#applicantsparents-constituency').val(), $('#applicantsparents-constituency'), '../../../site/dynamic-constituencies')"]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($parent, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicantsparents-sub_county').val(), $('#applicantsparents-sub_county'), '$pre/dynamic-subcounties', $('#applicantsparents-constituency').val(), $('#applicantsparents-constituency'), '$pre/dynamic-constituencies')"]) ?></td>
         <td class="td-pdg-lft"><?= $form->field($parent, 'sub_county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(SubCounties::subcountiesForCounty($parent->county), 'id', 'name', false), ['prompt' => '-- Select Subcounty --']) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($parent, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($parent->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicantsparents-ward').val(), $('#applicantsparents-ward'), '../../../site/dynamic-wards')"]) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($parent, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($parent->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicantsparents-ward').val(), $('#applicantsparents-ward'), '$pre/dynamic-wards')"]) ?></td>
         <td class="td-pdg-lft"><?= $form->field($parent, 'ward', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Wards::wardsForConstituency($parent->constituency), 'id', 'name', false), ['prompt' => '-- Select Ward --']) ?></td>
     </tr>
 </table>

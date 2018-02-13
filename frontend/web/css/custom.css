@@ -536,3 +536,66 @@ table {
     font-weight: bold;
     font-style: italic
 }
+
+.jumbo-cntnr {
+    padding-top: 40px
+}
+
+.tbl {
+    display: table;
+}
+
+.tbl-cl {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.home-tile-td {
+    width: 20%
+}
+
+.home-tile {
+    width: 100%;
+    padding: 10px;
+}
+
+.home-tile2 {
+    width: 20%;
+    height: 100%;
+    padding: 10px;
+}
+
+.menu-hdr {
+    height: 40px;
+    font-size: 25px;
+    border-radius: 6px;
+    color: #fff;
+    text-align: left;
+    background-color: #049cdb
+}
+
+.home-tile-desc {
+    font-size: 9px;
+    font-style: italic
+}
+
+.home-icon {
+    font-size: 40px
+}
+
+.border-less {
+    border: none
+}
+
+.white-space {
+    white-space: normal
+}
+
+.bold {
+    font-weight: bold
+}
+
+.opacity-0 {
+    opacity: 0
+}

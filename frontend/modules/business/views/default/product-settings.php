@@ -95,7 +95,7 @@ $this->registerJs(
                             data: fd,
                             success: function(res) {
                                 if (res) {
-                                    $('[for=products-' + field.attr('field') + ']').html(field.attr('label') + (res ? (': ' + res) : ('')))
+                                    $('[for=products-' + field.attr('field') + ']').removeClass('btn-primary').addClass('btn-success');
                                     dataSaved('Done', 'Logo Uploaded Successfully', 'success');
                                 } else
                                     dataSaved('Nope!', 'Logo Not Uploaded<br/><br/>Please Retry', 'error');

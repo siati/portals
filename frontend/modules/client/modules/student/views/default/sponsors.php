@@ -13,6 +13,8 @@ $this->title = 'Sponsor\'s Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'client/student/default/' : '' ?>
+
 <div class="gnrl-frm spnsr-det">
 
     <div class="gnrl-frm-cont">
@@ -45,8 +47,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
 
-        <div class="gnrl-frm-ftr">
-            <?= Html::button('Update', ['id' => 'spnsrs-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'sponsors-button']) ?>
+        <div class="gnrl-frm-ftr"><?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['id' => 'spnsrs-btn', 'class' => 'btn btn-primary pull-left', 'name' => 'sponsors-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::button('Update', ['id' => 'spnsrs-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'sponsors-button']) ?>
+
+            <?php endif; ?>
+            
         </div>
 
     </div>
@@ -63,7 +75,7 @@ $this->registerJs(
             
             function loadSponsor(id) {
                 $('#id').val(id);
-                $('#form-spnsr-det-btn').submit();
+                '$pre' === '' || '$pre' === null ? $('#form-spnsr-det-btn').submit() : dynamicSponsor();
             }
         "
         , \yii\web\VIEW::POS_HEAD
@@ -102,3 +114,56 @@ $this->registerJs(
         , \yii\web\VIEW::POS_READY
 )
 ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function dynamicSponsor() {
+                    form = $('#form-spnsr-det-btn');
+
+                   $.post(form.attr('action'), form.serialize(),
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+                
+                function saveSponsor() {
+                    form = $('#form-spnsr-det');
+                    
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                   $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('#spnsrs-btn-inner').click(
+                    function(event) {
+                        event.preventDefault();
+                        
+                        event.stopPropagation();
+                        
+                        saveSponsor();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>

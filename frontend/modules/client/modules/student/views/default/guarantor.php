@@ -3,6 +3,7 @@
 /* @var $form \kartik\form\ActiveForm */
 /* @var $model \frontend\modules\client\modules\student\models\ApplicantsGuarantors */
 /* @var $relationship string */
+/* @var $posted boolean */
 
 use yii\helpers\Html;
 use kartik\form\ActiveForm;
@@ -16,7 +17,9 @@ use common\models\LmBaseEnums;
 use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 ?>
 
-<?php $disabled = ($is_spouse = is_object($model->isSpouse())) || is_object($model->isParent()) || $model->isNewRecord ?>
+<?php $disabled = ($is_spouse = is_object($model->isSpouse())) || is_object($model->isParent()) || ($model->isNewRecord && empty($posted)) ?>
+
+<?php $pre = Yii::$app->request->isAjax ? 'site' : '../../../site' ?>
 
 <?php $form = ActiveForm::begin(['id' => 'form-grntr-det', 'enableAjaxValidation' => true]); ?>
 
@@ -53,9 +56,9 @@ use frontend\modules\client\modules\student\models\ApplicantsGuarantors;
 
 <table>
     <tr>
-        <td class="td-pdg-lft"><?= $form->field($model, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicantsguarantors-sub_county').val(), $('#applicantsguarantors-sub_county'), '../../../site/dynamic-subcounties', $('#applicantsguarantors-constituency').val(), $('#applicantsguarantors-constituency'), '../../../site/dynamic-constituencies')", 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicantsguarantors-sub_county').val(), $('#applicantsguarantors-sub_county'), '$pre/dynamic-subcounties', $('#applicantsguarantors-constituency').val(), $('#applicantsguarantors-constituency'), '$pre/dynamic-constituencies')", 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'sub_county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(SubCounties::subcountiesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Subcounty --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
-        <td class="td-pdg-lft"><?= $form->field($model, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicantsguarantors-ward').val(), $('#applicantsguarantors-ward'), '../../../site/dynamic-wards')", 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
+        <td class="td-pdg-lft"><?= $form->field($model, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicantsguarantors-ward').val(), $('#applicantsguarantors-ward'), '$pre/dynamic-wards')", 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
         <td class="td-pdg-lft"><?= $form->field($model, 'ward', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Wards::wardsForConstituency($model->constituency), 'id', 'name', false), ['prompt' => '-- Select Ward --', 'disabled' => $disabled, 'prt' => 'prt']) ?></td>
     </tr>
 </table>

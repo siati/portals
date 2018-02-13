@@ -11,6 +11,27 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/xampp/htdocs/portals/frontend/views/site/students.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/education.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/views/layouts/main.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/config/main.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/views/site/index.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/web/css/site.css</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/views/layouts/applicant-menu.php</file>
+            <file>file:/D:/xampp/htdocs/portals/common/models/User.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/views/default/product-settings.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/web/css/custom.css</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/institution.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/controllers/SiteController.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/personal.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/views/site/institutions.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/employment.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/models/Applicants.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/residence.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/guarantors.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/business/controllers/DefaultController.php</file>
+            <file>file:/D:/xampp/htdocs/portals/frontend/modules/client/modules/student/views/default/parents.php</file>
+        </group>
     </open-files>
 </project-private>

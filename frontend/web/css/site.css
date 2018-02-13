@@ -162,3 +162,11 @@ a.desc:after {
     height: 100%;
     overflow-x: hidden;
 }
+
+.full-width {
+    width: 100%;
+}
+
+.full-height {
+    height: 100%
+}

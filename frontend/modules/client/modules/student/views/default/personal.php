@@ -33,6 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php $parents_abandoned = Applicants::parents_abandoned ?>
 <?php $parents_not_applicable = Applicants::parents_not_applicable ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'site' : '../../../site' ?>
+
+<?php $pre2 = Yii::$app->request->isAjax ? 'client/student/default/' : '' ?>
+
 <div class="gnrl-frm stdt-psnl">
 
     <div class="gnrl-frm-cont">
@@ -105,9 +109,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <table>
                 <tr>
-                    <td class="td-pdg-lft"><?= $form->field($applicant, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicants-sub_county').val(), $('#applicants-sub_county'), '../../../site/dynamic-subcounties', $('#applicants-constituency').val(), $('#applicants-constituency'), '../../../site/dynamic-constituencies')"]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicants-sub_county').val(), $('#applicants-sub_county'), '$pre/dynamic-subcounties', $('#applicants-constituency').val(), $('#applicants-constituency'), '$pre/dynamic-constituencies')"]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'sub_county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(SubCounties::subcountiesForCounty($applicant->county), 'id', 'name', false), ['prompt' => '-- Select Subcounty --']) ?></td>
-                    <td class="td-pdg-lft"><?= $form->field($applicant, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($applicant->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicants-ward').val(), $('#applicants-ward'), '../../../site/dynamic-wards')"]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($applicant->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicants-ward').val(), $('#applicants-ward'), '$pre/dynamic-wards')"]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'ward', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Wards::wardsForConstituency($applicant->constituency), 'id', 'name', false), ['prompt' => '-- Select Ward --']) ?></td>
                 </tr>
             </table>
@@ -139,7 +143,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <table>
                 <tr>
-                    <td class="td-pdg-lft"><?= $form->field($applicant, 'bank', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(StaticMethods::modelsToArray(LmBanks::searchBanks(null, LmBanks::online, 'all'), 'BANKCODE', 'NAME', true), ['prompt' => '-- Bank Name --', 'onchange' => 'bankBranches()']) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($applicant, 'bank', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(StaticMethods::modelsToArray(LmBanks::searchBanks(null, LmBanks::online, 'all'), 'BANKCODE', 'NAME', true), ['prompt' => '-- Bank Name --', 'onchange' => "bankBranches('$pre2')"]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'bank_branch', ['addon' => ['prepend' => ['content' => '<i class="fa fa-institution"></i>']]])->dropDownList(StaticMethods::modelsToArray(LmBankBranch::searchBranches($applicant->bank, null, LmBankBranch::all), 'BRANCHCODE', 'BRANCHNAME', true), ['prompt' => '-- Bank Branch --']) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'account_number', ['addon' => ['prepend' => ['content' => '<i class="fa fa-vcard"></i>']]])->textInput(['maxlength' => true]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($applicant, 'smart_card_number', ['addon' => ['prepend' => ['content' => '<i class="fa fa-vcard-o"></i>']]])->textInput(['maxlength' => true]) ?></td>
@@ -150,7 +154,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'personal-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['class' => 'btn btn-primary pull-left', 'name' => 'personal-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'personal-button']) ?>
+
+            <?php endif; ?>
+
 
         </div>
 
@@ -183,8 +198,8 @@ $this->registerJs(
                     $('#applicants-father_death_cert_no, #applicants-mother_death_cert_no').val(null).parent().parent().hide();
             }
             
-            function bankBranches() {
-                $.post('bank-branches', {'bank': $('#applicants-bank').val(), 'branch': $('#applicants-bank_branch').val()},
+            function bankBranches(pre) {
+                $.post(pre + 'bank-branches', {'bank': $('#applicants-bank').val(), 'branch': $('#applicants-bank_branch').val()},
                     function (branches) {
                         $('#applicants-bank_branch').html(branches).blur();
                     }
@@ -193,7 +208,6 @@ $this->registerJs(
         ", yii\web\View::POS_HEAD
 )
 ?>
-
 
 <?php
 $this->registerJs(
@@ -215,3 +229,59 @@ $this->registerJs(
         ", yii\web\View::POS_READY
 )
 ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function savePersonalDetails() {
+                    form = $('#form-stdt-psnl');
+                    
+                    post = form.serializeArray();
+                    
+                    post.push({'name': 'sbmt', 'value': true});
+
+                    $.post(form.attr('action'), post,
+                        function (frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('[name=personal-button]').click(
+                    function() {
+                        savePersonalDetails();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+    <?php if ($applicant->isEmployed()): ?>
+        <?php $this->registerJs("$('#sd-nav-eplymt').parent().parent().show(); $('#ajx-sd-nav-eplymt-td').show()", \yii\web\VIEW::POS_READY) ?>
+    <?php else: ?>
+        <?php $this->registerJs("$('#sd-nav-eplymt').parent().parent().hide(); $('#ajx-sd-nav-eplymt-td').hide()", \yii\web\VIEW::POS_READY) ?>
+    <?php endif; ?>
+
+    <?php if (!$applicant->isEmployed() && $applicant->parentsApplicable()): ?>
+        <?php $this->registerJs("$('#sd-nav-prnts, #sd-nav-expns, #sd-nav-spnsrs').parent().parent().show(); $('#ajx-sd-nav-prnts-td, #ajx-sd-nav-expns-td, #ajx-sd-nav-spnsrs-td').show()", \yii\web\VIEW::POS_READY) ?>
+    <?php else: ?>
+        <?php $this->registerJs("$('#sd-nav-prnts, #sd-nav-expns, #sd-nav-spnsrs').parent().parent().hide(); $('#ajx-sd-nav-prnts-td, #ajx-sd-nav-expns-td, #ajx-sd-nav-spnsrs-td').hide()", \yii\web\VIEW::POS_READY) ?>
+    <?php endif; ?>
+
+    <?php if ($applicant->isMarried()): ?>
+        <?php $this->registerJs("$('#sd-nav-sps').parent().parent().show(); $('ajx-sd-nav-sps-td').show()", \yii\web\VIEW::POS_READY) ?>
+    <?php else: ?>
+        <?php $this->registerJs("$('#sd-nav-sps').parent().parent().hide(); $('ajx-sd-nav-sps-td').hide()", \yii\web\VIEW::POS_READY) ?>
+    <?php endif; ?>
+
+<?php endif; ?>

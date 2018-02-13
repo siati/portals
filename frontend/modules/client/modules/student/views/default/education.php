@@ -19,6 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php $primary_cert = EducationBackground::primary_cert ?>
 <?php $secondary_cert = EducationBackground::secondary_cert ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'client/student/default/' : '' ?>
+
 <div class="gnrl-frm edcn-det">
 
     <div class="gnrl-frm-cont">
@@ -29,19 +31,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <div class="edcn-tab-pn pull-left lvl-lst">
                 <?php ActiveForm::begin(['id' => 'form-edcn-det-btn']); ?>
-                
+
                 <input name='EducationBackground[id]' type='hidden' id='id'>
-                
+
                 <input name='EducationBackground[applicant]' type='hidden' value='<?= $applicant ?>'>
-                
+
                 <input name='EducationBackground[study_level]' type='hidden' id="study_level">
-                
+
                 <?php foreach ($backgrounds as $id => $background): ?>
                     <?= Html::button($background[1], ['class' => "edcn-bcg bcg-$id btn btn-sm btn-primary edcn-nav-btn", 'name' => 'edcn-det-btn-btn', 'edctn' => $id, 'lvl' => in_array($background[0], [$study_level_primary, $study_level_secondary]) ? $background[0] : '']) ?>
                 <?php endforeach; ?>
-                
+
                 <?= Html::button('New Education', ['class' => 'edcn-bcg bcg-new btn btn-sm btn-primary edcn-nav-btn', 'name' => 'edcn-det-btn-btn', 'edctn' => '', 'lvl' => '']) ?>
-                
+
                 <?php ActiveForm::end(); ?>
             </div>
 
@@ -53,7 +55,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::button('Update', ['id' => 'edcn-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'education-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['id' => 'edcn-btn', 'class' => 'btn btn-primary pull-left', 'name' => 'education-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::button('Update', ['id' => 'edcn-btn', 'class' => 'btn btn-primary pull-right', 'name' => 'education-button']) ?>
+
+            <?php endif; ?>
 
         </div>
 
@@ -65,7 +77,7 @@ $this->registerJs(
         "
             function grade() {
                 if ((lvl = $('#educationbackground-study_level').val()) === '$study_level_primary' || lvl === '$study_level_secondary')
-                    $.post('grade', {'score': $('#educationbackground-score').val(), 'out_of': $('#educationbackground-out_of').val()},
+                    $.post('$pre' + 'grade', {'score': $('#educationbackground-score').val(), 'out_of': $('#educationbackground-out_of').val()},
                         function (grd) {
                             $('#educationbackground-grade').val(grd);
                         }
@@ -77,7 +89,7 @@ $this->registerJs(
                     $('#educationbackground-score, #educationbackground-out_of').blur().attr('disabled', null) :
                     $('#educationbackground-score, #educationbackground-out_of').blur().attr('disabled', 'disabled').val(null);
                  
-                $.post('inst-types', {'study_level': $('#educationbackground-study_level').val()},
+                $.post('$pre' + 'inst-types', {'study_level': $('#educationbackground-study_level').val()},
                     function (typs) {
                         $('#educationbackground-institution_type').html(typs).blur().attr('disabled', grd_cls ? 'disabled' : null);
                     }
@@ -85,12 +97,12 @@ $this->registerJs(
                 
                 $('#educationbackground-course_name').val(grd_cls ? (is_pri ? '$primary_cert' : '$secondary_cert') : (null)).blur().attr('disabled', grd_cls ? 'disabled' : null);
                  
-                $.post('merits', {'study_level': $('#educationbackground-study_level').val()},
+                $.post('$pre' + 'merits', {'study_level': $('#educationbackground-study_level').val()},
                     function (mrts) {
                         $('#educationbackground-grade').html(mrts).blur().attr('disabled', grd_cls ? 'disabled' : null);
                         
                         grd_cls && ($('#educationbackground-out_of').val() === null || $('#educationbackground-out_of').val() === '') ?
-                            $.post('out-ofs', {'study_level': $('#educationbackground-study_level').val(), 'year': $('#educationbackground-till').val()},
+                            $.post('$pre' + 'out-ofs', {'study_level': $('#educationbackground-study_level').val(), 'year': $('#educationbackground-till').val()},
                                 function (otf) {
                                     $('#educationbackground-out_of').val(otf).change();
                                 }
@@ -98,13 +110,13 @@ $this->registerJs(
                     }
                 );
                 
-                $.post('educ-since-till', {'applicant': $('#educationbackground-applicant').val(), 'study_level': $('#educationbackground-study_level').val(), 'since': true, 'value': $('#educationbackground-since').val()},
+                $.post('$pre' + 'educ-since-till', {'applicant': $('#educationbackground-applicant').val(), 'study_level': $('#educationbackground-study_level').val(), 'since': true, 'value': $('#educationbackground-since').val()},
                     function (yrs) {
                         $('#educationbackground-since').html(yrs)
                     }
                 );
                 
-                $.post('educ-since-till', {'applicant': $('#educationbackground-applicant').val(), 'study_level': $('#educationbackground-study_level').val(), 'value': $('#educationbackground-till').val()},
+                $.post('$pre' + 'educ-since-till', {'applicant': $('#educationbackground-applicant').val(), 'study_level': $('#educationbackground-study_level').val(), 'value': $('#educationbackground-till').val()},
                     function (yrs) {
                         $('#educationbackground-till').html(yrs)
                     }
@@ -123,7 +135,7 @@ $this->registerJs(
             function loadEducation(id, lvl) {
                 $('#id').val(id);
                 $('#study_level').val(lvl);
-                $('#form-edcn-det-btn').submit();
+                '$pre' === '' || '$pre' === null ? $('#form-edcn-det-btn').submit() : dynamicEducation();
             }
 
         "
@@ -189,3 +201,56 @@ $this->registerJs(
         , yii\web\View::POS_READY
 )
 ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function dynamicEducation() {
+                    form = $('#form-edcn-det-btn');
+
+                   $.post(form.attr('action'), form.serialize(),
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+                
+                function saveEducation() {
+                    form = $('#form-edcn-det');
+                    
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                   $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('#edcn-btn-inner').click(
+                    function(event) {
+                        event.preventDefault();
+                        
+                        event.stopPropagation();
+                        
+                        saveEducation();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>

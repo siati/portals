@@ -16,6 +16,8 @@ $this->title = 'Institution Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'client/student/default/' : '' ?>
+
 <div class="gnrl-frm stdt-inst">
 
     <div class="gnrl-frm-cont">
@@ -93,7 +95,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'institution-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['class' => 'btn btn-primary pull-left', 'name' => 'institution-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'institution-button']) ?>
+
+            <?php endif; ?>
 
         </div>
 
@@ -106,7 +118,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $this->registerJs(
         "
             function dynamicInstitutions() {
-                $.post('dynamic-institutions', {'country': $('#applicantsinstitution-country').val(), 'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'institution_type': $('#applicantsinstitution-institution_type').val(), 'admission_category': $('#applicantsinstitution-admission_category').val(), 'institution_code': $('#applicantsinstitution-institution_code').val()},
+                $.post('$pre' + 'dynamic-institutions', {'country': $('#applicantsinstitution-country').val(), 'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'institution_type': $('#applicantsinstitution-institution_type').val(), 'admission_category': $('#applicantsinstitution-admission_category').val(), 'institution_code': $('#applicantsinstitution-institution_code').val()},
                     function (institutions) {
                         $('#applicantsinstitution-institution_code').html(institutions).change().blur();
                     }
@@ -114,7 +126,7 @@ $this->registerJs(
             }
 
             function dynamicInstitutionBranches() {
-                $.post('dynamic-institution-branches', {'institution_code': $('#applicantsinstitution-institution_code').val(), 'institution_branch_code': $('#applicantsinstitution-institution_branch_code').val()},
+                $.post('$pre' + 'dynamic-institution-branches', {'institution_code': $('#applicantsinstitution-institution_code').val(), 'institution_branch_code': $('#applicantsinstitution-institution_branch_code').val()},
                     function (institution_branches) {
                         $('#applicantsinstitution-institution_branch_code').html(institution_branches).change().blur();
                     }
@@ -122,7 +134,7 @@ $this->registerJs(
             }
 
             function dynamicCourses() {
-                $.post('dynamic-courses', {'institution_code': $('#applicantsinstitution-institution_code').val(), 'institution_branch_code': '', 'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'faculty': '', 'course_type': '', 'course_category': $('#applicantsinstitution-course_category').val(), 'course_code': $('#applicantsinstitution-course_code').val()},
+                $.post('$pre' + 'dynamic-courses', {'institution_code': $('#applicantsinstitution-institution_code').val(), 'institution_branch_code': '', 'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'faculty': '', 'course_type': '', 'course_category': $('#applicantsinstitution-course_category').val(), 'course_code': $('#applicantsinstitution-course_code').val()},
                     function (courses) {
                         $('#applicantsinstitution-course_code').html(courses).blur();
                     }
@@ -130,7 +142,7 @@ $this->registerJs(
             }
             
             function dynamicInstTypes() {
-                $.post('dynamic-inst-types', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'institution_type': $('#applicantsinstitution-institution_type').val()},
+                $.post('$pre' + 'dynamic-inst-types', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'institution_type': $('#applicantsinstitution-institution_type').val()},
                     function (institution_types) {
                         $('#applicantsinstitution-institution_type').html(institution_types).blur();
                     }
@@ -138,7 +150,7 @@ $this->registerJs(
             }
             
             function dynamicAdmissionCategories() {
-                $.post('dynamic-admission-categories', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'admission_category': $('#applicantsinstitution-admission_category').val()},
+                $.post('$pre' + 'dynamic-admission-categories', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'admission_category': $('#applicantsinstitution-admission_category').val()},
                     function (admission_categories) {
                         $('#applicantsinstitution-admission_category').html(admission_categories).blur();
                     }
@@ -146,7 +158,7 @@ $this->registerJs(
             }
             
             function courseDurations() {
-                $.post('dynamic-course-durations', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'duration': $('#applicantsinstitution-duration').val()},
+                $.post('$pre' + 'dynamic-course-durations', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'duration': $('#applicantsinstitution-duration').val()},
                     function (durations) {
                         $('#applicantsinstitution-duration').html(durations).change().blur();
                     }
@@ -154,7 +166,7 @@ $this->registerJs(
             }
             
             function studyYears() {
-                $.post('dynamic-study-years', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'year_of_study': $('#applicantsinstitution-year_of_study').val()},
+                $.post('$pre' + 'dynamic-study-years', {'level_of_study': $('#applicantsinstitution-level_of_study').val(), 'year_of_study': $('#applicantsinstitution-year_of_study').val()},
                     function (years_of_study) {
                         $('#applicantsinstitution-year_of_study').html(years_of_study).blur();
                     }
@@ -162,7 +174,7 @@ $this->registerJs(
             }
             
             function completionYear() {
-                $.post('completion-year', {'year_of_admission': $('#applicantsinstitution-year_of_admission').val(), 'admission_month': $('#applicantsinstitution-admission_month').val(), 'duration': $('#applicantsinstitution-duration').val()},
+                $.post('$pre' + 'completion-year', {'year_of_admission': $('#applicantsinstitution-year_of_admission').val(), 'admission_month': $('#applicantsinstitution-admission_month').val(), 'duration': $('#applicantsinstitution-duration').val()},
                     function (year_of_completion) {
                         $('#applicantsinstitution-year_of_completion').val(year_of_completion).blur();
                     }
@@ -230,3 +242,42 @@ $this->registerJs(
         , \yii\web\VIEW::POS_READY
 )
 ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function saveInstitution() {
+                    form = $('#form-stdt-inst');
+                    
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                   $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('[name=institution-button]').click(
+                    function() {
+                        saveInstitution();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>

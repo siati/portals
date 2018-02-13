@@ -73,7 +73,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'spouse-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['class' => 'btn btn-primary pull-left', 'name' => 'spouse-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'spouse-button']) ?>
+
+            <?php endif; ?>
 
         </div>
 
@@ -84,3 +94,42 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <?php $this->registerJs("'$saved' ? dataSaved('Success', 'Spouse Details Saved', 'success') : '';", yii\web\View::POS_READY) ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function saveSpouse() {
+                    form = $('#form-stdt-sps');
+                    
+                    post = form.serializeArray();
+
+                    post.push({'name': 'sbmt', 'value': true});
+
+                   $.post(form.attr('action'), post,
+                        function(frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('[name=spouse-button]').click(
+                    function() {
+                        saveSpouse();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>

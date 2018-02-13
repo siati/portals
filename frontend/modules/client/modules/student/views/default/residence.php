@@ -16,6 +16,8 @@ $this->title = 'Current Residence Details';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?php $pre = Yii::$app->request->isAjax ? 'site' : '../../../site' ?>
+
 <div class="gnrl-frm stdt-rsdc">
 
     <div class="gnrl-frm-cont">
@@ -34,14 +36,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <table>
                 <tr>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicantsresidence-sub_county').val(), $('#applicantsresidence-sub_county'), '../../../site/dynamic-subcounties', $('#applicantsresidence-constituency').val(), $('#applicantsresidence-constituency'), '../../../site/dynamic-constituencies')"]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Counties::allCounties(), 'id', 'name', false), ['prompt' => '-- Select County --', 'onchange' => "countyChanged($(this).val(), $('#applicantsresidence-sub_county').val(), $('#applicantsresidence-sub_county'), '$pre/dynamic-subcounties', $('#applicantsresidence-constituency').val(), $('#applicantsresidence-constituency'), '$pre/dynamic-constituencies')"]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'sub_county', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(SubCounties::subcountiesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Subcounty --']) ?></td>
                 </tr>
             </table>
 
             <table>
                 <tr>
-                    <td class="td-pdg-lft"><?= $form->field($model, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicantsresidence-ward').val(), $('#applicantsresidence-ward'), '../../../site/dynamic-wards')"]) ?></td>
+                    <td class="td-pdg-lft"><?= $form->field($model, 'constituency', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Constituencies::constituenciesForCounty($model->county), 'id', 'name', false), ['prompt' => '-- Select Constituency --', 'onchange' => "dynamicWards($(this).val(), $('#applicantsresidence-ward').val(), $('#applicantsresidence-ward'), '$pre/dynamic-wards')"]) ?></td>
                     <td class="td-pdg-lft"><?= $form->field($model, 'ward', ['addon' => ['prepend' => ['content' => '<i class="fa fa-map-marker"></i>']]])->dropDownList(StaticMethods::modelsToArray(Wards::wardsForConstituency($model->constituency), 'id', 'name', false), ['prompt' => '-- Select Ward --']) ?></td>
                 </tr>
             </table>
@@ -71,7 +73,17 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="gnrl-frm-ftr">
 
-            <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'residence-button']) ?>
+            <?php if (Yii::$app->request->isAjax): ?>
+
+                <?= Html::button('Update', ['class' => 'btn btn-primary pull-left', 'name' => 'residence-button']) ?>
+
+                <div class="btn btn-danger pull-right" onclick="closeDialog()"><b>Close</b></div>
+
+            <?php else: ?>
+
+                <?= Html::submitButton('Update', ['class' => 'btn btn-primary pull-right', 'name' => 'residence-button']) ?>
+
+            <?php endif; ?>
 
         </div>
 
@@ -82,3 +94,41 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
 <?php $this->registerJs("'$saved' ? dataSaved('Success', 'Residence Details Saved', 'success') : '';", yii\web\View::POS_READY) ?>
+
+<?php if (Yii::$app->request->isAjax): ?>
+
+    <?php
+    $this->registerJs(
+            "
+                function saveResidenceDetails() {
+                    form = $('#form-stdt-rsdc');
+                    
+                    post = form.serializeArray();
+                    
+                    post.push({'name': 'sbmt', 'value': true});
+
+                    $.post(form.attr('action'), post,
+                        function (frm) {
+                            $('#yii-modal-cnt').html(frm);
+                        }
+                    );
+                }
+            ", yii\web\View::POS_HEAD
+    )
+    ?>
+
+    <?php
+    $this->registerJs(
+            "
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                
+                $('[name=residence-button]').click(
+                    function() {
+                        saveResidenceDetails();
+                    }
+                );
+            "
+            , \yii\web\VIEW::POS_READY)
+    ?>
+
+<?php endif; ?>
