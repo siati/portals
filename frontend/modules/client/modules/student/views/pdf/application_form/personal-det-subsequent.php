@@ -24,32 +24,32 @@ use frontend\modules\business\models\ApplicationParts;
     <table class="part-table">
         <tbody>
             <tr>
-                <td class="part-table-data align-left">Name</td>
-                <td class="part-table-data align-left"><?= "$applicant->fname $applicant->mname $applicant->lname" ?></td>
+                <td class="part-table-label align-left" style="width: 25%">Name</td>
+                <td class="part-table-data align-left" style="width: 75%"><?= "$applicant->fname $applicant->mname $applicant->lname" ?></td>
             </tr>
             
             <tr>
-                <td class="part-table-data align-left"><?= empty($user->id_no) ? 'Birth Cert. No.' : 'Nat. ID. No.' ?> - Reg. No</td>
+                <td class="part-table-label align-left"><?= empty($user->id_no) ? 'Birth Cert. No.' : 'Nat. ID. No.' ?> - Reg. No</td>
                 <td class="part-table-data align-left"><?= empty($user->id_no) ? $user->birth_cert_no : $user->id_no ?> - <?= $institution->registration_no ?></td>
             </tr>
             
             <tr>
-                <td class="part-table-data align-left">Institution</td>
+                <td class="part-table-label align-left">Institution</td>
                 <td class="part-table-data align-left"><?= LmInstitution::byInstitutionCode($institution->institution_code)->INSTITUTIONNAME ?></td>
             </tr>
             
             <tr>
-                <td class="part-table-data align-left">Email Address</td>
+                <td class="part-table-label align-left">Email Address</td>
                 <td class="part-table-data align-left"><?= $user->email ?></td>
             </tr>
             
             <tr>
-                <td class="part-table-data align-left">Phone No.</td>
+                <td class="part-table-label align-left">Phone No.</td>
                 <td class="part-table-data align-left"><?= $user->phone ?></td>
             </tr>
             
             <tr>
-                <td class="part-table-data align-left">Amount Applied</td>
+                <td class="part-table-label align-left">Amount Applied</td>
                 <td class="part-table-data align-left">KShs. <?= number_format($institution->amount_applied, 0) ?></td>
             </tr>
         </tbody>

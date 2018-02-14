@@ -13,7 +13,7 @@ use kartik\form\ActiveForm;
 use common\models\LmBaseEnums;
 ?>
 
-<?php $form = ActiveForm::begin(['id' => 'form-stdt-inst-prtl', 'enableAjaxValidation' => true, 'action' => 'institution-partial', 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
+<?php $form = ActiveForm::begin(['id' => 'form-stdt-inst-prtl', 'enableAjaxValidation' => true, 'action' => 'client/student/default/institution-partial', 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
 
 <?= Html::activeHiddenInput($model, 'id') ?>
 

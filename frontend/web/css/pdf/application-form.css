@@ -187,3 +187,7 @@ pre {
     font-style: italic;
     border-top: 2px solid #000
 }
+
+.td-pdg-lft-pdf {
+    padding-left: 25px
+}

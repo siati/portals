@@ -1,5 +1,5 @@
 function dataSaved(title, message, type) {
-    customSwal(title, message, '2500', type, false, true, 'ok', type === 'success' ? '#a5dc86' : '#f27474', false, 'cancel');
+    customSwal(title, message, '2500', type, true, true, 'ok', type === 'success' ? '#a5dc86' : (type === 'warning' ? '#f8bb86' : '#f27474'), false, 'cancel');
 }
 
 function customSwal(title, message, timer, type, modal, showConfirmButton, confirmButtonText, confirmButtonColor, showCancelButton, cancelButtonText) {

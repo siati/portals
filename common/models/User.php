@@ -20,6 +20,7 @@ use frontend\modules\client\modules\student\models\Applicants;
  * @property string $email
  * @property string $username
  * @property integer $user_type
+ * @property integer $profile
  * @property string $auth_key
  * @property string $password_hash
  * @property integer $status
@@ -47,6 +48,8 @@ class User extends ActiveRecord implements IdentityInterface {
     const USER_EMPLOYER = 2;
     const USER_PARTNER = 3;
     const USER_BUSINESS = 4;
+    const PROFILE_ADMIN = 1;
+    const PROFILE_OTHER = 0;
     const CREATED_BY_SELF = 'self';
     const CURRENTLY_NOT_LOGGED_IN = 0;
     const CURRENTLY_LOGGED_IN = 1;
@@ -109,7 +112,7 @@ class User extends ActiveRecord implements IdentityInterface {
                     }
                 "
             ],
-            [['birth_cert_no', 'id_no', 'phone', 'user_type', 'status', 'signed_in'], 'integer'],
+            [['birth_cert_no', 'id_no', 'phone', 'user_type', 'profile', 'status', 'signed_in'], 'integer'],
             [['registered_at', 'modified_at', 'last_signed_in', 'last_signed_out'], 'safe'],
             [['birth_cert_no', 'id_no'], 'string', 'min' => 7, 'max' => 8],
             [['phone'], 'string', 'min' => 9, 'max' => 13],
@@ -174,6 +177,8 @@ class User extends ActiveRecord implements IdentityInterface {
             'phone' => Yii::t('app', 'Phone No.'),
             'email' => Yii::t('app', 'Email Address'),
             'username' => Yii::t('app', 'Username'),
+            'user_type' => Yii::t('app', 'User Type'),
+            'profile' => Yii::t('app', 'Business Right'),
             'auth_key' => Yii::t('app', 'Authentication Key'),
             'password_hash' => Yii::t('app', 'Password Hash'),
             'status' => Yii::t('app', 'Status'),
@@ -299,7 +304,7 @@ class User extends ActiveRecord implements IdentityInterface {
     public static function byUsername($username) {
         return static::find()->byUsername($username);
     }
-    
+
     /**
      * 
      * @param string $attribute attribute of User model
@@ -309,7 +314,7 @@ class User extends ActiveRecord implements IdentityInterface {
     public static function notOwnSenior($attribute, $value) {
         return static::find()->notOwnSenior($attribute, $value);
     }
-    
+
     /**
      * 
      * @param string $attribute attribute of User model
@@ -329,6 +334,7 @@ class User extends ActiveRecord implements IdentityInterface {
         $model = new User;
 
         $model->user_type = self::USER_STUDENT;
+        $model->profile = self::PROFILE_OTHER;
         $model->status = self::STATUS_ACTIVE;
         $model->registered_by = self::CREATED_BY_SELF;
 
@@ -420,9 +426,8 @@ class User extends ActiveRecord implements IdentityInterface {
         $this->signed_in = self::CURRENTLY_LOGGED_IN;
 
         $this->removePasswordResetToken();
-        
-        $this->update(false, ['signed_in', 'last_signed_in', 'user_ip', 'session_id', 'password_reset_token']);
 
+        $this->update(false, ['signed_in', 'last_signed_in', 'user_ip', 'session_id', 'password_reset_token']);
     }
 
     /**
@@ -471,6 +476,38 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function removePasswordResetToken() {
         $this->password_reset_token = null;
+    }
+
+    /**
+     * 
+     * @return array menu u=items for students
+     */
+    public static function applicantsMenu() {
+        $items['My Profile'] = [
+            ['id' => 'sd-nav-prsnl', 'nm' => 'Personal Details', 'fa' => 'fa fa-id-card', 'ax' => 'register', 'wd' => 1, 'hg' => 1, 'tt' => 'Update Your Personal Details', 'ps' => ['Applicants[id]' => $user_id = Yii::$app->user->identity->id, 'User[id]' => $user_id]],
+            ['id' => 'sd-nav-rsdnc', 'nm' => 'Current Residence', 'fa' => 'fa fa-home', 'ax' => 'residence', 'wd' => 1, 'hg' => 0.8, 'tt' => 'Update Your Current Residence Details', 'ps' => ['ApplicantsResidence[applicant]' => $user_id]],
+            ['id' => 'sd-nav-edctn', 'nm' => 'Education Background', 'fa' => 'fa fa-file-text', 'ax' => 'education', 'wd' => 1, 'hg' => 0.80, 'tt' => 'Update Your Education Background', 'ps' => ['EducationBackground[applicant]' => $user_id]],
+            ['id' => 'sd-nav-inst', 'nm' => 'Institution Details', 'fa' => 'fa fa-institution', 'ax' => 'institution', 'wd' => 1, 'hg' => 1, 'tt' => 'Update Your Institution Details', 'ps' => ['ApplicantsInstitution[applicant]' => $user_id]],
+            ['id' => 'sd-nav-eplymt', 'nm' => 'Employment Details', 'fa' => 'fa fa-industry', 'ax' => 'employment', 'wd' => 1, 'hg' => 1, 'tt' => 'Update Your Employment Details', 'ps' => ['ApplicantsEmployment[applicant]' => $user_id]],
+            ['id' => 'sd-nav-prnts', 'nm' => 'Parents\' Details', 'fa' => 'fa fa-group', 'ax' => 'parents', 'wd' => 1, 'hg' => 1, 'tt' => 'Update Your Pranets\' Details', 'ps' => ['Applicants[id]' => $user_id]],
+            ['id' => 'sd-nav-expns', 'nm' => 'Family Expenses', 'fa' => 'fa fa-money', 'ax' => 'expenses', 'wd' => 1, 'hg' => 1, 'tt' => 'Update Your Family Expense Details', 'ps' => ['applicant' => $user_id]],
+            ['id' => 'sd-nav-spnsrs', 'nm' => 'Sponsors\' Details', 'fa' => 'fa fa-money', 'ax' => 'sponsors', 'wd' => 1, 'hg' => 0.80, 'tt' => 'Update Your Sponsors\' Details', 'ps' => ['ApplicantSponsors[applicant]' => $user_id]],
+            ['id' => 'sd-nav-sps', 'nm' => 'Spouse\'s Details', 'fa' => 'fa fa-heart', 'ax' => 'spouse', 'wd' => 1, 'hg' => 0.80, 'tt' => 'Update Your Spouses\' Details', 'ps' => ['ApplicantsSpouse[applicant]' => $user_id]],
+            ['id' => 'sd-nav-grntrs', 'nm' => 'Guarantors\' Details', 'fa' => 'fa fa-group', 'ax' => 'guarantors', 'wd' => 1, 'hg' => 1, 'tt' => 'Update Your Guarantors\' Details', 'ps' => ['ApplicantsGuarantors[applicant]' => $user_id]]
+        ];
+
+        
+        foreach (\frontend\modules\business\models\Products::allProducts() as $product)
+            $items['Available Products'][] = ['id' => "sd-nav-aplctn-$product->code", 'nm' => $product->name, 'fa' => 'fa fa-file', 'ax' => 'application-timeline', 'wd' => 1, 'hg' => 1, 'tt' => $product->description, 'ps' => ['product' => $product->id, 'applicant' => $user_id], 'ap' => 'yeap', 'pr' => $product->id];
+
+
+        $items['My Applications'] = [
+            ['id' => 'sd-nav-ln-sts', 'nm' => 'Application Status', 'fa' => 'fa fa-home', 'ax' => '', 'wd' => 1, 'hg' => 1, 'tt' => 'View Your Application Status', 'ps' => ['applicant' => $user_id]],
+            ['id' => 'sd-nav-ln-dsb', 'nm' => 'Disbursement Schedules', 'fa' => 'fa fa-file-text', 'ax' => '', 'wd' => 1, 'hg' => 1, 'tt' => 'View Disbursement Schedules', 'ps' => ['applicant' => $user_id]],
+            ['id' => 'sd-nav-ln-enq', 'nm' => 'Enquiries', 'fa' => 'fa fa-institution', 'ax' => '', 'wd' => 1, 'hg' => 1, 'tt' => 'Launch An Enquiry', 'ps' => ['applicant' => $user_id]]
+        ];
+
+        return $items;
     }
 
 }

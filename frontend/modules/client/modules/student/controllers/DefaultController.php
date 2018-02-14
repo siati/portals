@@ -409,7 +409,9 @@ class DefaultController extends Controller {
      * @return string view for 
      */
     public function actionApplicationTimeline() {
-        return $this->renderAjax('applicant-product-timeline', ['openings' => ProductOpening::forProductAcademicyearAndSubsequent($_POST['product'], null, null, ProductOpening::all), 'applicant' => $_POST['applicant']]);
+        $openings = ProductOpening::applicantViewableApplications($_POST['product'], $_POST['applicant'], StaticMethods::now());
+
+        return $this->renderAjax('applicant-product-timeline', ['openings' => $openings[0], 'appeals' => $openings[1], 'applicant' => $_POST['applicant']]);
     }
 
     /**

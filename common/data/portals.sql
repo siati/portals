@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 11, 2017 at 07:18 PM
+-- Generation Time: Feb 14, 2018 at 01:56 PM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 7.1.1
 
@@ -63,6 +63,7 @@ CREATE TABLE `tbl_applicants` (
   `bank_branch` varchar(5) DEFAULT NULL COMMENT 'Bank Branch',
   `account_number` varchar(16) DEFAULT NULL COMMENT 'Account Number',
   `smart_card_number` varchar(16) DEFAULT NULL COMMENT 'Smart Card Number',
+  `employed` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Employed',
   `modified_by` varchar(15) DEFAULT NULL COMMENT 'Modified By',
   `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
@@ -71,10 +72,11 @@ CREATE TABLE `tbl_applicants` (
 -- Dumping data for table `tbl_applicants`
 --
 
-INSERT INTO `tbl_applicants` (`id`, `fname`, `mname`, `lname`, `dob`, `gender`, `disability`, `other_disability`, `married`, `parents`, `father_death_cert_no`, `mother_death_cert_no`, `county`, `sub_county`, `constituency`, `ward`, `location`, `sub_location`, `village`, `postal_no`, `postal_code`, `bank`, `bank_branch`, `account_number`, `smart_card_number`, `modified_by`, `modified_at`) VALUES
-(1, 'Shadrack', 'Wabomba', 'Wanyonyi', '1999-09-13', '0', '0', '', '1', '0', NULL, NULL, 37, 204, 204, 1021, 'Mbakalo', 'Mbakalo', 'Sango', '785778', 3, '', '', '', '', 'wsiati', '2017-10-02 21:01:06'),
-(2, 'Shadrack', 'Wabomba', 'Wanyonyi', '1999-09-13', '0', '0', NULL, '0', '0', NULL, NULL, 20, 103, 103, 513, 'Mbakalo', 'Mbakalo', 'Sango', '124', 3, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 'Mtu', 'Huyu', 'Tatu', '1998-06-23', '1', '0', NULL, '0', '0', NULL, NULL, 34, 185, 184, 917, '', '', '', '', NULL, NULL, NULL, NULL, NULL, 'techy', '2017-09-18 18:06:37');
+INSERT INTO `tbl_applicants` (`id`, `fname`, `mname`, `lname`, `dob`, `gender`, `disability`, `other_disability`, `married`, `parents`, `father_death_cert_no`, `mother_death_cert_no`, `county`, `sub_county`, `constituency`, `ward`, `location`, `sub_location`, `village`, `postal_no`, `postal_code`, `bank`, `bank_branch`, `account_number`, `smart_card_number`, `employed`, `modified_by`, `modified_at`) VALUES
+(1, 'Shadrack', 'Wabomba', 'Wanyonyi', '1999-09-13', '0', '0', '', '1', '0', NULL, NULL, 37, 204, 204, 1021, 'Mbakalo', 'Mbakalo', 'Sango', '785778', 3, '68', '054', '3245456656572', '', '1', 'wsiati', '2018-02-14 12:48:43'),
+(2, 'Shadrack', 'Wabomba', 'Wanyonyi', '1999-09-13', '0', '0', NULL, '0', '0', NULL, NULL, 20, 103, 103, 513, 'Mbakalo', 'Mbakalo', 'Sango', '124', 3, NULL, NULL, NULL, NULL, '0', NULL, NULL),
+(3, 'Mtu', 'Huyu', 'Tatu', '1998-06-23', '1', '0', NULL, '0', '0', NULL, NULL, 34, 185, 184, 917, '', '', '', '', NULL, NULL, NULL, NULL, NULL, '0', 'techy', '2017-09-18 18:06:37'),
+(5, 'Kujaribu', 'Maneno', 'La Mwisho', '2002-02-14', '0', '0', NULL, '0', '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -113,7 +115,8 @@ CREATE TABLE `tbl_applicants_employment` (
 --
 
 INSERT INTO `tbl_applicants_employment` (`id`, `applicant`, `employer_name`, `employment_terms`, `employment_date`, `employment_period`, `department`, `division`, `section`, `county`, `town`, `kra_pin`, `phone`, `email`, `postal_no`, `postal_code`, `pf_no`, `basic_salary`, `net_salary`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 'EMP97055', 1, '2017-10-05', 1, 'The Department', 'The Division', 'The Section', 40, 'Faffi', 'A234234335Z', '', 'wsaaf@live.com', 167, 12, 'TYT/5333', 36000, 16000, 'wsiati', '2017-10-05 13:39:40', 'wsiati', '2017-10-05 13:43:32');
+(1, 1, 'EMP97055', 1, '2017-10-05', 2, 'The Department', 'The Division', 'The Section', 40, 'Faffi', 'A234234335Z', '', 'wsaaf@live.com', 167, 12, 'TYT/5333', 36000, 16000, 'wsiati', '2017-10-05 13:39:40', 'wsiati', '2018-02-13 09:25:03'),
+(2, 4, 'EMP26033', 1, '2017-10-03', 5, 'tryuytiyuiiyuiyiy', 'erttrterwertr', 'weterterter', 40, 'truutyuyiytii', '', '+254790899999', '', NULL, NULL, 'WERFETERTE', 30000, 14000, 'peter', '2017-10-13 10:39:33', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -137,13 +140,20 @@ CREATE TABLE `tbl_applicants_family_expenses` (
 --
 
 INSERT INTO `tbl_applicants_family_expenses` (`id`, `applicant`, `expense_type`, `amount`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 0, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:14'),
-(2, 1, 1, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:14'),
-(3, 1, 2, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:15'),
-(4, 1, 3, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:15'),
-(5, 1, 4, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2017-10-01 14:42:15'),
-(6, 1, 5, 1000, 'wsiati', '2017-09-30 18:33:17', 'wsiati', '2017-10-01 14:42:15'),
-(7, 1, 6, 1000, 'wsiati', '2017-09-30 18:33:17', 'wsiati', '2017-10-01 14:42:15');
+(1, 1, 0, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2018-02-13 09:52:38'),
+(2, 1, 1, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2018-02-13 09:52:38'),
+(3, 1, 2, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2018-02-13 09:52:38'),
+(4, 1, 3, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2018-02-13 09:52:38'),
+(5, 1, 4, 1000, 'wsiati', '2017-09-30 18:33:16', 'wsiati', '2018-02-13 09:52:38'),
+(6, 1, 5, 1000, 'wsiati', '2017-09-30 18:33:17', 'wsiati', '2018-02-13 09:52:39'),
+(7, 1, 6, 1000, 'wsiati', '2017-09-30 18:33:17', 'wsiati', '2018-02-13 09:52:39'),
+(8, 4, 0, 1000, 'peter', '2017-10-13 10:26:23', 'peter', '2017-11-02 22:49:00'),
+(9, 4, 1, 1000, 'peter', '2017-10-13 10:26:23', 'peter', '2017-11-02 22:49:00'),
+(10, 4, 2, 1000, 'peter', '2017-10-13 10:26:23', 'peter', '2017-11-02 22:49:01'),
+(11, 4, 3, 1000, 'peter', '2017-10-13 10:26:23', 'peter', '2017-11-02 22:49:01'),
+(12, 4, 4, 1200, 'peter', '2017-10-13 10:26:24', 'peter', '2017-11-02 22:49:01'),
+(13, 4, 5, 1000, 'peter', '2017-10-13 10:26:24', 'peter', '2017-11-02 22:49:01'),
+(14, 4, 6, 1000, 'peter', '2017-10-13 10:26:24', 'peter', '2017-11-02 22:49:01');
 
 -- --------------------------------------------------------
 
@@ -191,7 +201,9 @@ CREATE TABLE `tbl_applicants_guarantors` (
 --
 
 INSERT INTO `tbl_applicants_guarantors` (`id`, `applicant`, `fname`, `mname`, `lname`, `yob`, `gender`, `id_no`, `phone`, `email`, `postal_no`, `postal_code`, `kra_pin`, `county`, `sub_county`, `constituency`, `ward`, `location`, `sub_location`, `village`, `occupation`, `employed`, `staff_no`, `employer_name`, `employer_phone`, `employer_email`, `employer_postal_no`, `employer_postal_code`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 'Siatis', 'Wabomba', 'Wanyonyi', 1929, '1', '56798738', '+254709666666', 'mayor@john.com', '785778', 3, 'W123456789U', 37, 204, 204, 1021, 'Mbakalo', 'Mbakalo', 'Sango', 'Farmer', '1', 'Perm/100', 'Moja Emp', NULL, 'emp@emp.emp', '', NULL, 'wsiati', '2017-10-05 19:58:40', 'wsiati', '2017-10-08 04:55:26');
+(1, 1, 'Siatis', 'Wabomba', 'Wanyonyi', 1929, '1', '56798738', '+254709666666', 'mayor@john.com', '785778', 3, 'W123456789U', 37, 204, 204, 1021, 'Mbakalo', 'Mbakalo', 'Sango', 'Farmer', '1', 'PERM/100', 'Moja Employer', '', 'emp@emp.emp', '', NULL, 'wsiati', '2017-10-05 19:58:40', 'wsiati', '2018-02-13 10:07:28'),
+(2, 4, 'tyuytu', 'uyuyuyu', '', 1932, '0', '86767623', '+254743434232', '', '', NULL, 'A111111111T', 35, 191, 188, 937, '', '', '', 'rtytyttryt', '1', 'trtetetr', 'hgfhhhgh', '+254745545655', '', '', NULL, 'peter', '2017-10-13 10:30:50', 'peter', '2017-11-03 17:50:06'),
+(3, 1, 'Shadrack', 'Wabomba', 'Wanyonyi', 1930, '0', '86756756', '+254709666666', '', '785778', 12, 'Q344565456G', 37, 206, 204, 1020, '', '', '', 'tyrtytrytryrt', '1', '56456456', 'ryertyy', '+254709123543', '', '', NULL, 'wsiati', '2018-02-13 08:26:44', 'wsiati', '2018-02-13 08:35:52');
 
 -- --------------------------------------------------------
 
@@ -237,7 +249,8 @@ CREATE TABLE `tbl_applicants_institution` (
 --
 
 INSERT INTO `tbl_applicants_institution` (`id`, `applicant`, `country`, `level_of_study`, `institution_type`, `admission_category`, `institution_code`, `institution_branch_code`, `faculty`, `department`, `registration_no`, `course_category`, `course_type`, `course_code`, `year_of_admission`, `admission_month`, `duration`, `year_of_completion`, `completion_month`, `year_of_study`, `annual_fees`, `annual_upkeep`, `amount_can_raise`, `amount_applied`, `need_bursary`, `narration`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 'KEN', 3, 7, 1, 'KU', 'KU1', 'Faculty Of Education', 'Education Science', 'retr-hh/hjh89', 6, 2, 'E35', 2016, '9', '1', 2017, '9', '2', NULL, NULL, NULL, NULL, '1', '', 'wsiati', '2017-09-28 22:26:09', 'wsiati', '2017-10-01 14:41:16');
+(1, 1, 'KEN', 3, 7, 1, 'KU', 'KU1', 'Faculty Of Education', 'Education Science', 'retr-hh/hjh89', 6, 2, 'C77', 2016, '9', '1', 2017, '9', '2', NULL, NULL, 40000, NULL, '1', 'Any person or student who when filling a scholarship application form, knowingly makes a false statement whether orally or in writing relating to any matter affecting the request for a scholarship shall be guilty of an offence and shall be liable to a fine of not less than Kenya Shillings Thirty thousand (Ksh. 30,000) or to imprisonment for a term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).\r\n\r\nAny person or student who when filling a scholarship application form, knowingly makes a false statement whether orally or in writing relating to any matter affecting the request for a scholarship shall be guilty of an offence and shall be liable to a fine of not less than Kenya Shillings Thirty thousand (Ksh. 30,000) or to imprisonment for a term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).', 'wsiati', '2017-09-28 22:26:09', 'wsiati', '2018-02-14 12:41:33'),
+(2, 4, 'KEN', 3, 7, 1, 'GUC', 'BR0001', 'ertertytrytryryt', 'ytryttrytryrtyry', '756tryytutrr', 6, 1, 'SAS', 2015, '9', '2', 2017, '9', '2', 45000, 35000, 30000, 50000, '1', 'ertetrytyty', 'peter', '2017-10-13 10:33:51', 'peter', '2017-11-01 07:47:33');
 
 -- --------------------------------------------------------
 
@@ -290,14 +303,16 @@ CREATE TABLE `tbl_applicants_parents` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `modified_by` varchar(15) DEFAULT NULL COMMENT 'Modified By',
   `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 
 --
 -- Dumping data for table `tbl_applicants_parents`
 --
 
 INSERT INTO `tbl_applicants_parents` (`id`, `applicant`, `relationship`, `fname`, `mname`, `lname`, `yob`, `gender`, `birth_cert_no`, `id_no`, `phone`, `email`, `postal_no`, `postal_code`, `kra_pin`, `education_level`, `pays_fees`, `is_minor`, `county`, `sub_county`, `constituency`, `ward`, `location`, `sub_location`, `village`, `occupation`, `employed`, `staff_no`, `employer_name`, `employer_phone`, `employer_email`, `employer_postal_no`, `employer_postal_code`, `gross_monthly_salary`, `farming_annual`, `monthly_pension`, `business_annual`, `govt_support_annual`, `relief_annual`, `other_annual`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, '1', 'Shadrack', 'Wabomba', '', 1985, '0', '', '24544153', '+254734567890', '', '56534', 10, 'A111111111D', '1', '1', '0', 11, 49, 50, 249, '', '', '', 'Farmer', '0', '', '', '', '', '', NULL, NULL, 100000, NULL, NULL, NULL, NULL, NULL, 'wsiati', '2017-09-17 18:56:48', 'wsiati', '2017-10-01 02:55:59');
+(1, 1, '1', 'Shadrack', 'Wabomba', '', 1985, '0', '', '24544153', '+254734567890', '', '56534', 10, 'A111111111D', '1', '1', '0', 20, 101, 101, 505, '', '', '', 'Farmer', '0', '', '', '', '', '', NULL, NULL, 100000, NULL, NULL, NULL, NULL, NULL, 'wsiati', '2017-09-17 18:56:48', 'wsiati', '2018-02-13 06:03:54'),
+(2, 4, '1', 'rtrytrytryuty', 'tytytytr', 'ytryttuytyuty', 1992, '0', '', '8676765', '+254765409768', 'dsdfds@dere.rtr', '', NULL, 'S876876876D', '1', '1', '0', 39, 220, 220, 1101, 'wrwetrew', 'erererwr', 'werwererer', 'rewr ertrt', '1', 'trytyttry', 'rrytytytyt', '', 'valid@email.com', '', NULL, 100000, 6456, NULL, NULL, NULL, NULL, NULL, 'peter', '2017-10-13 10:23:28', 'peter', '2017-11-01 22:56:45'),
+(3, 4, '2', 'ewwerrr', 'rerewrwer', 'rererwr', 1992, '1', '', '5456456', '+254723423443', '', '', NULL, '', '1', '0', '0', 36, 196, 196, 977, '', '', '', '', '0', '', '', '', '', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'peter', '2017-10-14 00:57:22', 'peter', '2017-10-19 18:13:55');
 
 -- --------------------------------------------------------
 
@@ -312,6 +327,7 @@ CREATE TABLE `tbl_applicants_residence` (
   `sub_county` int(4) DEFAULT NULL COMMENT 'Sub County',
   `constituency` int(4) NOT NULL COMMENT 'Constituency',
   `ward` int(4) NOT NULL COMMENT 'Ward',
+  `town` varchar(30) DEFAULT NULL COMMENT 'Town',
   `location` varchar(20) NOT NULL COMMENT 'Location',
   `sub_location` varchar(20) NOT NULL COMMENT 'Sub Location',
   `village` varchar(20) NOT NULL COMMENT 'Village / Estate',
@@ -327,8 +343,9 @@ CREATE TABLE `tbl_applicants_residence` (
 -- Dumping data for table `tbl_applicants_residence`
 --
 
-INSERT INTO `tbl_applicants_residence` (`id`, `applicant`, `county`, `sub_county`, `constituency`, `ward`, `location`, `sub_location`, `village`, `apartment`, `nearest_primary`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 11, 49, 49, 244, 'Kacheliba', 'Makuyu', 'Time Is Here', 'Time Is Here', 'Marurui Primary', 'wsiati', '2017-10-01 14:17:49', 'wsiati', '2017-10-01 14:21:22');
+INSERT INTO `tbl_applicants_residence` (`id`, `applicant`, `county`, `sub_county`, `constituency`, `ward`, `town`, `location`, `sub_location`, `village`, `apartment`, `nearest_primary`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 1, 36, 198, 195, 971, '', 'Kacheliba', 'Makuyu', 'Time Is Here', 'Time Is Here', 'Marurui Primary', 'wsiati', '2017-10-01 14:17:49', 'wsiati', '2018-02-12 18:21:30'),
+(2, 4, 40, 230, 230, 1148, 'Nairobi', 'trwer', 'rerw', 'wer', 'were seet', 'dfggfgdfg seeeewer', 'peter', '2017-10-13 10:13:10', 'peter', '2017-10-31 20:46:20');
 
 -- --------------------------------------------------------
 
@@ -347,7 +364,7 @@ CREATE TABLE `tbl_applicants_sibling_education_expenses` (
   `study_level` int(2) NOT NULL COMMENT 'Study Level',
   `institution_type` int(2) NOT NULL COMMENT 'Institution Type',
   `institution_name` varchar(40) NOT NULL COMMENT 'Institution Name',
-  `annual_fees` int(7) NOT NULL COMMENT 'Annual Fees',
+  `annual_fees` int(7) DEFAULT NULL COMMENT 'Annual Fees',
   `helb_beneficiary` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'HELB Beneficiary',
   `created_by` varchar(20) NOT NULL COMMENT 'Created By',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
@@ -360,7 +377,8 @@ CREATE TABLE `tbl_applicants_sibling_education_expenses` (
 --
 
 INSERT INTO `tbl_applicants_sibling_education_expenses` (`id`, `applicant`, `birth_cert_no`, `id_no`, `fname`, `mname`, `lname`, `study_level`, `institution_type`, `institution_name`, `annual_fees`, `helb_beneficiary`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 123456, 14356335, 'Shadrack', 'Wabomba', 'Wanyonyi', 1, 3, 'Meru College', 1000, '0', 'wsiati', '2017-09-30 17:53:43', 'wsiati', '2017-10-01 14:42:15');
+(1, 1, 123456, 14356335, 'Shadrack', 'Wabomba', 'Wanyonyi', 1, 3, 'Meru College', 1000, '0', 'wsiati', '2017-09-30 17:53:43', 'wsiati', '2018-02-13 09:49:38'),
+(2, 4, NULL, 45423445, 'rttrytytryt', 'ytryrtrytyy', 'ytutyuytuyt', 2, 6, 'ertyryutyuyt tytryuuu tytutyutyurt', 45000, '0', 'peter', '2017-10-13 10:26:24', 'peter', '2017-11-02 22:49:01');
 
 -- --------------------------------------------------------
 
@@ -395,7 +413,547 @@ CREATE TABLE `tbl_applicants_spouse` (
 --
 
 INSERT INTO `tbl_applicants_spouse` (`id`, `applicant`, `relationship`, `fname`, `mname`, `lname`, `id_no`, `phone`, `email`, `kra_pin`, `employed`, `employer_name`, `employer_phone`, `employer_email`, `staff_no`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 1, 'Siatis', 'Wabomba', 'Wanyonyi', '56798738', '+254709666666', 'mayor@john.com', 'W123456789U', '1', 'Moja Emp', NULL, 'emp@emp.emp', 'Perm/100', 'wsiati', '2017-10-05 19:58:40', 'wsiati', '2017-10-08 04:55:26');
+(1, 1, 1, 'Siatis', 'Wabomba', 'Wanyonyi', '56798738', '+254709666666', 'mayor@john.com', 'W123456789U', '1', 'Moja Employer', '', 'emp@emp.emp', 'PERM/100', 'wsiati', '2017-10-05 19:58:40', 'wsiati', '2018-02-13 10:07:28'),
+(2, 4, 1, 'Wife', 'Yake', 'Msee', '65657566', '+254745623456', '', 'T667657567G', '1', 'Employer Name', '', 'emp@email.com', 'EMP67567', 'peter', '2017-11-02 23:17:59', 'peter', '2017-11-02 23:22:25');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_applicant_sponsors`
+--
+
+CREATE TABLE `tbl_applicant_sponsors` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `applicant` int(11) NOT NULL COMMENT 'Applicant',
+  `relationship` enum('0','1','2') NOT NULL DEFAULT '0' COMMENT 'Relationship',
+  `name` varchar(100) NOT NULL COMMENT 'Name',
+  `phone` varchar(13) DEFAULT NULL COMMENT 'Phone',
+  `email` varchar(80) DEFAULT NULL COMMENT 'Email',
+  `postal_no` int(6) DEFAULT NULL COMMENT 'Postal No.',
+  `postal_code` int(11) DEFAULT NULL COMMENT 'Postal Code',
+  `study_level` enum('0','1','2','3','4') NOT NULL DEFAULT '0' COMMENT 'Study Level',
+  `created_by` varchar(20) NOT NULL COMMENT 'Created By',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
+  `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `tbl_applicant_sponsors`
+--
+
+INSERT INTO `tbl_applicant_sponsors` (`id`, `applicant`, `relationship`, `name`, `phone`, `email`, `postal_no`, `postal_code`, `study_level`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 4, '0', 'My Sponsor', '+254725171265', 'wsaaf@live.com', 167, 2, '4', 'peter', '2017-10-29 20:23:23', 'peter', '2017-11-02 21:54:48'),
+(2, 1, '0', 'Name Ya Sponsor', '+254726101918', 'werwerwe@aefddfd.rtr', NULL, NULL, '0', 'wsiati', '2017-11-22 22:51:59', 'wsiati', '2018-02-13 10:22:16');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_applications`
+--
+
+CREATE TABLE `tbl_applications` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `applicant` int(11) NOT NULL COMMENT 'Applicant',
+  `application` int(11) NOT NULL COMMENT 'Application',
+  `serial_no` varchar(20) NOT NULL COMMENT 'Serial Number',
+  `created_by` varchar(20) NOT NULL COMMENT 'Created By',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  `prints` int(3) NOT NULL DEFAULT '0' COMMENT 'Number Printed',
+  `printed_by` varchar(20) DEFAULT NULL COMMENT 'Printed By',
+  `printed_at` datetime DEFAULT NULL COMMENT 'Printed At',
+  `print_out` varchar(128) DEFAULT NULL COMMENT 'Form Location',
+  `appeal_prints` int(3) NOT NULL DEFAULT '0' COMMENT 'Number Appeal Printed',
+  `appeal_printed_by` varchar(20) DEFAULT NULL COMMENT 'Appeal Printed By',
+  `appeal_printed_at` datetime DEFAULT NULL COMMENT 'Appeal Printed At',
+  `appeal_print_out` varchar(128) DEFAULT NULL COMMENT 'Appeal Form Location',
+  `appeal_origin` enum('0','1') NOT NULL DEFAULT '1' COMMENT 'Appeal Origin'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `tbl_applications`
+--
+
+INSERT INTO `tbl_applications` (`id`, `applicant`, `application`, `serial_no`, `created_by`, `created_at`, `prints`, `printed_by`, `printed_at`, `print_out`, `appeal_prints`, `appeal_printed_by`, `appeal_printed_at`, `appeal_print_out`, `appeal_origin`) VALUES
+(1, 1, 1, '17181000001', 'wsiati', '2017-12-05 21:52:54', 167, 'wsiati', '2018-02-13 17:29:00', '20180213172859813007.pdf', 26, 'wsiati', '2018-02-14 12:47:40', '20180214124739947539.pdf', '1'),
+(2, 1, 2, '17182000001', 'wsiati', '2017-12-06 16:56:07', 19, 'wsiati', '2018-02-14 12:39:53', '20180214123953260184.pdf', 0, NULL, NULL, NULL, '1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_application_parts`
+--
+
+CREATE TABLE `tbl_application_parts` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `application` int(11) NOT NULL COMMENT 'Application',
+  `appeal` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Is Appeal',
+  `part` varchar(60) NOT NULL COMMENT 'Section',
+  `order` int(2) DEFAULT NULL COMMENT 'Order',
+  `title` varchar(300) NOT NULL COMMENT 'Title',
+  `intro` text COMMENT 'Opening Statement',
+  `new_page` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Onto New Page',
+  `order_elements` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Order Elements',
+  `created_by` varchar(20) NOT NULL COMMENT 'Created By',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
+  `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_application_parts`
+--
+
+INSERT INTO `tbl_application_parts` (`id`, `application`, `appeal`, `part`, `order`, `title`, `intro`, `new_page`, `order_elements`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 1, '0', 'personal', 2, 'Applicant Personal Detail', '', '0', '0', 'peter', '2017-10-28 12:13:49', 'peter', '2017-11-06 15:00:33'),
+(2, 1, '0', 'residence', 3, 'Applicants Current Place of Residence', '', '0', '0', 'peter', '2017-10-28 12:31:54', 'peter', '2017-11-06 15:00:49'),
+(3, 1, '0', 'institution', 4, 'Applicants Institutional Details', 'Attach a copy of your Admission Letter', '0', '0', 'peter', '2017-10-28 12:41:53', 'peter', '2017-11-06 15:01:57'),
+(4, 1, '0', 'declaration', 12, 'Declarations', '', '1', '1', 'peter', '2017-10-28 13:46:01', 'peter', '2017-11-07 22:01:26'),
+(5, 1, '0', 'terms_and_conditions', 15, 'Terms and Conditions', 'PLEASE READ THESE TERMS AND CONDITIONS CAREFULLY BEFORE SIGNING THE LOAN APPLICATION FORM. YOUR ACCESS TO THIS LOAN IS CONDITIONED TO YOUR ACCEPTANCE OF THESE TERMS AND CONDITIONS. THESE TERMS ARE APPLICABLE TO ALL LOAN APPLICANTS. BY SIGNING THIS FORM YOU ARE AGREEING TO BE BOUND BY THESE TERMS AND CONDITIONS; DO NOT SIGN THE FORM IF YOU DISAGREE WITH ANY OF THE TERMS.', '1', '1', 'peter', '2017-10-28 14:44:45', 'peter', '2017-11-07 23:33:01'),
+(6, 1, '0', 'check_list', 16, 'The Checklist', '', '1', '1', 'peter', '2017-10-28 18:38:52', 'peter', '2017-11-08 16:20:42'),
+(7, 1, '0', 'employment', 0, 'Employment Details', '', '0', '0', 'peter', '2017-10-28 19:46:04', 'peter', '2017-11-06 15:04:20'),
+(8, 1, '0', 'parents', 8, 'Parents\' Details', '', '0', '0', 'peter', '2017-11-06 10:10:25', 'peter', '2017-11-06 15:05:43'),
+(9, 1, '0', 'caution', 1, 'CAUTION', 'Any person or student who when filling a scholarship application form, knowingly makes a false statement whether orally or in writing relating to any matter affecting the request for a scholarship shall be guilty of an offence and shall be liable to a fine of not less than Kenya Shillings Thirty thousand (Ksh. 30,000) or to imprisonment for a term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).', '0', '0', 'peter', '2017-11-06 14:31:56', 'wsiati', '2017-11-23 07:43:49'),
+(10, 1, '0', 'loan', 5, 'Loan Applied (Per Annum)', '', '0', '0', 'peter', '2017-11-06 15:03:04', 'peter', '2017-11-07 11:42:37'),
+(11, 1, '0', 'siblings', 6, 'Applicant\'s Siblings', '', '0', '0', 'peter', '2017-11-06 15:03:20', 'peter', '2017-11-07 12:09:27'),
+(12, 1, '0', 'education', 7, 'Education Background', 'Attach certificate in each case', '0', '0', 'peter', '2017-11-06 15:03:48', NULL, NULL),
+(13, 1, '0', 'next_of_kin', 0, 'Next of Kin', '', '0', '0', 'peter', '2017-11-06 15:04:07', NULL, NULL),
+(14, 1, '0', 'guardians', 9, 'Guardian / Sponsor / Public Trustee', 'In each case, please attach a letter from school or sponsor', '0', '0', 'peter', '2017-11-06 15:11:26', 'peter', '2017-11-07 13:30:12'),
+(15, 1, '0', 'expenses', 10, 'Estimated Family Monthly Expenses, Kshs', '', '0', '0', 'peter', '2017-11-06 15:12:05', 'peter', '2017-11-08 17:44:54'),
+(16, 1, '0', 'education_expenses', 11, 'Gross Education Expenses, Kshs', 'Siblings in Secondary, Tertiary or University, who are not beneficiaries of HELB Loan', '0', '0', 'peter', '2017-11-06 15:12:26', NULL, NULL),
+(17, 1, '0', 'guarantors', 13, 'Guarantors\' Details', '(also known as \"the guarantor\" hereby) acknowledge that I am bound to the Higher Education Loans Board in the sum of amount equivalent to what the Board shall grant to ------------------------------------------------------as loan under the agreements together with interest thereon, which amount shall repay to the Higher Education Loans Board in the event that the loanee fails to honor his/her obligation of repaying the same to the Board as from the prescribed time.\r\nThe Board will notify me of the amount granted to the loanee after the award is made. This bond is conditioned to be void only after full repayment by the loanee is effected.', '1', '0', 'peter', '2017-11-06 15:16:44', 'peter', '2017-11-06 23:03:02'),
+(18, 1, '0', 'bank', 14, 'Bank Details', 'Attach a copy of bank account card and smart card, as appropriate', '0', '1', 'peter', '2017-11-06 15:17:04', 'peter', '2017-11-07 18:28:50'),
+(19, 1, '0', 'submission', 17, 'Submission of the application form', 'Instructions:\r\n\r\n i. Print 2 copies of the form and take them for the required signatures and stamps.\r\n\r\nii. Please drop 1 hard copy to any of the following centers:\r\n    - The bank where you opened the account\r\n    - HELB Desk at select HUDUMA Kenya Center near you\r\n    - HELB Office at Mezzanine 1, Anniversary Towers, University Way, Nairobi\r\n\r\nYou may also send the scholarship application form using secure mail/courier service', '0', '0', 'peter', '2017-11-06 16:44:00', 'peter', '2017-11-08 13:43:43'),
+(20, 1, '0', 'spouse', 0, 'Spouse Details', '', '0', '0', 'peter', '2017-11-06 21:58:48', NULL, NULL),
+(21, 2, '0', 'caution', 1, 'CAUTION', 'Any person or student who when filling a scholarship application form, knowingly makes a false statement whether orally or in writing relating to any matter affecting the request for a scholarship shall be guilty of an offence and shall be liable to a fine of not less than Kenya Shillings Thirty thousand (Ksh. 30,000) or to imprisonment for a term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).', '0', '0', 'wsiati', '2017-12-06 15:48:31', 'wsiati', '2017-12-12 15:18:57'),
+(22, 2, '0', 'personal_subsequent', 2, 'Applicant\'s Personal Details', '', '0', '0', 'wsiati', '2017-12-06 15:48:41', NULL, NULL),
+(23, 2, '0', 'institution_subsequent', 3, 'Dean of Students\' Certification', 'I certify this is a bonafide student of this University pursuing a Degree/Diploma/Certificate/Other (..................................) course.\r\n\r\nName ......................................................................     Signature ....................................    Date .......................................', '0', '0', 'wsiati', '2017-12-06 15:49:12', 'wsiati', '2017-12-06 17:31:07'),
+(24, 2, '0', 'terms_and_conditions_subsequent', 4, 'Agreement', 'I understand that this is a loan which MUST be repaid and do hereby bind myself to repay to the order of the Board all sums disbursed to me (hereinafter called;the loan) together with the interest thereon and any other charges that may become due and payable under terms and conditions set hereinafter. I understand that acceptance of any disbursement issued to me at anytime will signify obligation to repay the loan and I shall abide by all the obligations as bestowed upon me by the Higher Education Loans board Act CAP 213A. The Higher Education Loans Board, hereinafter called the Board shall refer to the current Board and it\'s successors and assigns.', '0', '1', 'wsiati', '2017-12-06 15:49:32', 'wsiati', '2017-12-06 15:51:15'),
+(25, 2, '0', 'submission_subsequent', 5, 'Submission of the application form', 'Instructions:\r\n i. Print 2 copies of the form and take them for the required signatures and stamps.\r\n\r\nii. Please drop 1 hard copy to any of the following centers:\r\n    - The bank where you opened the account\r\n    - HELB Desk at select HUDUMA Kenya Center near you\r\n    - HELB Office at Mezzanine 1, Anniversary Towers, University Way, Nairobi\r\n\r\nYou may also send the scholarship application form using secure mail/courier service', '0', '0', 'wsiati', '2017-12-06 15:54:03', NULL, NULL),
+(26, 2, '1', 'personal_appeal', 2, 'Applicant\'s Personal Details', '', '0', '0', 'wsiati', '2017-12-12 15:19:10', 'wsiati', '2017-12-12 17:43:04'),
+(27, 2, '1', 'appeal', 3, 'Loan Appeal Details', '', '0', '1', 'wsiati', '2017-12-12 15:19:32', 'wsiati', '2017-12-12 15:19:47'),
+(28, 2, '1', 'declaration_appeal', 4, 'Declarations', '', '0', '1', 'wsiati', '2017-12-12 15:19:56', 'wsiati', '2017-12-12 15:20:08'),
+(29, 2, '1', 'caution', 1, 'CAUTION', 'Any person or student who when filling a scholarship application form, knowingly makes a false statement whether orally or in writing relating to any matter affecting the request for a scholarship shall be guilty of an offence and shall be liable to a fine of not less than Kenya Shillings Thirty thousand (Ksh. 30,000) or to imprisonment for a term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).', '0', '0', 'wsiati', '2017-12-12 17:39:25', 'wsiati', '2017-12-12 17:42:57'),
+(30, 1, '1', 'caution', 1, 'CAUTION', 'Any person or student who when filling a scholarship application form, knowingly makes a false statement whether orally or in writing relating to any matter affecting the request for a scholarship shall be guilty of an offence and shall be liable to a fine of not less than Kenya Shillings Thirty thousand (Ksh. 30,000) or to imprisonment for a term of not less than three years (Section 13 (3) of the Higher Education Loan Board Act (CAP 213A)).', '0', '0', 'wsiati', '2017-12-12 17:43:57', NULL, NULL),
+(31, 1, '1', 'personal_appeal', 2, 'Applicant\'s Personal Details', '', '0', '0', 'wsiati', '2017-12-12 17:44:09', NULL, NULL),
+(32, 1, '1', 'appeal', 3, 'Loan Appeal Details', '', '0', '1', 'wsiati', '2017-12-12 17:44:14', 'wsiati', '2017-12-12 17:44:19'),
+(33, 1, '1', 'declaration_appeal', 4, 'Declarations', '', '0', '1', 'wsiati', '2017-12-12 17:44:23', 'wsiati', '2017-12-12 17:44:32');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_application_part_elements`
+--
+
+CREATE TABLE `tbl_application_part_elements` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `part` int(11) NOT NULL COMMENT 'Section',
+  `element` varchar(60) NOT NULL COMMENT 'Element',
+  `title` varchar(120) NOT NULL COMMENT 'Title',
+  `narration` text COMMENT 'Narration',
+  `order` int(2) DEFAULT NULL COMMENT 'Order',
+  `active` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Active',
+  `created_by` varchar(20) NOT NULL COMMENT 'Created By',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
+  `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_application_part_elements`
+--
+
+INSERT INTO `tbl_application_part_elements` (`id`, `part`, `element`, `title`, `narration`, `order`, `active`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 3, 'institution_dean_registrar', 'University Certification (To be done by the Dean of Students or Academic Registrar)', 'I certify that the applicant is a registered student in this University with Registration No (please do not use a Ref. Number) ...............................................................................................................\r\n\r\nName ......................................................................................................................................\r\n\r\nSignature ........................................................................... Date ................................................', 1, '0', 'peter', '2017-10-28 13:17:29', 'peter', '2017-11-08 17:56:36'),
+(2, 4, 'declaration_applicant', 'Applicants Declaration', 'I declare that the information given herein is true to the best of my knowledge. I also understand that this is a loan that must be repaid.\r\n\r\nName .........................................................................................................................................................\r\n\r\nSignature ........................................................................                 Date: .................................................', 1, '1', 'peter', '2017-10-28 13:46:01', 'peter', '2017-11-08 17:42:11'),
+(3, 6, 'check_list_applicant', 'Applicant must attach a copy of:', '- National Identity Card\r\n- One colored Passport Size Photo\r\n- University/Institution Admission Letter\r\n- If orphaned, copy/copies of parent/s death certificate If sponsored in High school, a confirmation letter from the school or sponsor\r\n- If physically or visually challenged, attach certification from National Council for Persons with Disability', 1, '1', 'peter', '2017-10-28 18:38:53', 'peter', '2017-11-06 16:33:45'),
+(4, 6, 'check_list_parent', 'From the parent(s), attach a copy of', '- National Identity Card\r\n- KRA PIN certificate(s) where applicable\r\n- Latest payslip(s) if employed\r\n- Latest bank statements if in business or farming\r\n- Letter(s) of retirement/retrenchment if parent is no longer employed', 2, '1', 'peter', '2017-10-28 18:55:24', 'peter', '2017-11-06 16:42:05'),
+(5, 6, 'check_list_guarantors', 'From both referees, attach copies of', '- ID from Parent or Guardian, Headmaster or Principal, School official stamp', 3, '1', 'peter', '2017-10-28 18:57:01', 'peter', '2017-11-06 16:42:20'),
+(6, 6, 'check_list_attachment_confirm', 'Attachments confirmation', 'I confirm that the above attachments have been attached on the scholarship application form.\r\n\r\nSignature ........................................................................ Date: .................................................', 4, '1', 'peter', '2017-10-28 19:08:46', 'peter', '2017-11-06 16:42:37'),
+(7, 6, 'check_list_signatures_stamps', 'Declarations, Signatures and stamps', '- Applicant`s signature on the declaration\r\n- Applicant`s signature on the loan form (pg 3 & 5)\r\n- Parent`s/ Guardian`s signature\r\n- Family income & expenditure\r\n- Both Referees` signatures\r\n- Commissioner of Oaths/Magistrate`s signature & stamp for both guarantors\r\n- Priest/Kadhi signature Advocate`s/Magistrate`s stamp and signature', 5, '1', 'peter', '2017-10-28 19:11:21', 'peter', '2017-11-06 16:42:44'),
+(8, 6, 'check_list_signatures_stamps_confirm', 'Declarations, Signatures and stamps confirmation', 'I confirm that the above Signatures and stamps have been effected on the scholarship application form.\r\n\r\nSignature ........................................................................ Date: .................................................', 6, '1', 'peter', '2017-10-28 19:15:36', 'peter', '2017-11-06 16:43:21'),
+(9, 4, 'declaration_parent_guardian', 'Parent / Guardian', 'I declare that I have read this form / this form has been read to me and I hereby confirm that the information given herein is true to the best of my knowledge.\r\n\r\nName .........................................................................................................................................................\r\n\r\nSignature ........................................................................                 Date: .................................................', 2, '1', 'peter', '2017-10-28 19:33:06', 'peter', '2017-11-08 17:42:00'),
+(10, 4, 'declaration_priest_kadhi', 'Priest / Kadhi', 'I confirm that the applicant appeared before me and that I interviewed him/her and hereby state that the information given herein is true to the best of my knowledge.\r\n\r\nSignature ...............................................\r\n\r\nDate: ......................................................', 3, '1', 'peter', '2017-10-28 19:33:14', 'peter', '2017-11-08 17:30:19'),
+(11, 4, 'declaration_chief', 'Chief / Assistant Chief', 'I certify that the applicant is a resident of my Sub-Location and that I have checked the information given herein and confirm it to be true to the best of my knowledge.\r\n\r\nSignature ...............................................\r\n\r\nDate: ......................................................', 4, '1', 'peter', '2017-10-28 19:34:28', 'peter', '2017-11-08 17:31:42'),
+(12, 7, 'employment_hr_cert', 'Employer Certification(To be done by the HR manager)', '', NULL, '0', 'peter', '2017-10-28 19:46:04', 'peter', '2017-10-28 19:47:10'),
+(13, 8, 'parents_marital', 'Parents Marital Status', 'If the parent(s) deceased, please attach a copy of the Death Certificate or Burial Permit', NULL, '1', 'peter', '2017-11-06 10:10:25', 'peter', '2017-11-07 13:17:28'),
+(14, 8, 'parents_parent', 'Parents Details', 'Attach a copy of payslip or payment voucher for salary or pension income respectively', NULL, '1', 'peter', '2017-11-06 14:36:54', 'peter', '2017-11-06 15:10:44'),
+(15, 4, 'declaration_commissioner_of_oath', 'Magistrate / Commissioner of Oaths', 'The above applicant and his/her Parent/Guardian appeared before me and made the solemn declaration that the information given herein is correct.\r\n\r\nSignature ...............................................\r\n\r\nDate: ......................................................', 5, '1', 'peter', '2017-11-06 15:14:30', 'peter', '2017-11-08 17:22:16'),
+(16, 4, 'declaration_institution', 'Institution Certification', 'The above named applicant and his/her parent/guardian appeared before me and made the solemn declaration that the information given herein is correct.\r\n\r\nFinancial Aid Officer .................................\r\n\r\nSignature  ..................................................\r\n\r\nOfficial Stamp & Date: ...............................', 6, '0', 'peter', '2017-11-06 15:15:21', 'peter', '2017-11-08 17:28:04'),
+(17, 4, 'declaration_finance_officer', 'Finance Officer', 'The above named applicant appeared before me and made the solemn declaration that the information given herein is correct.\r\n\r\nThe applicant has a fees balance of KShs. ______________________\r\n\r\nSignature ........................................................................ Official Stamp & Date: .......................................', 7, '0', 'peter', '2017-11-06 15:15:29', NULL, NULL),
+(18, 4, 'declaration_county_officer', 'County Chief Officer of Education', 'The above named applicant and his/her parent/guardian appeared before me and made the solemn declaration that the information given herein is correct.\r\n\r\nSignature ........................................................................ Official Stamp & Date: .......................................', 8, '0', 'peter', '2017-11-06 15:15:35', NULL, NULL),
+(19, 4, 'declaration_ward_admin', 'Ward Administrator', 'I certify that the applicant is a resident of my ward and that I have checked the information given herein and confirm it to be true to the best of my knowledge.\r\n\r\nSignature ........................................................................ Official Stamp & Date: .......................................', 9, '0', 'peter', '2017-11-06 15:15:46', NULL, NULL),
+(20, 4, 'declaration_fund_secretary', 'Constituency Education Revolving Fund Secretary', 'I certify that the applicant is a resident of my constituency and that I have checked the information given herein and confirm it to be true to the best of my knowledge.\r\n\r\nSignature ...................................................\r\n\r\nOfficial Stamp & Date: ...............................', 10, '0', 'peter', '2017-11-06 15:15:54', 'peter', '2017-11-08 17:23:56'),
+(21, 18, 'bank_checklist', 'Banks Checklist (For Bank Use Only)', '  - Applicant ID Copy attached                                                          - Applicant passport size photo attached\r\n  - Copies of applicant\'s parents ID(s)/death certificate(s)              - Copies of ID\'s for both guarantors\r\n  - Copy of parents payslip (if applicable)                                        - Copy of KRA Pin Certificate(optional)', 1, '1', 'peter', '2017-11-07 15:18:17', 'peter', '2017-11-08 14:34:32'),
+(22, 18, 'bank_confirm', 'Banks Official Confirmation', 'Official\'s name......................................................................             Signature .........................................\r\n\r\nOfficial Stamp ......................................................................              Date.............................................', 2, '1', 'peter', '2017-11-07 15:20:40', 'peter', '2017-11-08 17:12:13'),
+(23, 5, '1', 'Rule 1', 'The rate of interest applicable shall be 4.00% p.a. the Board shall have the sole discretion of varying the interest rate as circumstances shall demand.', 1, '1', 'peter', '2017-11-07 23:33:23', NULL, NULL),
+(24, 5, '2', 'Rule 2', 'The Board shall charge administrative fees of Kshs.500 per annum on all un-matured accounts. All mature loan accounts shall be subject to administrative fee as shall be determined by the Board from time to time.', 2, '1', 'peter', '2017-11-07 23:33:28', NULL, NULL),
+(25, 5, '3', 'Rule 3', 'In the event that the loanee discontinues studies for whichever reason before full disbursement is made, the Board shall not disburse the remaining allocation and shall recall the loan so far advanced in full together with the interest thereon', 3, '1', 'peter', '2017-11-07 23:33:33', NULL, NULL),
+(26, 5, '4', 'Rule 4', 'Loan amounts awarded shall be inclusive of practicum/field attachment where applicable', 4, '1', 'peter', '2017-11-07 23:33:37', NULL, NULL),
+(27, 5, '5', 'Rule 5', 'The Board shall electronically, through the website, send to each loanee annual statement indicating the amount disbursed per each academic year or the outstanding balance as the case may be. The sums of the amount indicated in the statements shall form the principal loan to be recovered from the loanee. The contents of the statements shall be deemed to be correct unless a written complaint to the contrary is received by the Board within three (3) months from the date of the statement whereupon the Board shall either confirm the complaint or advise as the case may be. A statement may be furnished at any time on request but at the loanee’s expense', 5, '1', 'peter', '2017-11-07 23:33:41', NULL, NULL),
+(28, 5, '6', 'Rule 6', 'Where it is discovered that the loan was granted due to false information furnished by the loanee, the Board shall withhold release of the amount yet to be disbursed if any, besides subjecting the loanee to prosecution', 6, '1', 'peter', '2017-11-07 23:33:46', NULL, NULL),
+(29, 5, '7', 'Rule 7', 'The Board shall engage agents (Banks) who shall be responsible for the disbursement of the loans as shall be advised by the Board from time to time', 7, '1', 'peter', '2017-11-07 23:33:50', NULL, NULL),
+(30, 5, '8', 'Rule 8', 'The loanee shall keep the guarantor appraised of the principal loan awarded and in the event that there is a conflict, the amount as held by the Board will prevail', 8, '1', 'peter', '2017-11-07 23:33:53', NULL, NULL),
+(31, 5, '9', 'Rule 9', 'The loan shall be due for repayment one year after completion of the course studied or within such period as the Board may decide to recall the loan whichever is earlier', 9, '1', 'peter', '2017-11-07 23:33:57', NULL, NULL),
+(32, 5, '10', 'Rule 10', 'The loan shall be repaid by monthly installments or by any other convenient mode of repayment as shall be directed by the Board but subject to the provisions of the Higher Education Loans Board Act', 10, '1', 'peter', '2017-11-07 23:34:00', NULL, NULL),
+(33, 5, '11', 'Rule 11', 'If the loanee defaults in the repayment of the loan when the loan is due, the whole amount shall be due and payable and the loanee shall be bound to pay other charges that may arise as a result of the default including but not limited to the Advocates fees and penalties.', 11, '1', 'peter', '2017-11-07 23:34:04', NULL, NULL),
+(34, 5, '12', 'Rule 12', 'The Board shall charge a penalty of Kshs.5,000 per month on any account that is in default.', 12, '1', 'peter', '2017-11-07 23:34:07', NULL, NULL),
+(35, 5, '13', 'Rule 13', 'Non demand for loan repayment and the accruing charges shall not in any way signify waiver of any amount rightfully due under the terms and conditions of the loan', 13, '1', 'peter', '2017-11-07 23:34:11', NULL, NULL),
+(36, 5, '14', 'Rule 14', 'The applicant hereby consents that the Board shall share information pertaining to the loan account with credit reference bureaus or any other parties as deemed necessary', 14, '1', 'peter', '2017-11-07 23:34:14', NULL, NULL),
+(37, 5, '15', 'Rule 15', 'The Board shall effect credit protection arrangement of the loan at the expense of the loanee.', 15, '1', 'peter', '2017-11-07 23:34:18', NULL, NULL),
+(38, 5, '16', 'Rule 16', 'In the event that the applicant receives additional financial assistance from any other source and the need to refund by the institution arises such refund shall be made to the Board and the same shall be utilized towards reducing or offsetting the loan', 16, '1', 'peter', '2017-11-07 23:34:21', NULL, NULL),
+(39, 5, '17', 'Rule 17', 'An application whose defectivity is not corrected within 90 days after submission will be declared invalid and the applicant shall be required to apply afresh in the subsequent year.', 17, '1', 'peter', '2017-11-07 23:34:25', NULL, NULL),
+(40, 5, '18', 'Rule 18', 'A loan award that is not claimed for disbursment by the close of the financial year of the application period i.e. June 30<sup>th</sup>, either personally by the beneficiary or through the institution, shall be withdrawn and an automatic reversal effected in the records.', 18, '1', 'peter', '2017-11-07 23:34:28', 'peter', '2017-11-07 23:53:02'),
+(41, 5, '19', 'Rule 19', 'No loan shall be disbursed unless this agreement form is signed.', 19, '1', 'peter', '2017-11-07 23:34:31', NULL, NULL),
+(42, 5, '20', 'Rule 20', 'The loanee/applicant is obligated at all times to confirm with his institution receipt of loan disbursed on his account.', 20, '1', 'peter', '2017-11-07 23:34:35', NULL, NULL),
+(43, 5, '21', 'Rule 21', 'It shall be the obligation of the loanee/applicant to follow up on any un-utilized funds and ensure that such funds are returned to HELB', 21, '1', 'peter', '2017-11-07 23:34:38', NULL, NULL),
+(44, 5, '22', 'Rule 22', 'Any amount disbursed on account of the loanee/applicant, whether utilised or not, shall be deemed to be a loan which must be repaid in full.', 22, '1', 'peter', '2017-11-07 23:34:42', NULL, NULL),
+(45, 5, '23', 'Rule 23', 'It shall be the obligation of the loanee to inform HELB of any transfers or failure to take up the admission offer', 23, '1', 'peter', '2017-11-07 23:34:44', NULL, NULL),
+(46, 5, '24', 'Rule 24', 'There shall be no replacement of a guarantor, unless the loanee furnishes certified/commissioned details of the new guarantor. HELB reserves the right to authenticate the details.', 24, '1', 'peter', '2017-11-07 23:34:48', NULL, NULL),
+(47, 5, '25', 'Rule 25', 'The signature of the loanee shall certify the reading, understanding and being in agreement with the terms and conditions herein including certification.', 25, '1', 'peter', '2017-11-07 23:34:51', NULL, NULL),
+(48, 5, '26', 'Rule 26', 'Any dispute arising out of the relationship between HELB and the applicant/loanee shall in the first instance be referred to Alternative Dispute Resolution (ADR) mechanism as determined by HELB', 26, '1', 'peter', '2017-11-07 23:34:54', 'peter', '2017-11-07 23:35:01'),
+(49, 24, '1', 'Rule 1', 'The rate of interest applicable shall be 4.00% p.a. the Board shall have the sole discretion of varying the interest rate as circumstances shall demand.', 1, '1', 'wsiati', '2017-12-06 15:49:33', NULL, NULL),
+(50, 24, '2', 'Rule 2', 'The Board shall charge administrative fees of Kshs.500 per annum on all un-matured accounts. All mature loan accounts shall be subject to administrative fee as shall be determined by the Board from time to time.', 2, '1', 'wsiati', '2017-12-06 15:49:38', NULL, NULL),
+(51, 24, '3', 'Rule 3', 'In the event that the loanee discontinues studies for whichever reason before full disbursement is made, the Board shall not disburse the remaining allocation and shall recall the loan so far advanced in full together with the interest thereon', 3, '1', 'wsiati', '2017-12-06 15:49:42', NULL, NULL),
+(52, 24, '4', 'Rule 4', 'Loan amounts awarded shall be inclusive of practicum/field attachment where applicable', 4, '1', 'wsiati', '2017-12-06 15:49:46', NULL, NULL),
+(53, 24, '5', 'Rule 5', 'The Board shall electronically, through the website, send to each loanee annual statement indicating the amount disbursed per each academic year or the outstanding balance as the case may be. The sums of the amount indicated in the statements shall form the principal loan to be recovered from the loanee. The contents of the statements shall be deemed to be correct unless a written complaint to the contrary is received by the Board within three (3) months from the date of the statement whereupon the Board shall either confirm the complaint or advise as the case may be. A statement may be furnished at any time on request but at the loanee’s expense', 5, '1', 'wsiati', '2017-12-06 15:49:50', NULL, NULL),
+(54, 24, '6', 'Rule 6', 'Where it is discovered that the loan was granted due to false information furnished by the loanee, the Board shall withhold release of the amount yet to be disbursed if any, besides subjecting the loanee to prosecution', 6, '1', 'wsiati', '2017-12-06 15:49:54', NULL, NULL),
+(55, 24, '7', 'Rule 7', 'The Board shall engage agents (Banks) who shall be responsible for the disbursement of the loans as shall be advised by the Board from time to time', 7, '1', 'wsiati', '2017-12-06 15:49:58', NULL, NULL),
+(56, 24, '8', 'Rule 8', 'The loanee shall keep the guarantor appraised of the principal loan awarded and in the event that there is a conflict, the amount as held by the Board will prevail', 8, '1', 'wsiati', '2017-12-06 15:50:03', NULL, NULL),
+(57, 24, '9', 'Rule 9', 'The loan shall be due for repayment one year after completion of the course studied or within such period as the Board may decide to recall the loan whichever is earlier', 9, '1', 'wsiati', '2017-12-06 15:50:07', NULL, NULL),
+(58, 24, '10', 'Rule 10', 'The loan shall be repaid by monthly installments or by any other convenient mode of repayment as shall be directed by the Board but subject to the provisions of the Higher Education Loans Board Act', 10, '1', 'wsiati', '2017-12-06 15:50:11', NULL, NULL),
+(59, 24, '11', 'Rule 11', 'If the loanee defaults in the repayment of the loan when the loan is due, the whole amount shall be due and payable and the loanee shall be bound to pay other charges that may arise as a result of the default including but not limited to the Advocates fees and penalties.', 11, '1', 'wsiati', '2017-12-06 15:50:15', NULL, NULL),
+(60, 24, '12', 'Rule 12', 'The Board shall charge a penalty of Kshs.5,000 per month on any account that is in default.', 12, '1', 'wsiati', '2017-12-06 15:50:19', NULL, NULL),
+(61, 24, '13', 'Rule 13', 'Non demand for loan repayment and the accruing charges shall not in any way signify waiver of any amount rightfully due under the terms and conditions of the loan', 13, '1', 'wsiati', '2017-12-06 15:50:23', NULL, NULL),
+(62, 24, '14', 'Rule 14', 'The applicant hereby consents that the Board shall share information pertaining to the loan account with credit reference bureaus or any other parties as deemed necessary', 14, '1', 'wsiati', '2017-12-06 15:50:27', NULL, NULL),
+(63, 24, '15', 'Rule 15', 'The Board shall effect credit protection arrangement of the loan at the expense of the loanee.', 15, '1', 'wsiati', '2017-12-06 15:50:31', NULL, NULL),
+(64, 24, '16', 'Rule 16', 'In the event that the applicant receives additional financial assistance from any other source and the need to refund by the institution arises such refund shall be made to the Board and the same shall be utilized towards reducing or offsetting the loan', 16, '1', 'wsiati', '2017-12-06 15:50:34', NULL, NULL),
+(65, 24, '17', 'Rule 17', 'An application whose defectivity is not corrected within 90 days after submission will be declared invalid and the applicant shall be required to apply afresh in the subsequent year.', 17, '1', 'wsiati', '2017-12-06 15:50:38', NULL, NULL),
+(66, 24, '18', 'Rule 18', 'A loan award that is not claimed for disbursment by the close of the financial year of the application period i.e. June 30th, either personally by the beneficiary or through the institution, shall be withdrawn and an automatic reversal effected in the records.', 18, '1', 'wsiati', '2017-12-06 15:50:44', NULL, NULL),
+(67, 24, '19', 'Rule 19', 'No loan shall be disbursed unless this agreement form is signed.', 19, '1', 'wsiati', '2017-12-06 15:50:47', NULL, NULL),
+(68, 24, '20', 'Rule 20', 'The loanee/applicant is obligated at all times to confirm with his institution receipt of loan disbursed on his account.', 20, '1', 'wsiati', '2017-12-06 15:50:52', NULL, NULL),
+(69, 24, '21', 'Rule 21', 'It shall be the obligation of the loanee/applicant to follow up on any un-utilized funds and ensure that such funds are returned to HELB', 21, '1', 'wsiati', '2017-12-06 15:50:56', NULL, NULL),
+(70, 24, '22', 'Rule 22', 'Any amount disbursed on account of the loanee/applicant, whether utilised or not, shall be deemed to be a loan which must be repaid in full.', 22, '1', 'wsiati', '2017-12-06 15:50:59', NULL, NULL),
+(71, 24, '23', 'Rule 23', 'It shall be the obligation of the loanee to inform HELB of any transfers or failure to take up the admission offer', 23, '1', 'wsiati', '2017-12-06 15:51:04', NULL, NULL),
+(72, 24, '24', 'Rule 24', 'There shall be no replacement of a guarantor, unless the loanee furnishes certified/commissioned details of the new guarantor. HELB reserves the right to authenticate the details.', 24, '1', 'wsiati', '2017-12-06 15:51:08', NULL, NULL),
+(73, 24, '25', 'Rule 25', 'The signature of the loanee shall certify the reading, understanding and being in agreement with the terms and conditions herein including certification.', 25, '1', 'wsiati', '2017-12-06 15:51:12', NULL, NULL),
+(74, 24, '26', 'Rule 26', 'Any dispute arising out of the relationship between HELB and the applicant/loanee shall in the first instance be referred to Alternative Dispute Resolution (ADR) mechanism as determined by HELB', 26, '1', 'wsiati', '2017-12-06 15:51:16', NULL, NULL),
+(75, 27, 'appeal_personal', 'Personal Details', 'If disabled, attach certification from National Council for Persons with Disability and School\'s Medical Officer\r\nIf orphaned, attached death certificate if you have not provided them before', 1, '1', 'wsiati', '2017-12-12 15:19:32', 'wsiati', '2017-12-12 17:43:08'),
+(76, 27, 'appeal_education', 'Education Background', 'If sponsored, attach letters from sponsor & school', 2, '1', 'wsiati', '2017-12-12 15:19:48', 'wsiati', '2017-12-12 17:43:12'),
+(77, 28, 'declaration_appeal_applicant', 'Applicants Declaration', 'I declare that the information given herein is true to the best of my knowledge. I also understand that this is a loan that must be repaid.\r\n\r\nSignature ........................................................................ Date: .................................................', 1, '1', 'wsiati', '2017-12-12 15:19:56', 'wsiati', '2017-12-12 17:43:18'),
+(78, 28, 'declaration_appeal_finance_officer', 'Finance Officer / Financial Aid Officer', 'I confirm that the student herein is registered in this university and receives scholarship aid from the following organization(s).\r\n\r\n1. .............................................................................    2. ................................................................................\r\n\r\nFee Balance: .....................................     Campus: ...........................................................................\r\n\r\nName of Officer: .......................................... Signature: ............................... Tel: ..............................', 2, '1', 'wsiati', '2017-12-12 15:20:02', 'wsiati', '2017-12-12 17:43:22'),
+(79, 28, 'declaration_appeal_institution', 'Dean of Students Certification', 'The above named applicant and his/her parent/guardian appeared before me and made the solemn declaration that the information given herein is correct.\r\n\r\nName of Officer : .............................................................. Tel : ...................................\r\n\r\nStamp/Signature: ............................................................  Date :.....................................\r\n\r\nCampus : .........................................................................................................................\r\n\r\nAdditional Comments : ...........................................................................................................................', 3, '1', 'wsiati', '2017-12-12 15:20:09', 'wsiati', '2017-12-12 17:43:25'),
+(80, 32, 'appeal_personal', 'Personal Details', 'If disabled, attach certification from National Council for Persons with Disability and School\'s Medical Officer\r\nIf orphaned, attached death certificate if you have not provided them before', 1, '1', 'wsiati', '2017-12-12 17:44:15', NULL, NULL),
+(81, 32, 'appeal_education', 'Education Background', 'If sponsored, attach letters from sponsor & school', 2, '1', 'wsiati', '2017-12-12 17:44:19', NULL, NULL),
+(82, 33, 'declaration_appeal_applicant', 'Applicants Declaration', 'I declare that the information given herein is true to the best of my knowledge. I also understand that this is a loan that must be repaid.\r\n\r\nSignature: ........................................................................               Date: .................................................', 1, '1', 'wsiati', '2017-12-12 17:44:24', 'wsiati', '2017-12-13 09:47:38'),
+(83, 33, 'declaration_appeal_finance_officer', 'Finance Officer / Financial Aid Officer', 'I confirm that the student herein is registered in this university and receives scholarship aid from the following organization(s).\r\n\r\n1. .............................................................................    2. ................................................................................\r\n\r\nFee Balance: .....................................     Campus: ...........................................................................\r\n\r\nName of Officer: .......................................... Signature: ............................... Tel: ..............................', 2, '1', 'wsiati', '2017-12-12 17:44:28', NULL, NULL),
+(84, 33, 'declaration_appeal_institution', 'Dean of Students Certification', 'The above named applicant and his/her parent/guardian appeared before me and made the solemn declaration that the information given herein is correct.\r\n\r\nName of Officer : .............................................................. Tel : ...................................\r\n\r\nStamp/Signature: ............................................................  Date :.....................................\r\n\r\nCampus : .........................................................................................................................\r\n\r\nAdditional Comments : ...........................................................................................................................', 3, '1', 'wsiati', '2017-12-12 17:44:32', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_application_views`
+--
+
+CREATE TABLE `tbl_application_views` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `application` int(11) NOT NULL COMMENT 'Application',
+  `appeal` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Appeal',
+  `user_id` int(11) NOT NULL COMMENT 'User ID',
+  `username` varchar(20) NOT NULL COMMENT 'Username',
+  `viewed_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Viewed At',
+  `new_print` enum('0','1') NOT NULL DEFAULT '1' COMMENT 'New Print'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `tbl_application_views`
+--
+
+INSERT INTO `tbl_application_views` (`id`, `application`, `appeal`, `user_id`, `username`, `viewed_at`, `new_print`) VALUES
+(1, 1, '0', 1, 'wsiati', '2017-12-05 21:52:58', '1'),
+(2, 1, '0', 1, 'wsiati', '2017-12-05 21:54:16', '0'),
+(3, 1, '0', 1, 'wsiati', '2017-12-05 22:07:15', '0'),
+(4, 1, '0', 1, 'wsiati', '2017-12-05 22:08:01', '0'),
+(5, 1, '0', 1, 'wsiati', '2017-12-05 22:08:37', '0'),
+(6, 1, '0', 1, 'wsiati', '2017-12-05 22:08:47', '0'),
+(7, 1, '0', 1, 'wsiati', '2017-12-05 22:10:46', '0'),
+(8, 1, '0', 1, 'wsiati', '2017-12-05 22:20:04', '0'),
+(9, 1, '0', 1, 'wsiati', '2017-12-05 22:37:09', '0'),
+(10, 1, '0', 1, 'wsiati', '2017-12-05 22:37:30', '0'),
+(11, 1, '0', 1, 'wsiati', '2017-12-05 22:37:50', '0'),
+(12, 1, '0', 1, 'wsiati', '2017-12-05 23:03:49', '0'),
+(13, 1, '0', 1, 'wsiati', '2017-12-05 23:04:54', '0'),
+(14, 1, '1', 1, 'wsiati', '2017-12-05 23:07:06', '1'),
+(15, 1, '0', 1, 'wsiati', '2017-12-05 23:10:46', '0'),
+(16, 1, '0', 1, 'wsiati', '2017-12-06 13:37:27', '1'),
+(17, 1, '0', 1, 'wsiati', '2017-12-06 13:38:57', '0'),
+(18, 1, '0', 1, 'wsiati', '2017-12-06 16:53:51', '1'),
+(19, 1, '0', 1, 'wsiati', '2017-12-06 16:55:19', '0'),
+(20, 1, '0', 1, 'wsiati', '2017-12-06 16:55:48', '0'),
+(21, 2, '0', 1, 'wsiati', '2017-12-06 16:56:08', '1'),
+(22, 2, '0', 1, 'wsiati', '2017-12-06 17:01:54', '1'),
+(23, 2, '0', 1, 'wsiati', '2017-12-06 17:05:14', '1'),
+(24, 1, '0', 1, 'wsiati', '2017-12-06 17:05:48', '0'),
+(25, 2, '0', 1, 'wsiati', '2017-12-06 17:05:51', '0'),
+(26, 2, '0', 1, 'wsiati', '2017-12-06 17:06:12', '1'),
+(27, 2, '0', 1, 'wsiati', '2017-12-06 17:25:20', '1'),
+(28, 2, '0', 1, 'wsiati', '2017-12-06 17:27:57', '1'),
+(29, 2, '0', 1, 'wsiati', '2017-12-06 17:29:21', '1'),
+(30, 2, '0', 1, 'wsiati', '2017-12-06 17:30:24', '1'),
+(31, 2, '0', 1, 'wsiati', '2017-12-06 17:31:15', '1'),
+(32, 2, '0', 1, 'wsiati', '2017-12-06 17:35:46', '1'),
+(33, 1, '0', 1, 'wsiati', '2017-12-06 22:35:28', '1'),
+(34, 1, '0', 1, 'wsiati', '2017-12-06 22:39:14', '1'),
+(35, 1, '0', 1, 'wsiati', '2017-12-06 22:41:37', '1'),
+(36, 1, '0', 1, 'wsiati', '2017-12-11 15:49:35', '1'),
+(37, 1, '0', 1, 'wsiati', '2017-12-11 15:53:02', '0'),
+(38, 1, '1', 1, 'wsiati', '2017-12-11 16:08:13', '1'),
+(39, 1, '1', 1, 'wsiati', '2017-12-11 16:08:37', '0'),
+(40, 1, '1', 1, 'wsiati', '2017-12-11 16:15:22', '1'),
+(41, 1, '1', 1, 'wsiati', '2017-12-11 16:18:00', '1'),
+(42, 1, '1', 1, 'wsiati', '2017-12-11 16:43:03', '1'),
+(43, 1, '1', 1, 'wsiati', '2017-12-11 16:47:06', '1'),
+(44, 1, '1', 1, 'wsiati', '2017-12-11 17:04:14', '1'),
+(45, 1, '1', 1, 'wsiati', '2017-12-11 17:04:32', '0'),
+(46, 1, '1', 1, 'wsiati', '2017-12-12 15:21:55', '1'),
+(47, 1, '1', 1, 'wsiati', '2017-12-12 17:45:09', '1'),
+(48, 1, '1', 1, 'wsiati', '2017-12-12 17:50:24', '1'),
+(49, 1, '1', 1, 'wsiati', '2017-12-12 17:54:32', '1'),
+(50, 1, '1', 1, 'wsiati', '2017-12-12 18:03:01', '1'),
+(51, 1, '1', 1, 'wsiati', '2017-12-12 18:05:18', '1'),
+(52, 1, '1', 1, 'wsiati', '2017-12-13 09:02:17', '1'),
+(53, 1, '1', 1, 'wsiati', '2017-12-13 09:05:18', '1'),
+(54, 1, '1', 1, 'wsiati', '2017-12-13 09:06:23', '1'),
+(55, 1, '0', 1, 'wsiati', '2018-02-08 05:29:46', '1'),
+(56, 1, '1', 1, 'wsiati', '2018-02-08 05:30:46', '1'),
+(57, 1, '0', 1, 'wsiati', '2018-02-08 05:32:33', '0'),
+(58, 2, '0', 1, 'wsiati', '2018-02-08 05:33:10', '1'),
+(59, 1, '0', 1, 'wsiati', '2018-02-08 05:34:18', '0'),
+(60, 1, '0', 1, 'wsiati', '2018-02-08 05:46:41', '0'),
+(61, 1, '0', 1, 'wsiati', '2018-02-08 05:58:10', '0'),
+(62, 1, '0', 1, 'wsiati', '2018-02-08 06:00:00', '1'),
+(63, 1, '0', 1, 'wsiati', '2018-02-08 06:12:19', '1'),
+(64, 1, '0', 1, 'wsiati', '2018-02-08 06:20:12', '1'),
+(65, 1, '0', 1, 'wsiati', '2018-02-08 06:21:49', '1'),
+(66, 1, '0', 1, 'wsiati', '2018-02-08 06:22:45', '1'),
+(67, 1, '0', 1, 'wsiati', '2018-02-08 06:24:16', '1'),
+(68, 1, '0', 1, 'wsiati', '2018-02-08 06:25:25', '0'),
+(69, 1, '0', 1, 'wsiati', '2018-02-08 06:29:46', '1'),
+(70, 1, '0', 1, 'wsiati', '2018-02-08 06:30:35', '1'),
+(71, 1, '0', 1, 'wsiati', '2018-02-08 06:31:07', '1'),
+(72, 1, '0', 1, 'wsiati', '2018-02-08 06:31:49', '1'),
+(73, 1, '0', 1, 'wsiati', '2018-02-08 06:32:35', '1'),
+(74, 1, '0', 1, 'wsiati', '2018-02-08 06:33:40', '1'),
+(75, 1, '0', 1, 'wsiati', '2018-02-08 06:34:58', '1'),
+(76, 1, '0', 1, 'wsiati', '2018-02-08 06:35:44', '1'),
+(77, 1, '0', 1, 'wsiati', '2018-02-08 06:36:44', '1'),
+(78, 1, '0', 1, 'wsiati', '2018-02-08 06:37:12', '1'),
+(79, 1, '0', 1, 'wsiati', '2018-02-08 06:37:48', '1'),
+(80, 1, '0', 1, 'wsiati', '2018-02-08 06:38:37', '1'),
+(81, 1, '0', 1, 'wsiati', '2018-02-08 07:00:14', '1'),
+(82, 1, '0', 1, 'wsiati', '2018-02-08 07:02:15', '1'),
+(83, 1, '0', 1, 'wsiati', '2018-02-08 07:05:12', '1'),
+(84, 1, '0', 1, 'wsiati', '2018-02-08 07:08:44', '1'),
+(85, 1, '0', 1, 'wsiati', '2018-02-08 07:11:33', '1'),
+(86, 1, '0', 1, 'wsiati', '2018-02-08 07:12:17', '1'),
+(87, 1, '0', 1, 'wsiati', '2018-02-08 07:15:36', '1'),
+(88, 1, '0', 1, 'wsiati', '2018-02-08 07:18:43', '1'),
+(89, 1, '0', 1, 'wsiati', '2018-02-08 07:35:57', '1'),
+(90, 1, '0', 1, 'wsiati', '2018-02-08 07:37:50', '1'),
+(91, 1, '0', 1, 'wsiati', '2018-02-08 07:39:26', '1'),
+(92, 1, '0', 1, 'wsiati', '2018-02-08 07:44:44', '1'),
+(93, 1, '0', 1, 'wsiati', '2018-02-08 07:45:29', '1'),
+(94, 1, '0', 1, 'wsiati', '2018-02-08 07:46:44', '1'),
+(95, 1, '0', 1, 'wsiati', '2018-02-08 07:48:19', '1'),
+(96, 1, '0', 1, 'wsiati', '2018-02-08 07:49:40', '1'),
+(97, 1, '0', 1, 'wsiati', '2018-02-08 07:52:34', '1'),
+(98, 1, '0', 1, 'wsiati', '2018-02-08 07:56:42', '1'),
+(99, 1, '0', 1, 'wsiati', '2018-02-08 07:58:28', '1'),
+(100, 1, '0', 1, 'wsiati', '2018-02-08 07:59:09', '1'),
+(101, 1, '0', 1, 'wsiati', '2018-02-08 08:02:07', '1'),
+(102, 1, '0', 1, 'wsiati', '2018-02-08 08:03:34', '1'),
+(103, 1, '0', 1, 'wsiati', '2018-02-08 08:08:35', '1'),
+(104, 1, '0', 1, 'wsiati', '2018-02-08 08:18:11', '1'),
+(105, 1, '0', 1, 'wsiati', '2018-02-08 08:24:15', '1'),
+(106, 1, '0', 1, 'wsiati', '2018-02-08 08:27:37', '1'),
+(107, 1, '0', 1, 'wsiati', '2018-02-08 08:28:36', '1'),
+(108, 1, '0', 1, 'wsiati', '2018-02-08 08:30:35', '1'),
+(109, 1, '0', 1, 'wsiati', '2018-02-08 08:33:24', '1'),
+(110, 1, '0', 1, 'wsiati', '2018-02-08 08:34:34', '1'),
+(111, 1, '0', 1, 'wsiati', '2018-02-08 08:36:01', '1'),
+(112, 1, '0', 1, 'wsiati', '2018-02-08 08:37:15', '1'),
+(113, 1, '0', 1, 'wsiati', '2018-02-08 08:38:31', '1'),
+(114, 1, '0', 1, 'wsiati', '2018-02-08 08:43:37', '1'),
+(115, 1, '0', 1, 'wsiati', '2018-02-08 08:45:23', '1'),
+(116, 1, '0', 1, 'wsiati', '2018-02-08 08:48:12', '1'),
+(117, 1, '0', 1, 'wsiati', '2018-02-08 08:49:45', '1'),
+(118, 1, '0', 1, 'wsiati', '2018-02-08 08:50:53', '1'),
+(119, 1, '0', 1, 'wsiati', '2018-02-08 08:54:42', '1'),
+(120, 1, '0', 1, 'wsiati', '2018-02-08 09:03:47', '1'),
+(121, 1, '0', 1, 'wsiati', '2018-02-08 09:04:56', '1'),
+(122, 1, '0', 1, 'wsiati', '2018-02-08 09:05:57', '1'),
+(123, 1, '0', 1, 'wsiati', '2018-02-08 09:08:34', '1'),
+(124, 1, '0', 1, 'wsiati', '2018-02-08 09:21:56', '1'),
+(125, 1, '0', 1, 'wsiati', '2018-02-08 09:23:54', '1'),
+(126, 1, '0', 1, 'wsiati', '2018-02-08 09:24:54', '1'),
+(127, 1, '0', 1, 'wsiati', '2018-02-08 09:26:21', '1'),
+(128, 1, '0', 1, 'wsiati', '2018-02-08 09:28:21', '1'),
+(129, 1, '0', 1, 'wsiati', '2018-02-08 09:29:01', '1'),
+(130, 1, '0', 1, 'wsiati', '2018-02-08 09:30:47', '1'),
+(131, 1, '0', 1, 'wsiati', '2018-02-08 09:35:43', '1'),
+(132, 1, '0', 1, 'wsiati', '2018-02-08 09:36:38', '1'),
+(133, 1, '0', 1, 'wsiati', '2018-02-08 09:40:25', '1'),
+(134, 1, '0', 1, 'wsiati', '2018-02-08 09:41:25', '1'),
+(135, 1, '0', 1, 'wsiati', '2018-02-08 09:43:22', '1'),
+(136, 1, '0', 1, 'wsiati', '2018-02-08 09:50:17', '1'),
+(137, 1, '0', 1, 'wsiati', '2018-02-08 09:52:40', '1'),
+(138, 1, '0', 1, 'wsiati', '2018-02-08 09:56:30', '1'),
+(139, 1, '0', 1, 'wsiati', '2018-02-08 09:57:46', '1'),
+(140, 1, '0', 1, 'wsiati', '2018-02-08 10:04:16', '1'),
+(141, 1, '0', 1, 'wsiati', '2018-02-08 10:08:00', '1'),
+(142, 1, '0', 1, 'wsiati', '2018-02-08 10:09:20', '1'),
+(143, 1, '0', 1, 'wsiati', '2018-02-08 10:11:10', '1'),
+(144, 1, '0', 1, 'wsiati', '2018-02-08 10:14:03', '1'),
+(145, 1, '0', 1, 'wsiati', '2018-02-08 10:22:49', '1'),
+(146, 1, '1', 1, 'wsiati', '2018-02-08 10:23:55', '1'),
+(147, 1, '1', 1, 'wsiati', '2018-02-08 10:30:06', '1'),
+(148, 1, '1', 1, 'wsiati', '2018-02-08 10:31:43', '1'),
+(149, 1, '1', 1, 'wsiati', '2018-02-08 10:33:58', '1'),
+(150, 1, '1', 1, 'wsiati', '2018-02-08 10:37:49', '1'),
+(151, 1, '0', 1, 'wsiati', '2018-02-08 10:38:33', '1'),
+(152, 1, '0', 1, 'wsiati', '2018-02-08 10:47:54', '1'),
+(153, 1, '0', 1, 'wsiati', '2018-02-08 10:53:56', '1'),
+(154, 1, '0', 1, 'wsiati', '2018-02-08 10:55:59', '1'),
+(155, 1, '0', 1, 'wsiati', '2018-02-08 10:58:57', '1'),
+(156, 1, '0', 1, 'wsiati', '2018-02-08 11:00:11', '1'),
+(157, 1, '0', 1, 'wsiati', '2018-02-08 11:08:08', '1'),
+(158, 1, '0', 1, 'wsiati', '2018-02-08 11:17:16', '1'),
+(159, 1, '0', 1, 'wsiati', '2018-02-08 11:18:32', '1'),
+(160, 1, '0', 1, 'wsiati', '2018-02-08 11:19:16', '1'),
+(161, 1, '0', 1, 'wsiati', '2018-02-08 11:28:56', '1'),
+(162, 1, '0', 1, 'wsiati', '2018-02-08 11:28:56', '0'),
+(163, 1, '0', 1, 'wsiati', '2018-02-08 11:38:14', '1'),
+(164, 1, '0', 1, 'wsiati', '2018-02-08 11:43:50', '1'),
+(165, 1, '0', 1, 'wsiati', '2018-02-08 11:47:07', '1'),
+(166, 1, '0', 1, 'wsiati', '2018-02-08 12:03:08', '1'),
+(167, 1, '0', 1, 'wsiati', '2018-02-08 12:04:26', '1'),
+(168, 1, '0', 1, 'wsiati', '2018-02-08 12:17:12', '1'),
+(169, 1, '0', 1, 'wsiati', '2018-02-08 12:23:09', '1'),
+(170, 1, '0', 1, 'wsiati', '2018-02-08 12:23:49', '0'),
+(171, 1, '0', 1, 'wsiati', '2018-02-08 12:26:02', '1'),
+(172, 1, '0', 1, 'wsiati', '2018-02-08 12:34:11', '1'),
+(173, 1, '0', 1, 'wsiati', '2018-02-08 12:36:45', '1'),
+(174, 1, '0', 1, 'wsiati', '2018-02-08 12:38:15', '1'),
+(175, 1, '0', 1, 'wsiati', '2018-02-08 12:48:44', '1'),
+(176, 1, '0', 1, 'wsiati', '2018-02-08 12:49:01', '0'),
+(177, 1, '0', 1, 'wsiati', '2018-02-08 12:50:32', '1'),
+(178, 1, '0', 1, 'wsiati', '2018-02-08 12:52:47', '1'),
+(179, 1, '0', 1, 'wsiati', '2018-02-08 13:18:01', '1'),
+(180, 1, '0', 1, 'wsiati', '2018-02-08 13:29:25', '1'),
+(181, 1, '0', 1, 'wsiati', '2018-02-08 13:33:37', '1'),
+(182, 1, '0', 1, 'wsiati', '2018-02-08 14:50:23', '1'),
+(183, 1, '0', 1, 'wsiati', '2018-02-08 14:56:43', '1'),
+(184, 1, '0', 1, 'wsiati', '2018-02-08 14:57:55', '1'),
+(185, 1, '0', 1, 'wsiati', '2018-02-08 14:59:09', '1'),
+(186, 1, '0', 1, 'wsiati', '2018-02-08 15:06:29', '1'),
+(187, 1, '0', 1, 'wsiati', '2018-02-08 15:09:34', '1'),
+(188, 1, '0', 1, 'wsiati', '2018-02-08 15:12:10', '1'),
+(189, 1, '0', 1, 'wsiati', '2018-02-08 15:16:06', '1'),
+(190, 1, '0', 1, 'wsiati', '2018-02-08 15:17:08', '1'),
+(191, 1, '0', 1, 'wsiati', '2018-02-08 15:18:10', '1'),
+(192, 1, '0', 1, 'wsiati', '2018-02-08 15:18:55', '1'),
+(193, 1, '0', 1, 'wsiati', '2018-02-08 15:20:54', '1'),
+(194, 1, '0', 1, 'wsiati', '2018-02-08 15:23:41', '1'),
+(195, 1, '0', 1, 'wsiati', '2018-02-08 15:31:46', '1'),
+(196, 1, '0', 1, 'wsiati', '2018-02-08 15:34:55', '1'),
+(197, 1, '0', 1, 'wsiati', '2018-02-08 15:42:27', '1'),
+(198, 1, '0', 1, 'wsiati', '2018-02-08 15:45:40', '1'),
+(199, 1, '0', 1, 'wsiati', '2018-02-08 15:48:05', '1'),
+(200, 1, '0', 1, 'wsiati', '2018-02-08 15:49:51', '1'),
+(201, 1, '0', 1, 'wsiati', '2018-02-08 15:53:36', '1'),
+(202, 1, '0', 1, 'wsiati', '2018-02-08 15:53:37', '0'),
+(203, 1, '0', 1, 'wsiati', '2018-02-08 15:55:14', '1'),
+(204, 1, '0', 1, 'wsiati', '2018-02-08 16:01:01', '1'),
+(205, 1, '0', 1, 'wsiati', '2018-02-08 16:06:36', '1'),
+(206, 1, '0', 1, 'wsiati', '2018-02-08 16:15:03', '1'),
+(207, 1, '0', 1, 'wsiati', '2018-02-08 16:20:50', '0'),
+(208, 1, '1', 1, 'wsiati', '2018-02-08 16:21:35', '1'),
+(209, 2, '0', 1, 'wsiati', '2018-02-08 16:22:50', '1'),
+(210, 1, '0', 1, 'wsiati', '2018-02-09 10:01:39', '1'),
+(211, 1, '0', 1, 'wsiati', '2018-02-09 10:17:16', '1'),
+(212, 1, '0', 1, 'wsiati', '2018-02-09 10:20:33', '1'),
+(213, 1, '0', 1, 'wsiati', '2018-02-09 10:34:54', '1'),
+(214, 2, '0', 1, 'wsiati', '2018-02-09 10:36:52', '1'),
+(215, 1, '1', 1, 'wsiati', '2018-02-09 10:41:56', '1'),
+(216, 1, '0', 1, 'wsiati', '2018-02-09 11:01:06', '1'),
+(217, 2, '0', 1, 'wsiati', '2018-02-09 11:02:49', '1'),
+(218, 1, '1', 1, 'wsiati', '2018-02-09 11:05:16', '1'),
+(219, 1, '0', 1, 'wsiati', '2018-02-09 12:52:46', '1'),
+(220, 1, '0', 1, 'wsiati', '2018-02-09 12:54:18', '1'),
+(221, 1, '0', 1, 'wsiati', '2018-02-09 12:54:58', '1'),
+(222, 1, '0', 1, 'wsiati', '2018-02-09 12:57:40', '0'),
+(223, 1, '0', 1, 'wsiati', '2018-02-09 12:58:09', '1'),
+(224, 1, '0', 1, 'wsiati', '2018-02-09 12:58:47', '1'),
+(225, 1, '0', 1, 'wsiati', '2018-02-09 13:01:28', '1'),
+(226, 1, '0', 1, 'wsiati', '2018-02-09 13:05:58', '1'),
+(227, 1, '0', 1, 'wsiati', '2018-02-09 13:07:03', '1'),
+(228, 1, '0', 1, 'wsiati', '2018-02-09 13:08:12', '1'),
+(229, 1, '0', 1, 'wsiati', '2018-02-09 13:10:40', '1'),
+(230, 1, '1', 1, 'wsiati', '2018-02-09 13:11:26', '1'),
+(231, 1, '1', 1, 'wsiati', '2018-02-09 13:40:08', '1'),
+(232, 1, '0', 1, 'wsiati', '2018-02-09 13:42:33', '1'),
+(233, 1, '0', 1, 'wsiati', '2018-02-09 15:27:53', '1'),
+(234, 1, '0', 1, 'wsiati', '2018-02-09 18:06:03', '1'),
+(235, 1, '0', 1, 'wsiati', '2018-02-09 18:34:56', '1'),
+(236, 1, '0', 1, 'wsiati', '2018-02-09 18:38:45', '1'),
+(237, 1, '0', 1, 'wsiati', '2018-02-09 20:29:32', '1'),
+(238, 1, '0', 1, 'wsiati', '2018-02-09 20:36:43', '1'),
+(239, 1, '0', 1, 'wsiati', '2018-02-09 20:38:45', '1'),
+(240, 1, '0', 1, 'wsiati', '2018-02-13 17:29:00', '1'),
+(241, 1, '0', 1, 'wsiati', '2018-02-13 17:30:50', '0'),
+(242, 1, '0', 1, 'wsiati', '2018-02-13 17:30:57', '0'),
+(243, 1, '0', 1, 'wsiati', '2018-02-13 17:31:20', '0'),
+(244, 1, '0', 1, 'wsiati', '2018-02-13 17:31:28', '0'),
+(245, 1, '0', 1, 'wsiati', '2018-02-13 17:33:13', '0'),
+(246, 1, '0', 1, 'wsiati', '2018-02-13 17:33:37', '0'),
+(247, 1, '0', 1, 'wsiati', '2018-02-13 17:43:37', '0'),
+(248, 1, '0', 1, 'wsiati', '2018-02-13 17:44:18', '0'),
+(249, 1, '0', 1, 'wsiati', '2018-02-13 17:47:44', '0'),
+(250, 1, '0', 1, 'wsiati', '2018-02-13 17:59:07', '0'),
+(251, 1, '0', 1, 'wsiati', '2018-02-13 17:59:40', '0'),
+(252, 1, '0', 1, 'wsiati', '2018-02-13 18:00:15', '0'),
+(253, 1, '0', 1, 'wsiati', '2018-02-14 09:15:22', '0'),
+(254, 1, '0', 1, 'wsiati', '2018-02-14 09:17:01', '0'),
+(255, 1, '0', 1, 'wsiati', '2018-02-14 09:24:46', '0'),
+(256, 1, '0', 1, 'wsiati', '2018-02-14 09:53:24', '0'),
+(257, 1, '0', 1, 'wsiati', '2018-02-14 09:55:10', '0'),
+(258, 1, '0', 1, 'wsiati', '2018-02-14 10:15:23', '0'),
+(259, 1, '0', 1, 'wsiati', '2018-02-14 10:32:54', '0'),
+(260, 1, '0', 1, 'wsiati', '2018-02-14 10:34:19', '0'),
+(261, 1, '0', 1, 'wsiati', '2018-02-14 11:31:55', '0'),
+(262, 1, '0', 1, 'wsiati', '2018-02-14 11:52:10', '0'),
+(263, 1, '0', 1, 'wsiati', '2018-02-14 11:52:41', '0'),
+(264, 1, '0', 1, 'wsiati', '2018-02-14 11:53:08', '0'),
+(265, 2, '0', 1, 'wsiati', '2018-02-14 11:58:02', '1'),
+(266, 2, '0', 1, 'wsiati', '2018-02-14 12:00:24', '0'),
+(267, 2, '0', 1, 'wsiati', '2018-02-14 12:03:29', '0'),
+(268, 1, '0', 1, 'wsiati', '2018-02-14 12:15:16', '0'),
+(269, 1, '0', 1, 'wsiati', '2018-02-14 12:19:11', '0'),
+(270, 1, '0', 1, 'wsiati', '2018-02-14 12:22:08', '0'),
+(271, 1, '0', 1, 'wsiati', '2018-02-14 12:23:32', '0'),
+(272, 2, '0', 1, 'wsiati', '2018-02-14 12:23:41', '0'),
+(273, 1, '0', 1, 'wsiati', '2018-02-14 12:33:30', '0'),
+(274, 2, '0', 1, 'wsiati', '2018-02-14 12:33:57', '0'),
+(275, 2, '0', 1, 'wsiati', '2018-02-14 12:36:41', '1'),
+(276, 2, '0', 1, 'wsiati', '2018-02-14 12:38:25', '1'),
+(277, 2, '0', 1, 'wsiati', '2018-02-14 12:39:13', '1'),
+(278, 2, '0', 1, 'wsiati', '2018-02-14 12:39:53', '1'),
+(279, 2, '0', 1, 'wsiati', '2018-02-14 12:40:32', '0'),
+(280, 1, '1', 1, 'wsiati', '2018-02-14 12:41:49', '1'),
+(281, 1, '1', 1, 'wsiati', '2018-02-14 12:43:20', '1'),
+(282, 1, '1', 1, 'wsiati', '2018-02-14 12:45:44', '1'),
+(283, 1, '1', 1, 'wsiati', '2018-02-14 12:46:35', '1'),
+(284, 1, '1', 1, 'wsiati', '2018-02-14 12:47:40', '1');
 
 -- --------------------------------------------------------
 
@@ -772,6 +1330,43 @@ INSERT INTO `tbl_counties` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `tbl_defectivities`
+--
+
+CREATE TABLE `tbl_defectivities` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `code` varchar(10) NOT NULL COMMENT 'Defectivity Code',
+  `name` varchar(128) NOT NULL COMMENT 'Defectivity Name',
+  `active` enum('0','1') NOT NULL DEFAULT '1' COMMENT 'Active',
+  `description` text COMMENT 'Description',
+  `created_by` varchar(15) NOT NULL COMMENT 'Created By',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  `modified_by` varchar(15) DEFAULT NULL COMMENT 'Modified By',
+  `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_defectivity_checks`
+--
+
+CREATE TABLE `tbl_defectivity_checks` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `application` int(11) NOT NULL COMMENT 'Application',
+  `is_appeal` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Is Appeal',
+  `defectivity` int(11) NOT NULL COMMENT 'Defectivity',
+  `active` enum('0','1') NOT NULL DEFAULT '1' COMMENT 'Is Active',
+  `checked` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Checked',
+  `created_by` varchar(15) NOT NULL COMMENT 'Created By',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  `modified_by` varchar(15) DEFAULT NULL COMMENT 'Modified By',
+  `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tbl_education_background`
 --
 
@@ -784,11 +1379,14 @@ CREATE TABLE `tbl_education_background` (
   `study_level` enum('0','1','2','3','4','5','6') NOT NULL COMMENT 'Study Level',
   `course_name` varchar(60) NOT NULL COMMENT 'Course Name',
   `since` int(4) NOT NULL COMMENT 'Admission Year',
+  `annual_fees` int(7) DEFAULT NULL COMMENT 'Annual Fees',
   `till` int(4) NOT NULL COMMENT 'Examination Year',
   `exam_no` varchar(15) NOT NULL COMMENT 'Examination No.',
   `score` int(11) DEFAULT NULL COMMENT 'Marks/Points',
   `out_of` int(11) DEFAULT NULL COMMENT 'Out Of',
   `grade` varchar(2) DEFAULT NULL COMMENT 'Grade/Merit',
+  `sponsored` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Sponsored',
+  `sponsorship_reason` enum('0','1','2','3') NOT NULL DEFAULT '0' COMMENT 'Sponsorship Reason',
   `created_by` varchar(15) NOT NULL COMMENT 'Created By',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `modified_by` varchar(15) DEFAULT NULL COMMENT 'Modified By',
@@ -799,9 +1397,30 @@ CREATE TABLE `tbl_education_background` (
 -- Dumping data for table `tbl_education_background`
 --
 
-INSERT INTO `tbl_education_background` (`id`, `applicant`, `institution_name`, `institution_type`, `school_type`, `study_level`, `course_name`, `since`, `till`, `exam_no`, `score`, `out_of`, `grade`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
-(1, 1, 'Alliance High', '0', '0', '0', 'Kenya Certificate of Primary Education', 2003, 2010, '124435566', 456, 500, 'A-', 'wsiati', '2017-09-22 23:16:38', NULL, NULL),
-(2, 1, 'Alliance High School', '1', '0', '1', 'Kenya Certificate of Secondary Education', 2011, 2014, '12443556654', 34, 84, 'C-', 'wsiati', '2017-09-22 23:24:43', NULL, NULL);
+INSERT INTO `tbl_education_background` (`id`, `applicant`, `institution_name`, `institution_type`, `school_type`, `study_level`, `course_name`, `since`, `annual_fees`, `till`, `exam_no`, `score`, `out_of`, `grade`, `sponsored`, `sponsorship_reason`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 1, 'Alliance High', '0', '0', '0', 'Kenya Certificate of Primary Education', 2004, 24000, 2010, '124435566', 456, 500, 'A-', '1', '1', 'wsiati', '2017-09-22 23:16:38', 'wsiati', '2018-02-13 07:17:04'),
+(2, 1, 'Alliance High School', '1', '0', '1', 'Kenya Certificate of Secondary Education', 2011, NULL, 2014, '12443556654', 34, 84, 'C-', '0', '0', 'wsiati', '2017-09-22 23:24:43', 'wsiati', '2018-02-13 07:20:54'),
+(3, 4, 'Alliance High School', '0', '0', '0', 'Kenya Certificate of Primary Education', 2006, NULL, 2012, '54564575676', 345, 500, 'B-', '1', '0', 'peter', '2017-10-13 10:14:11', 'peter', '2017-10-29 22:51:57'),
+(4, 4, 'Alliance High', '1', '0', '1', 'Kenya Certificate of Secondary Education', 2015, NULL, 2016, '12443556654', 57, 84, 'B-', '0', '0', 'peter', '2017-10-13 10:16:19', 'peter', '2017-10-29 22:52:18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tbl_financial_literacy_scores`
+--
+
+CREATE TABLE `tbl_financial_literacy_scores` (
+  `id` int(11) NOT NULL COMMENT 'ID',
+  `application` int(11) NOT NULL COMMENT 'Application',
+  `module` varchar(15) NOT NULL COMMENT 'Module',
+  `attempts` int(2) DEFAULT NULL COMMENT 'Attempts',
+  `score` int(3) NOT NULL COMMENT 'Score',
+  `passed` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Passed',
+  `created_by` varchar(15) NOT NULL COMMENT 'Created By',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  `modified_by` varchar(15) DEFAULT NULL COMMENT 'Modified By',
+  `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -43677,11 +44296,26 @@ CREATE TABLE `tbl_products` (
   `code` varchar(3) NOT NULL COMMENT 'Product Code',
   `name` varchar(60) NOT NULL COMMENT 'Product Name',
   `helb_code` varchar(15) DEFAULT NULL COMMENT 'HELB Code',
+  `description` text COMMENT 'Description',
+  `active` enum('0','1') NOT NULL DEFAULT '1' COMMENT 'Active',
+  `logo_owner` varchar(30) DEFAULT NULL COMMENT 'Owner''s Logo',
+  `logo_partner` varchar(30) DEFAULT NULL COMMENT 'Partner''s Logo',
+  `watermark` varchar(30) DEFAULT NULL COMMENT 'Watermark',
+  `logo_header` varchar(30) DEFAULT NULL COMMENT 'Header Logo',
   `created_by` varchar(20) NOT NULL COMMENT 'Created By',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
   `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `tbl_products`
+--
+
+INSERT INTO `tbl_products` (`id`, `code`, `name`, `helb_code`, `description`, `active`, `logo_owner`, `logo_partner`, `watermark`, `logo_header`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 'UG', 'Undergraduate Loan', '', '', '1', '20180209172413262305.jpg', '20180209173339631084.jpg', '20180209173348859103.jpg', '20180209173358698959.jpg', 'peter', '2017-10-19 21:11:04', 'wsiati', '2018-02-14 13:24:46'),
+(2, 'NP', 'New Product', '', '', '1', NULL, NULL, NULL, NULL, 'peter', '2017-10-19 21:54:12', 'wsiati', '2018-02-09 11:44:34'),
+(3, 'KKM', 'Kakamega County Loan', '', 'Loan product for Kakamega County Residents\r\nAsanteni', '1', NULL, NULL, NULL, NULL, 'wsiati', '2017-11-09 18:55:20', 'wsiati', '2017-11-15 23:31:42');
 
 -- --------------------------------------------------------
 
@@ -43691,18 +44325,31 @@ CREATE TABLE `tbl_products` (
 
 CREATE TABLE `tbl_product_access_properties` (
   `id` int(11) NOT NULL COMMENT 'ID',
-  `property` varchar(20) NOT NULL COMMENT 'Property',
+  `property` varchar(40) NOT NULL COMMENT 'Property',
   `name` varchar(40) NOT NULL COMMENT 'Property Name',
   `table` varchar(60) NOT NULL COMMENT 'Related Table',
   `column` varchar(60) DEFAULT NULL COMMENT 'Column Name',
-  `model_class` varchar(60) NOT NULL COMMENT 'Related Model Class',
+  `model_class` varchar(200) NOT NULL COMMENT 'Related Model Class',
   `attribute` varchar(60) DEFAULT NULL COMMENT 'Model Attribute',
+  `operation` varchar(128) DEFAULT NULL COMMENT 'Operation',
   `active` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Active',
   `created_by` varchar(20) NOT NULL COMMENT 'Created By',
-  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
   `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `tbl_product_access_properties`
+--
+
+INSERT INTO `tbl_product_access_properties` (`id`, `property`, `name`, `table`, `column`, `model_class`, `attribute`, `operation`, `active`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 'app_birth_cert', 'Birth Certificate No', '{{%user}}', 'birth_cert_no', 'common\\models\\User', 'birth_cert_no', 'columns = \'placeholder\' || columns like \'placeholder,%\' || columns like \'%,placeholder,%\' || columns like \'%,placeholder\'', '1', 'peter', '2017-10-22 03:18:44', 'peter', '2017-10-27 10:50:55'),
+(2, 'app_sub_county', 'Applicant\'s SubCounty', '{{%applicants}}', 'sub_county', 'frontend\\modules\\client\\modules\\student\\models\\Applicants', 'sub_county', 'columns = \'placeholder\' || columns like \'placeholder,%\' || columns like \'%,placeholder,%\' || columns like \'%,placeholder\'', '1', 'peter', '2017-10-22 17:06:42', NULL, NULL),
+(3, 'app_id_number', 'National ID. Card No.', '{{%user}}', 'id_no', 'common\\models\\User', 'id_no', 'columns = \'placeholder\' || columns like \'placeholder,%\' || columns like \'%,placeholder,%\' || columns like \'%,placeholder\'', '1', 'peter', '2017-10-23 15:20:03', NULL, NULL),
+(4, 'app_kra_pin', 'KRA PIN', '{{%user}}', 'kra_pin', 'common\\models\\User', 'kra_pin', 'columns = \'placeholder\' || columns like \'placeholder,%\' || columns like \'%,placeholder,%\' || columns like \'%,placeholder\'', '1', 'wsiati', '2017-10-23 15:27:41', NULL, NULL),
+(5, 'app_county', 'Applicant\'s County', '{{%applicants}}', 'county', 'frontend\\modules\\client\\modules\\student\\models\\Applicants', 'county', 'columns = \'placeholder\' || columns like \'placeholder,%\' || columns like \'%,placeholder,%\' || columns like \'%,placeholder\'', '1', 'peter', '2017-10-23 22:50:13', NULL, NULL),
+(6, 'res_county', 'County of Residence', '{{%applicants_residence}}', 'county', 'frontend\\modules\\client\\modules\\student\\models\\ApplicantsResidence', 'county', 'columns = \'placeholder\' || columns like \'placeholder,%\' || columns like \'%,placeholder,%\' || columns like \'%,placeholder\'', '1', 'wsiati', '2017-11-14 20:40:27', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -43714,7 +44361,6 @@ CREATE TABLE `tbl_product_access_property_items` (
   `id` int(11) NOT NULL COMMENT 'ID',
   `application` int(11) NOT NULL COMMENT 'Application',
   `property` int(11) NOT NULL COMMENT 'Property',
-  `item` varchar(20) NOT NULL COMMENT 'Item',
   `min_value` varchar(60) DEFAULT NULL COMMENT 'Minimum Value',
   `max_value` varchar(60) DEFAULT NULL COMMENT 'Maximum Value',
   `specific_values` text COMMENT 'Specific Values',
@@ -43722,10 +44368,19 @@ CREATE TABLE `tbl_product_access_property_items` (
   `required` enum('0','1') NOT NULL DEFAULT '1' COMMENT 'Required',
   `active` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Active',
   `created_by` varchar(20) NOT NULL COMMENT 'Created By',
-  `created_at` datetime NOT NULL COMMENT 'Created At',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
   `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `tbl_product_access_property_items`
+--
+
+INSERT INTO `tbl_product_access_property_items` (`id`, `application`, `property`, `min_value`, `max_value`, `specific_values`, `remark`, `required`, `active`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 2, 1, '', '', '34556767', '', '1', '1', 'wsiati', '2017-11-14 20:39:03', 'wsiati', '2017-12-03 23:07:52'),
+(2, 2, 6, '', '', '30,34', '', '0', '1', 'wsiati', '2017-11-14 20:40:28', 'wsiati', '2017-12-04 00:17:55'),
+(3, 1, 1, '', '', '', '', '1', '0', 'wsiati', '2017-12-05 21:36:07', 'wsiati', '2017-12-05 21:44:42');
 
 -- --------------------------------------------------------
 
@@ -43743,11 +44398,23 @@ CREATE TABLE `tbl_product_opening` (
   `grace` date NOT NULL COMMENT 'Grace Period',
   `min_apps` int(7) DEFAULT NULL COMMENT 'Minimum No. of Applications',
   `max_apps` int(7) DEFAULT NULL COMMENT 'Maximum No. of Applications',
+  `consider_counts` enum('0','1','2') NOT NULL DEFAULT '1' COMMENT 'Consider Counts',
+  `appeal_since` date DEFAULT NULL COMMENT 'Appeal Since',
+  `appeal_till` date DEFAULT NULL COMMENT 'Appeal Till',
   `created_by` varchar(20) NOT NULL COMMENT 'Created By',
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
   `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `tbl_product_opening`
+--
+
+INSERT INTO `tbl_product_opening` (`id`, `product`, `academic_year`, `subsequent`, `since`, `till`, `grace`, `min_apps`, `max_apps`, `consider_counts`, `appeal_since`, `appeal_till`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 1, '2017/2018', '1', '2017-10-01', '2017-12-04', '2017-12-04', 1, 1, '0', '2017-12-01', '2017-12-04', 'peter', '2017-10-21 15:25:43', 'wsiati', '2017-12-05 23:10:38'),
+(2, 1, '2017/2018', '2', '2017-10-21', '2017-12-06', '2017-12-06', NULL, NULL, '0', NULL, NULL, 'peter', '2017-10-21 15:28:23', 'wsiati', '2018-02-09 11:45:17'),
+(3, 3, '2017/2018', '1', '2017-11-09', '2017-11-09', '2017-11-09', NULL, NULL, '0', NULL, NULL, 'wsiati', '2017-11-09 18:57:09', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -43758,9 +44425,8 @@ CREATE TABLE `tbl_product_opening` (
 CREATE TABLE `tbl_product_opening_settings` (
   `id` int(11) NOT NULL COMMENT 'ID',
   `application` int(11) NOT NULL COMMENT 'Application',
-  `setting` varchar(20) NOT NULL COMMENT 'Setting',
+  `setting` varchar(40) NOT NULL COMMENT 'Setting',
   `name` varchar(40) NOT NULL COMMENT 'Name',
-  `label` varchar(40) NOT NULL COMMENT 'Label',
   `value` varchar(20) NOT NULL COMMENT 'Value',
   `active` enum('0','1') NOT NULL DEFAULT '0' COMMENT 'Active',
   `remark` text COMMENT 'Remark',
@@ -43768,7 +44434,49 @@ CREATE TABLE `tbl_product_opening_settings` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `modified_by` varchar(20) DEFAULT NULL COMMENT 'Modified By',
   `modified_at` datetime DEFAULT NULL COMMENT 'Modified At'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
+
+--
+-- Dumping data for table `tbl_product_opening_settings`
+--
+
+INSERT INTO `tbl_product_opening_settings` (`id`, `application`, `setting`, `name`, `value`, `active`, `remark`, `created_by`, `created_at`, `modified_by`, `modified_at`) VALUES
+(1, 1, 'has_subsquent', 'Has Subsequent', '1', '1', 'Has Subsequent', 'peter', '2017-10-21 15:27:46', 'wsiati', '2017-12-05 21:52:47'),
+(2, 1, 'has_appeal', 'Has Appeal', '1', '1', 'Has Appeal', 'peter', '2017-10-21 15:27:46', 'wsiati', '2017-12-05 21:52:47'),
+(3, 1, 'has_bursary', 'Has Bursary', '1', '1', 'Has Bursary', 'peter', '2017-10-21 15:27:46', 'wsiati', '2017-12-05 21:52:47'),
+(4, 1, 'employed', 'Employed', '2', '1', 'Employed', 'peter', '2017-10-21 15:27:46', 'wsiati', '2017-12-05 21:52:47'),
+(5, 1, 'tuition_or_upkeep', 'Tuition or Upkeep', '1', '1', 'Tuition or Upkeep', 'peter', '2017-10-21 15:27:46', 'wsiati', '2017-12-05 21:52:48'),
+(6, 1, 'has_financial_literacy', 'Has Financial Literacy', '0', '1', 'Has Financial Literacy', 'peter', '2017-10-21 15:27:46', 'wsiati', '2017-12-05 21:52:48'),
+(7, 2, 'has_appeal', 'Has Appeal', '1', '1', 'Has Appeal', 'peter', '2017-10-21 15:28:57', 'wsiati', '2017-12-14 23:25:13'),
+(8, 2, 'has_bursary', 'Has Bursary', '1', '1', 'Has Bursary', 'peter', '2017-10-21 15:28:58', 'wsiati', '2017-12-14 23:25:13'),
+(9, 2, 'employed', 'Employed', '2', '1', 'Employed', 'peter', '2017-10-21 15:28:58', 'wsiati', '2017-12-14 23:25:14'),
+(10, 2, 'tuition_or_upkeep', 'Tuition or Upkeep', '0', '1', 'Tuition or Upkeep', 'peter', '2017-10-21 15:28:58', 'wsiati', '2017-12-14 23:25:14'),
+(11, 2, 'has_financial_literacy', 'Has Financial Literacy', '0', '1', 'Has Financial Literacy', 'peter', '2017-10-21 15:28:58', 'wsiati', '2017-12-14 23:25:15'),
+(12, 2, 'has_society_narration', 'Society Narration', '1', '1', 'Society Narration', 'peter', '2017-11-02 23:40:24', 'wsiati', '2017-12-14 23:25:15'),
+(13, 3, 'has_subsquent', 'Has Subsequent', '1', '1', 'Has Subsequent', 'wsiati', '2017-11-09 18:58:40', NULL, NULL),
+(14, 3, 'has_appeal', 'Has Appeal', '1', '1', 'Has Appeal', 'wsiati', '2017-11-09 18:58:40', NULL, NULL),
+(15, 3, 'has_bursary', 'Has Bursary', '0', '1', 'Has Bursary', 'wsiati', '2017-11-09 18:58:40', NULL, NULL),
+(16, 3, 'employed', 'Employed', '2', '1', 'Employed', 'wsiati', '2017-11-09 18:58:40', NULL, NULL),
+(17, 3, 'tuition_or_upkeep', 'Tuition or Upkeep', '2', '1', 'Tuition or Upkeep', 'wsiati', '2017-11-09 18:58:40', NULL, NULL),
+(18, 3, 'has_society_narration', 'Society Narration', '0', '1', 'Society Narration', 'wsiati', '2017-11-09 18:58:40', NULL, NULL),
+(19, 3, 'has_financial_literacy', 'Has Financial Literacy', '0', '1', 'Has Financial Literacy', 'wsiati', '2017-11-09 18:58:41', NULL, NULL),
+(20, 1, 'has_society_narration', 'Society Narration', '1', '1', 'Society Narration', 'wsiati', '2017-11-20 22:30:02', 'wsiati', '2017-12-05 21:52:48'),
+(21, 2, 'primary', 'Primary Education', '1', '1', 'Primary Education', 'wsiati', '2017-11-28 11:06:43', 'wsiati', '2017-12-14 23:25:14'),
+(22, 2, 'secondary', 'Secondary Education', '1', '1', 'Secondary Education', 'wsiati', '2017-11-28 11:06:43', 'wsiati', '2017-12-14 23:25:14'),
+(23, 2, 'certificate', 'Tertiary Certificate', '0', '1', 'Tertiary Certificate', 'wsiati', '2017-11-28 11:06:43', 'wsiati', '2017-12-14 23:25:14'),
+(24, 2, 'diploma', 'Diploma Certificate', '0', '1', 'Diploma Certificate', 'wsiati', '2017-11-28 11:06:43', 'wsiati', '2017-12-14 23:25:14'),
+(25, 2, 'degree', 'Degree Certificate', '0', '1', 'Degree Certificate', 'wsiati', '2017-11-28 11:06:44', 'wsiati', '2017-12-14 23:25:14'),
+(26, 2, 'masters', 'Masters Certificate', '0', '1', 'Masters Certificate', 'wsiati', '2017-11-28 11:06:44', 'wsiati', '2017-12-14 23:25:14'),
+(27, 2, 'phd', 'PhD Certificate', '0', '1', 'PhD Certificate', 'wsiati', '2017-11-28 11:06:44', 'wsiati', '2017-12-14 23:25:14'),
+(28, 2, 'guarantors', 'No. of Guarantors', '1', '1', 'No. of Guarantors', 'wsiati', '2017-11-28 11:06:44', 'wsiati', '2017-12-14 23:25:15'),
+(29, 1, 'primary', 'Primary Education', '1', '1', 'Primary Education', 'wsiati', '2017-12-03 01:35:08', 'wsiati', '2017-12-05 21:52:47'),
+(30, 1, 'secondary', 'Secondary Education', '1', '1', 'Secondary Education', 'wsiati', '2017-12-03 01:35:08', 'wsiati', '2017-12-05 21:52:47'),
+(31, 1, 'certificate', 'Tertiary Certificate', '0', '1', 'Tertiary Certificate', 'wsiati', '2017-12-03 01:35:08', 'wsiati', '2017-12-05 21:52:48'),
+(32, 1, 'diploma', 'Diploma Certificate', '0', '1', 'Diploma Certificate', 'wsiati', '2017-12-03 01:35:08', 'wsiati', '2017-12-05 21:52:48'),
+(33, 1, 'degree', 'Degree Certificate', '0', '1', 'Degree Certificate', 'wsiati', '2017-12-03 01:35:08', 'wsiati', '2017-12-05 21:52:48'),
+(34, 1, 'masters', 'Masters Certificate', '0', '1', 'Masters Certificate', 'wsiati', '2017-12-03 01:35:09', 'wsiati', '2017-12-05 21:52:48'),
+(35, 1, 'phd', 'PhD Certificate', '0', '1', 'PhD Certificate', 'wsiati', '2017-12-03 01:35:09', 'wsiati', '2017-12-05 21:52:48'),
+(36, 1, 'guarantors', 'No. of Guarantors', '1', '1', 'No. of Guarantors', 'wsiati', '2017-12-03 01:35:09', 'wsiati', '2017-12-05 21:52:48');
 
 -- --------------------------------------------------------
 
@@ -44092,7 +44800,8 @@ CREATE TABLE `tbl_user` (
   `phone` varchar(13) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'Phone No.',
   `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Email Address',
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Username',
-  `user_type` enum('0','1','2') COLLATE utf8_unicode_ci NOT NULL DEFAULT '0' COMMENT 'User Type',
+  `user_type` enum('0','1','2','3','4') COLLATE utf8_unicode_ci NOT NULL DEFAULT '0' COMMENT 'User Type',
+  `profile` enum('0','1') COLLATE utf8_unicode_ci NOT NULL DEFAULT '0' COMMENT 'Business Right',
   `auth_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Authentication Key',
   `password_hash` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Password Hash',
   `status` smallint(6) NOT NULL DEFAULT '3' COMMENT 'Status',
@@ -44114,10 +44823,12 @@ CREATE TABLE `tbl_user` (
 -- Dumping data for table `tbl_user`
 --
 
-INSERT INTO `tbl_user` (`id`, `birth_cert_no`, `id_no`, `kra_pin`, `phone`, `email`, `username`, `user_type`, `auth_key`, `password_hash`, `status`, `password_reset_token`, `registered_by`, `registered_at`, `created_at`, `modified_by`, `modified_at`, `updated_at`, `signed_in`, `last_signed_in`, `last_signed_out`, `user_ip`, `session_id`) VALUES
-(1, '34556767', '56534634', 'S111111111V', '+254709666666', 'wsiati@live.com', 'wsiati', '0', 's-AblEgwDM4HX7kmvv0embM5rBzuXhGW', '$2y$13$lFKUr/OLy5OzPFRguqMaMOy2YLqMCy2rhjiUoj1KUT3OjPGg5wubW', 3, NULL, 'self', '2017-09-13 10:34:47', 1505298888, 'wsiati', '2017-10-02 21:01:06', 1506967266, '1', '2017-10-09 11:36:30', '2017-09-26 23:31:05', '::1', 'i3njro7k2nc4fhlishdvnlu9uj'),
-(2, '43254543', '24544153', 'A111111111D', '+254709666665', 'wsiati1@live.com', 'wsiati1', '0', 'YkpUV9WCXt5Xx8R7-R0OQ7UlJ4nbULPM', '$2y$13$Njt77mllTcDydB5.5IJESuzqpoujv.YtxEbDhiLQKWDNitvYltMiW', 3, NULL, 'self', '2017-09-13 11:42:52', 1505302972, NULL, NULL, 1505302972, '0', NULL, NULL, NULL, NULL),
-(3, '23432432', '67643472', '', '', 'hitech@tec.techy', 'techy', '0', 'h5B9Vp2BduyR3ZwuOxOh49BASsWNGOMA', '$2y$13$9I7DIyHRMIWscH8VN.JQKu289wrHMzaQJJtb9RVH5bo4xw/AiUB0G', 3, NULL, 'self', '2017-09-18 14:50:58', 1505746259, 'techy', '2017-09-18 18:06:37', 1505747197, '0', '2017-09-18 18:07:46', '2017-09-18 20:29:57', '::1', 'vfdtvmc5rgta1jcidmmh1vlh31');
+INSERT INTO `tbl_user` (`id`, `birth_cert_no`, `id_no`, `kra_pin`, `phone`, `email`, `username`, `user_type`, `profile`, `auth_key`, `password_hash`, `status`, `password_reset_token`, `registered_by`, `registered_at`, `created_at`, `modified_by`, `modified_at`, `updated_at`, `signed_in`, `last_signed_in`, `last_signed_out`, `user_ip`, `session_id`) VALUES
+(1, '34556767', '56534634', 'S111111111V', '+254709666666', 'wsiati@live.com', 'wsiati', '4', '0', 's-AblEgwDM4HX7kmvv0embM5rBzuXhGW', '$2y$13$lFKUr/OLy5OzPFRguqMaMOy2YLqMCy2rhjiUoj1KUT3OjPGg5wubW', 3, NULL, 'self', '2017-09-13 10:34:47', 1505298888, 'wsiati', '2018-02-13 11:44:31', 1518511471, '1', '2018-02-14 14:32:42', '2018-02-14 14:12:25', '::1', 'nufejt0nft2d1dpaak3dcp7tfo'),
+(2, '43254543', '24544153', 'A111111111D', '+254709666665', 'wsiati1@live.com', 'wsiati1', '0', '0', 'YkpUV9WCXt5Xx8R7-R0OQ7UlJ4nbULPM', '$2y$13$Njt77mllTcDydB5.5IJESuzqpoujv.YtxEbDhiLQKWDNitvYltMiW', 3, NULL, 'self', '2017-09-13 11:42:52', 1505302972, NULL, NULL, 1505302972, '0', NULL, NULL, NULL, NULL),
+(3, '23432432', '67643472', '', '', 'hitech@tec.techy', 'techy', '0', '0', 'h5B9Vp2BduyR3ZwuOxOh49BASsWNGOMA', '$2y$13$9I7DIyHRMIWscH8VN.JQKu289wrHMzaQJJtb9RVH5bo4xw/AiUB0G', 3, NULL, 'self', '2017-09-18 14:50:58', 1505746259, 'techy', '2017-09-18 18:06:37', 1505747197, '0', '2017-09-18 18:07:46', '2017-09-18 20:29:57', '::1', 'vfdtvmc5rgta1jcidmmh1vlh31'),
+(4, '8989787', '8765432', 'A988978977S', '+254725987126', 'rrrer@rear.com', 'peter', '0', '0', '_IaT0ipIF3CzhacHuUcu_sZW5HX6BObx', '$2y$13$0FvX1Cei/TG6U1UXK4xAjOGIZs3vXUJy9wxqPrwpQ2R6m.VCLJMSq', 3, NULL, 'self', '2017-10-13 07:10:44', 1507878644, 'peter', '2017-11-03 23:23:19', 1509740599, '1', '2017-10-13 10:11:07', NULL, '::1', 'k9if9hverb9r80ava2ek84jfp1'),
+(5, '45645654', '75675676', NULL, '+254709888776', 'jar@man.com', 'jar', '0', '0', 'CGswTJrfs7jqxlRzLwF2c9hi3wBZO3Fx', '$2y$13$8zf8WNMv.ZfCGNWJn13kf.r0wd0E8Q2W0FFU74790FqqxMs0GgDym', 3, NULL, 'self', '2018-02-14 11:14:52', 1518606892, NULL, NULL, 1518606892, '0', '2018-02-14 14:15:20', '2018-02-14 14:16:05', '::1', '9ibcg2p8k2l93nb429okd1lfsu');
 
 -- --------------------------------------------------------
 
@@ -45652,6 +46363,43 @@ ALTER TABLE `tbl_applicants_spouse`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `tbl_applicant_sponsors`
+--
+ALTER TABLE `tbl_applicant_sponsors`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_applications`
+--
+ALTER TABLE `tbl_applications`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `serial_no` (`serial_no`),
+  ADD KEY `applicant` (`applicant`),
+  ADD KEY `application` (`application`);
+
+--
+-- Indexes for table `tbl_application_parts`
+--
+ALTER TABLE `tbl_application_parts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `application` (`application`);
+
+--
+-- Indexes for table `tbl_application_part_elements`
+--
+ALTER TABLE `tbl_application_part_elements`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `part` (`part`);
+
+--
+-- Indexes for table `tbl_application_views`
+--
+ALTER TABLE `tbl_application_views`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `application` (`application`),
+  ADD KEY `user` (`user_id`);
+
+--
 -- Indexes for table `tbl_constituencies`
 --
 ALTER TABLE `tbl_constituencies`
@@ -45668,11 +46416,31 @@ ALTER TABLE `tbl_counties`
   ADD KEY `county_id` (`id`);
 
 --
+-- Indexes for table `tbl_defectivities`
+--
+ALTER TABLE `tbl_defectivities`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tbl_defectivity_checks`
+--
+ALTER TABLE `tbl_defectivity_checks`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `tbl_education_background`
 --
 ALTER TABLE `tbl_education_background`
   ADD PRIMARY KEY (`id`),
   ADD KEY `applicant` (`applicant`);
+
+--
+-- Indexes for table `tbl_financial_literacy_scores`
+--
+ALTER TABLE `tbl_financial_literacy_scores`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `application` (`application`),
+  ADD KEY `created_by` (`created_by`);
 
 --
 -- Indexes for table `tbl_lm_base_enums`
@@ -45710,7 +46478,8 @@ ALTER TABLE `tbl_products`
 -- Indexes for table `tbl_product_access_properties`
 --
 ALTER TABLE `tbl_product_access_properties`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `property` (`property`);
 
 --
 -- Indexes for table `tbl_product_access_property_items`
@@ -45764,47 +46533,72 @@ ALTER TABLE `tbl_wards`
 -- AUTO_INCREMENT for table `tbl_applicants`
 --
 ALTER TABLE `tbl_applicants`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_employment`
 --
 ALTER TABLE `tbl_applicants_employment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_family_expenses`
 --
 ALTER TABLE `tbl_applicants_family_expenses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_guarantors`
 --
 ALTER TABLE `tbl_applicants_guarantors`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_institution`
 --
 ALTER TABLE `tbl_applicants_institution`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_parents`
 --
 ALTER TABLE `tbl_applicants_parents`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_residence`
 --
 ALTER TABLE `tbl_applicants_residence`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_sibling_education_expenses`
 --
 ALTER TABLE `tbl_applicants_sibling_education_expenses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `tbl_applicants_spouse`
 --
 ALTER TABLE `tbl_applicants_spouse`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `tbl_applicant_sponsors`
+--
+ALTER TABLE `tbl_applicant_sponsors`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `tbl_applications`
+--
+ALTER TABLE `tbl_applications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `tbl_application_parts`
+--
+ALTER TABLE `tbl_application_parts`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=34;
+--
+-- AUTO_INCREMENT for table `tbl_application_part_elements`
+--
+ALTER TABLE `tbl_application_part_elements`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=85;
+--
+-- AUTO_INCREMENT for table `tbl_application_views`
+--
+ALTER TABLE `tbl_application_views`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=285;
 --
 -- AUTO_INCREMENT for table `tbl_constituencies`
 --
@@ -45816,10 +46610,25 @@ ALTER TABLE `tbl_constituencies`
 ALTER TABLE `tbl_counties`
   MODIFY `id` int(3) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=48;
 --
+-- AUTO_INCREMENT for table `tbl_defectivities`
+--
+ALTER TABLE `tbl_defectivities`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+--
+-- AUTO_INCREMENT for table `tbl_defectivity_checks`
+--
+ALTER TABLE `tbl_defectivity_checks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+--
 -- AUTO_INCREMENT for table `tbl_education_background`
 --
 ALTER TABLE `tbl_education_background`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=5;
+--
+-- AUTO_INCREMENT for table `tbl_financial_literacy_scores`
+--
+ALTER TABLE `tbl_financial_literacy_scores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
 --
 -- AUTO_INCREMENT for table `tbl_lm_base_enums`
 --
@@ -45834,27 +46643,27 @@ ALTER TABLE `tbl_postal_codes`
 -- AUTO_INCREMENT for table `tbl_products`
 --
 ALTER TABLE `tbl_products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `tbl_product_access_properties`
 --
 ALTER TABLE `tbl_product_access_properties`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `tbl_product_access_property_items`
 --
 ALTER TABLE `tbl_product_access_property_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `tbl_product_opening`
 --
 ALTER TABLE `tbl_product_opening`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `tbl_product_opening_settings`
 --
 ALTER TABLE `tbl_product_opening_settings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID';
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=37;
 --
 -- AUTO_INCREMENT for table `tbl_sub_counties`
 --
@@ -45864,7 +46673,7 @@ ALTER TABLE `tbl_sub_counties`
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID', AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `tbl_wards`
 --

@@ -143,6 +143,16 @@ a.desc:after {
     }
 }
 
+.modal-body {
+    width: 100%;
+    display: table
+}
+
+#yii-modal-cnt {
+    display: table-cell;
+    vertical-align: middle
+}
+
 .nav > li > form > button.logout:focus,
 .nav > li > form > button.logout:hover {
     text-decoration: none;

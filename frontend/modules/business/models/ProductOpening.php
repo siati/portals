@@ -352,6 +352,7 @@ class ProductOpening extends \yii\db\ActiveRecord {
      * 
      * @param integer $applicant applicant
      * @param boolean $is_appeal true - is appeal
+     * @param string $datetime current time
      * @return boolean true - applicant can view application
      */
     public function applicantCanViewApplication($applicant, $is_appeal, $datetime) {
@@ -361,6 +362,30 @@ class ProductOpening extends \yii\db\ActiveRecord {
             return $application->printed(true) || ($application->printed(false) && $this->applicationIsOpenByEitherCriterion(true, $datetime));
         else
             return $application->printed(false) || ($this->applicationIsOpenByEitherCriterion(false, $datetime) && ProductAccessPropertyItems::applicantCanAccessProduct($this->id, $applicant));
+    }
+
+    /**
+     * 
+     * @param integer $product product id
+     * @param integer $applicant applicant
+     * @param string $datetime current time
+     * @return []|ProductOpening[] models
+     */
+    public static function applicantViewableApplications($product, $applicant, $datetime) {
+        $i = 0;
+
+        foreach ($openings = static::forProductAcademicyearAndSubsequent($product, null, null, self::all) as $opening) {
+            if ($opening->applicantCanViewApplication($applicant, false, $datetime))
+                $viewables[++$i] = $opening;
+
+            if ($opening->applicantCanViewApplication($applicant, true, $datetime)) {
+                $viewables[++$i] = $opening;
+                
+                $appeals[] = $i;
+            }
+        }
+
+        return [empty($viewables) ? [] : $viewables, empty($appeals) ? [] : $appeals];
     }
 
     /**

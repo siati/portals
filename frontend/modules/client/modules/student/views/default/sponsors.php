@@ -151,7 +151,7 @@ $this->registerJs(
     <?php
     $this->registerJs(
             "
-                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.84 + 'px');
+                $('.fit-in-pn').css('max-height', $('#yii-modal-cnt').height() * 0.70 + 'px');
                 
                 $('#spnsrs-btn-inner').click(
                     function(event) {

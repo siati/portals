@@ -85,10 +85,13 @@ AppAsset::register($this);
 
                         <div class="menu-div">
 
-                            <?=
-                            Yii::$app->user->isGuest ?
-                                    $this->render('guest') :
-                                    $this->render('applicant-menu');
+                            <?php
+                            if (Yii::$app->user->isGuest)
+                                echo $this->render('guest');
+                            elseif (Yii::$app->user->identity->user_type == User::USER_BUSINESS)
+                                echo $this->render('admin-menu');
+                            else
+                                echo $this->render('applicant-menu');
                             ?>
                         </div>
 
@@ -113,6 +116,17 @@ AppAsset::register($this);
 
         <?php $this->registerJs("function clickTheButton(btn) {btn.click()}", \yii\web\VIEW::POS_HEAD) ?>
 
+        <?php
+        $this->registerJs(
+                "
+                    function activateLink(lnk) {
+                        $('.nav-pills > li').removeClass('active');
+                        lnk.parents('li').addClass('active');
+                    }
+                "
+                , \yii\web\VIEW::POS_HEAD)
+        ?>
+
         <?php if (!Yii::$app->user->isGuest && Yii::$app->user->identity->user_type == User::USER_STUDENT): ?>
             <?php $applicant = Applicants::returnApplicant($user_id = Yii::$app->user->identity->id); ?>
 
@@ -120,63 +134,75 @@ AppAsset::register($this);
                 <?php $this->registerJs("$('#sd-nav-eplymt').parent().parent().hide(); $('#ajx-sd-nav-eplymt-td').hide()", \yii\web\VIEW::POS_READY) ?>
             <?php endif; ?>
 
-            <?php if (!$applicant->isEmployed() || $applicant->parentsApplicable()): ?>
-                <?php // $this->registerJs("$('#sd-nav-prnts, #sd-nav-expns, #sd-nav-spnsrs').parent().parent().hide(); $('#ajx-sd-nav-prnts-td, #ajx-sd-nav-expns-td, #ajx-sd-nav-spnsrs-td').hide()", \yii\web\VIEW::POS_READY) ?>
+            <?php if ($applicant->isEmployed() || !$applicant->parentsApplicable()): ?>
+                <?php $this->registerJs("$('#sd-nav-prnts, #sd-nav-expns, #sd-nav-spnsrs').parent().parent().hide(); $('#ajx-sd-nav-prnts-td, #ajx-sd-nav-expns-td, #ajx-sd-nav-spnsrs-td').hide()", \yii\web\VIEW::POS_READY) ?>
             <?php endif; ?>
 
             <?php if (!$applicant->isMarried()): ?>
                 <?php $this->registerJs("$('#sd-nav-sps').parent().parent().hide(); $('ajx-sd-nav-sps-td').hide()", \yii\web\VIEW::POS_READY) ?>
             <?php endif; ?>
 
-            <?php $this->registerJs(
+            <?php
+            $this->registerJs(
                     "
-                        function introPosts(id, actn) {
-                            switch (id) {
-                                case 'ajx-sd-nav-prsnl':
-                                    return ['client/student/default/' + actn, {'Applicants[id]': $user_id, 'User[id]': $user_id}];
-                                    
-                                case 'ajx-sd-nav-rsdnc':
-                                    return ['client/student/default/' + actn, {'ApplicantsResidence[applicant]': $user_id}];
-                                    
-                                case 'ajx-sd-nav-edctn':
-                                    return ['client/student/default/' + actn, {'EducationBackground[applicant]': $user_id}];
-                                    
-                                case 'ajx-sd-nav-inst':
-                                    return ['client/student/default/' + actn, {'ApplicantsInstitution[applicant]': $user_id}];
-                                    
-                                case 'ajx-sd-nav-eplymt':
-                                    return ['client/student/default/' + actn, {'ApplicantsEmployment[applicant]': $user_id}];
-                                    
-                                case 'ajx-sd-nav-prnts':
-                                    return ['client/student/default/' + actn, {'Applicants[id]': $user_id}];
-                                    
-                                case 'ajx-sd-nav-expns':
-                                    return ['client/student/default/' + actn, {'applicant': $user_id}];
-                                    
-                                case 'ajx-sd-nav-spnsrs':
-                                    return ['client/student/default/' + actn, {'ApplicantSponsors[applicant]': $user_id}];
-                                    
-                                case 'ajx-sd-nav-sps':
-                                    return ['client/student/default/' + actn, {'ApplicantsSpouse[applicant]': $user_id}];
-                                    
-                                case 'ajx-sd-nav-grntrs':
-                                    return ['client/student/default/' + actn, {'ApplicantsGuarantors[applicant]': $user_id}];
-                                    
-                                default:
-                                    return false;
-                            }
+                        function introPosts(tile) {
+
+                            id = tile.attr('id');
+                            actn = tile.attr('actn');
+                            ap = tile.attr('ap');
+                            
+                            if (ap)
+                                return ['client/student/default/' + actn, {'product': tile.attr('pr'), 'applicant': $user_id}];
+                            else
+                                switch (id) {
+                                    case 'ajx-sd-nav-prsnl':
+                                        return ['client/student/default/' + actn, {'Applicants[id]': $user_id, 'User[id]': $user_id}];
+
+                                    case 'ajx-sd-nav-rsdnc':
+                                        return ['client/student/default/' + actn, {'ApplicantsResidence[applicant]': $user_id}];
+
+                                    case 'ajx-sd-nav-edctn':
+                                        return ['client/student/default/' + actn, {'EducationBackground[applicant]': $user_id}];
+
+                                    case 'ajx-sd-nav-inst':
+                                        return ['client/student/default/' + actn, {'ApplicantsInstitution[applicant]': $user_id}];
+
+                                    case 'ajx-sd-nav-eplymt':
+                                        return ['client/student/default/' + actn, {'ApplicantsEmployment[applicant]': $user_id}];
+
+                                    case 'ajx-sd-nav-prnts':
+                                        return ['client/student/default/' + actn, {'Applicants[id]': $user_id}];
+
+                                    case 'ajx-sd-nav-expns':
+                                        return ['client/student/default/' + actn, {'applicant': $user_id}];
+
+                                    case 'ajx-sd-nav-spnsrs':
+                                        return ['client/student/default/' + actn, {'ApplicantSponsors[applicant]': $user_id}];
+
+                                    case 'ajx-sd-nav-sps':
+                                        return ['client/student/default/' + actn, {'ApplicantsSpouse[applicant]': $user_id}];
+
+                                    case 'ajx-sd-nav-grntrs':
+                                        return ['client/student/default/' + actn, {'ApplicantsGuarantors[applicant]': $user_id}];
+
+                                    default:
+                                        return false;
+                                }
                         }
                     "
-                    , \yii\web\VIEW::POS_HEAD) ?>
+                    , \yii\web\VIEW::POS_HEAD)
+            ?>
 
             <?php
             $this->registerJs(
                     "
                         $('.home-tile').click(
                             function() {
-                                (actn = introPosts($(this).attr('id'), $(this).attr('actn'))) ? 
+                                (actn = introPosts($(this))) ? 
                                     yiiModal($(this).find('p').text(), actn[0], actn[1], $('.page-content-rgt').width() * $(this).attr('wdt'), $('.page-content-rgt').height() * $(this).attr('hgt')) :
                                     dataSaved('Ooops!', 'Something\'s amiss.<br/><br/>Reload this page then try again', 'error');
+                                    
+                                    activateLink($('#' + $(this).attr('id').substr(4, $(this).attr('id').length - 4)).parent('a'));
                             }
                         );
                     "
@@ -195,8 +221,11 @@ AppAsset::register($this);
                                 event.preventDefault();
                                 
                                 event.stopPropagation();
-                                
-                                $(this).parent().hasClass('active') ? '' : clickTheButton($(this).find('button'));
+                                    
+                                form = $(this).find('form');
+                                  
+                                if (!$(this).parent().hasClass('active'))
+                                    $('#ajx-' + form.attr('id')).length ? $('#ajx-' + form.attr('id')).click() : clickTheButton($(this).find('button'));
                                 
                                 return false;
                             }

@@ -19,7 +19,7 @@ use frontend\modules\client\modules\student\models\Applicants;
 <?php $parents_abandoned = Applicants::parents_abandoned ?>
 <?php $parents_not_applicable = Applicants::parents_not_applicable ?>
 
-<?php $form = ActiveForm::begin(['id' => 'form-prsnl-prtl-apl', 'enableAjaxValidation' => true, 'action' => 'personal-partial', 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
+<?php $form = ActiveForm::begin(['id' => 'form-prsnl-prtl-apl', 'enableAjaxValidation' => true, 'action' => 'client/student/default/personal-partial', 'fieldConfig' => ['options' => ['class' => 'form-group-sm']]]); ?>
 
 <?= Html::activeHiddenInput($model, 'id') ?>
 
